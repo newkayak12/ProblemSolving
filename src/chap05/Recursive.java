@@ -10,7 +10,6 @@ public class Recursive {
 		System.out.println(rec.factorial(10));
 		System.out.println("\ncommon factor");
 		System.out.println(rec.getCommenFactor(22, 8));
-		asd
 
 	}
 
