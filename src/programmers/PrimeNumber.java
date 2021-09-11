@@ -5,9 +5,12 @@ import java.util.ArrayList;
 public class PrimeNumber {
 	public static void main(String[] args) {
 		// System.out.println(solution(100000));
-		System.out.println(solution2(10));
-		System.out.println(solution2(5));
-		System.out.println(solution2(11));
+		// System.out.println(solution2(10));
+		// System.out.println(solution2(5));
+		// System.out.println(solution2(11));
+		System.out.println(solution3(10));
+		System.out.println(solution3(5));
+		System.out.println(solution3(11));
 	}
 
 	public static int solution(int n) {
@@ -25,6 +28,10 @@ public class PrimeNumber {
 		}
 		return num.size();
 	    }
+
+
+
+
 	public static int solution2(int n){
 		int answer = 0;
       boolean[] sosu =new boolean [n+1];
@@ -45,6 +52,33 @@ public class PrimeNumber {
           answer++;
       }
       return answer;
+	}
+
+
+
+	public static int solution3(int n){
+		boolean[] primeLists = new boolean[n+1];
+		primeLists[0] = false;
+		primeLists[1] = false;
+		for(int i=2; i<=n; i++){
+			primeLists[i] = true;
+		}
+		for(int i =2; (i*i)<=n; i++){
+			if(primeLists[i]){
+				for(int j = (i*i); j<=n; j+=i){
+					primeLists[j] =  false;
+				}	
+			}
+		}
+
+		// (int)primeLists.stream().filter(x->x.equals(true)).count();
+		int count = 0;
+		for(boolean a : primeLists){
+			if(a){
+				count++;
+			}
+		}
+		return count ;
 	}
 }
 

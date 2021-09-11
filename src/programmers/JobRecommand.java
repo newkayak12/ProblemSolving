@@ -3,7 +3,6 @@ package programmers;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Optional;
 
 public class JobRecommand {
 	public static void main(String[] args) {
