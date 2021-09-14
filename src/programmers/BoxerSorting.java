@@ -82,23 +82,15 @@ public class BoxerSorting {
 
 			@Override
 			public int compare(Boxer o1, Boxer o2) {
-				// TODO Auto-generated method stub
 				if(o1.winRate!=o2.winRate){
-					System.out.println(" check winrate : " +o1.winRate+" : "+o2.winRate);
 					return (int) (o2.winRate-o1.winRate);
 				} else if(o1.winRate==o2.winRate){
-					System.out.println(" check winrate : " +o1.winRate+" : "+o2.winRate);
 					if(o2.winBigger!=o1.winBigger){
-						System.out.println(" check winBigger : " +o1.winBigger+" : "+o2.winBigger);
 						return o2.winBigger-o1.winBigger;
 					} else if(o2.winBigger==o1.winBigger){
-						System.out.println(" check winBigger : " +o1.winBigger+" : "+o2.winBigger);
 						if(o2.weight!=o1.weight){
-							System.out.println(" check weight : " +o1.weight+" : "+o2.weight);
 							return o2.weight-o1.weight;
 						} else if(o2.weight==o1.weight){
-							System.out.println(" check weight : " +o1.weight+" : "+o2.weight);
-							System.out.println(" check idx : " +o1.idx+" : "+o2.idx);
 							return o1.idx-o2.idx;
 						}
 					}
