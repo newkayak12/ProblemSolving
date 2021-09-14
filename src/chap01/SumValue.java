@@ -62,6 +62,7 @@ public class SumValue {
 		}
 
 		System.out.println("result : "+temp);
+		scn.close();
 	}
 
 }

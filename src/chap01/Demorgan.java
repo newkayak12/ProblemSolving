@@ -15,5 +15,7 @@ public class Demorgan {
 			if(!(num<10 || num>99)){
 				System.out.println(num+"은 두 자리 양수 입니다.");
 			}
+
+		scn.close();
 	}
 }
