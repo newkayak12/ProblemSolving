@@ -45,7 +45,6 @@ public class ReReExam {
 			if(answers[i]==writeC[i]){ scores[2] ++; }
 		}
 
-		System.out.println(Arrays.toString(scores));
 
 
 		int max = Arrays.stream(scores).max().getAsInt();
