@@ -1,0 +1,95 @@
+package programmers.lv1.kakaoLv1.gift;
+
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
+public class Gift {
+    //https://school.programmers.co.kr/learn/courses/30/lessons/258712
+    /**
+     *
+     *
+     * 당신의 친구들이 이번 달까지 선물을 주고받은 기록을 바탕으로 다음 달에 누가 선물을 많이 받을지 예측하려고 합니다.
+     *
+     * 두 사람이 선물을 주고받은 기록이 있다면,
+     * 이번 달까지 두 사람 사이에 더 많은 선물을 준 사람이 다음 달에 선물을 하나 받습니다.
+     *
+     *
+     * 예를 들어
+     *
+     * A가 B에게 선물을 5번 줬고,
+     * B가 A에게 선물을 3번 줬다면
+     *
+     * 다음 달엔 A가 B에게 선물을 하나 받습니다.
+     *
+     *
+     * 두 사람이 선물을 주고받은 기록이 하나도 없거나
+     * 주고받은 수가 같다면,
+     * 선물 지수가 더 큰 사람이 선물 지수가 더 작은 사람에게 선물을 하나 받습니다.
+     *
+     * 선물 지수는 이번 달까지 자신이 친구들에게 준 선물의 수에서 받은 선물의 수를 뺀 값입니다.
+     *
+     *
+     * 예를 들어 A가 친구들에게 준 선물이 3개고 받은 선물이 10개라면 A의 선물 지수는 -7입니다.
+     * B가 친구들에게 준 선물이 3개고 받은 선물이 2개라면 B의 선물 지수는 1입니다.
+     *
+     * 만약 A와 B가 선물을 주고받은 적이 없거나 정확히 같은 수로 선물을 주고받았다면,
+     * 다음 달엔 B가 A에게 선물을 하나 받습니다.
+     *
+     * 만약 두 사람의 선물 지수도 같다면 다음 달에 선물을 주고받지 않습니다.
+     *
+     * 위에서 설명한 규칙대로 다음 달에 선물을 주고받을 때, 당신은 선물을 가장 많이 받을 친구가 받을 선물의 수를 알고 싶습니다.
+     */
+
+
+   @Nested
+    class Cases {
+        @Test
+        public void case1 () {
+            String[] friends = {"muzi", "ryan", "frodo", "neo"};
+            String[] gifts = {"muzi frodo", "muzi frodo", "ryan muzi", "ryan muzi", "ryan muzi", "frodo muzi", "frodo ryan", "neo muzi"};
+            int expected = 2;
+        }
+
+        @Test
+        public void case2 () {
+            String[] friends = {"joy", "brad", "alessandro", "conan", "david"};
+            String[] gifts = {"alessandro brad", "alessandro joy", "alessandro conan", "david alessandro", "alessandro david"};
+            int expected = 4;
+
+        }
+
+        @Test
+        public void case3 () {
+            String[] friends = {"a", "b", "c"};
+            String[] gifts = {"a b", "b a", "c a", "a c", "a c", "c a"};
+            int expected = 0;
+
+        }
+    }
+
+    public int solution ( String[] friends, String[] gifts ) {
+       Map<String, Integer> indexMap = new LinkedHashMap<>();
+       StringTokenizer tokenizer;
+       for ( int i = 0; i < friends.length; i ++ ){
+           indexMap.put(friends[i], i);
+       }
+
+       int[][] dimensionalArray =  new int[friends.length][friends.length];
+
+       for ( String gift : gifts ) {
+           tokenizer = new StringTokenizer(gift, " ");
+           String from = tokenizer.nextToken();
+           String to = tokenizer.nextToken();
+           dimensionalArray[indexMap.get(from)][indexMap.get(to)] += 1;
+       }
+
+
+       return 0;
+    }
+}
+
