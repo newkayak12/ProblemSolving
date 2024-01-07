@@ -1,7 +1,13 @@
 package programmers.lv1;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class Babbling2 {
     // https://school.programmers.co.kr/learn/courses/30/lessons/133499
@@ -21,19 +27,67 @@ public class Babbling2 {
         public void case1 () {
            String[] babbling = {"aya", "yee", "u", "maa"};
            int result = 1;
+
+           Assertions.assertEquals(result, solution(babbling));
        }
 
        @Test
         public void case2 () {
            String[] babbling = {"ayaye", "uuu", "yeye", "yemawoo", "ayaayaa"};
            int result = 2;
+
+           Assertions.assertEquals(result, solution(babbling));
        }
+
+        @Test
+        public void case3 () {
+            String[] babbling = {"zxv", "uasduu", "saf", "gas", "fd"};
+            int result = 0;
+
+            Assertions.assertEquals(result, solution(babbling));
+        }
+
+        @Test
+        public void case4 () { //이 예시가 가장 어이없었음
+            /**
+             * ymae : ma -> ye
+             * ye : ye -> ""
+             *
+             * 통과 이렇게 되는 부분
+             */
+            String[] babbling = {"ymae"};
+            int result = 0;
+
+            Assertions.assertEquals(result, solution(babbling));
+        }
+
     }
 
     public static int solution( String[] babbling ) {
         String[] language = {"aya", "ye", "woo", "ma"};
-        for ( String babb : babbling ) {
+        Pattern continuous = Pattern.compile(
+                  "(aya){2,}|(ye){2,}|(woo){2,}|(ma){2,}",
+                        Pattern.DOTALL
+                        );
 
-        }
+
+        int count = Arrays.stream(babbling)
+              .filter(elem -> {
+                  Matcher matcher = continuous.matcher(elem);
+                  return !matcher.find();
+              })
+              .map(elem -> {
+                  String result = elem;
+                  for ( String lang : language ) {
+                      result = result.replaceAll(lang, "!");
+                      System.out.println(result);
+                  }
+                  return result.replaceAll("!","")
+                               .length() == 0 ? 1 : 0;
+              })
+              .collect(Collectors.summingInt(value -> value.intValue()));
+
+
+        return count;
     }
 }
