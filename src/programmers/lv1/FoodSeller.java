@@ -1,7 +1,12 @@
 package programmers.lv1;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class FoodSeller {
 
@@ -40,6 +45,7 @@ public class FoodSeller {
             int[] score = {1, 2, 3, 1, 2, 3, 1}; //score
             int expect = 8; // result
 
+            Assertions.assertEquals(expect, solution(maxScore, packPer, score));
         }
 
         @Test
@@ -49,6 +55,29 @@ public class FoodSeller {
             int[] score = {4, 1, 2, 2, 4, 4, 4, 4, 1, 2, 4, 2}; //score
             int expect = 33; // result
 
+            Assertions.assertEquals(expect, solution(maxScore, packPer, score));
         }
+    }
+
+    public static int solution ( int k, int m, int[] score ) {
+        int answer = 0;
+
+        List<Integer> filtered =  Arrays.stream(score)
+                                        .boxed()
+                                        .filter(element -> element <= k)
+                                        .collect(Collectors.toList());
+        filtered.sort((a, b) -> b - a);
+
+        for ( int i = 0; i < filtered.size(); i ++ ) {
+            int select = k;
+            select = Math.min(filtered.get(i), select);
+            if( (i + 1) % m == 0) {
+                answer += (select * m);
+                select = k;
+            }
+        }
+
+
+        return answer;
     }
 }
