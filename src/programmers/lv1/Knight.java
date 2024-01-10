@@ -75,7 +75,7 @@ public class Knight {
         return answer;
     }
 
-    public static int calc (int number) {
+    public static int calc (int number) { //https://devmoony.tistory.com/169
         int cnt = 0;
         for ( int i = 1; i * i <= number; i ++ ) {
             if ( i * i == number) cnt ++;
