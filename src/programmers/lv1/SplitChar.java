@@ -1,5 +1,6 @@
 package programmers.lv1;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -34,29 +35,88 @@ public class SplitChar {
         public void case1 () {
             String s = "banana";
             int expect = 3;
-
-
+            Assertions.assertEquals(expect, solution(s));
         }
 
         @Test
         public void case2 () {
             String s = "abracadabra";
             int expect = 6;
+            Assertions.assertEquals(expect, solution(s));
         }
         @Test
         public void case3 () {
             String s = "aaabbaccccabba";
             int expect = 3;
+            Assertions.assertEquals(expect, solution(s));
+        }
+
+        @Test
+        public void case4 () {
+            String s = "aaba";
+            int expect = 0;
+            Assertions.assertEquals(expect, solution(s));
+        }
+        @Test
+        public void case5 () {
+            String s = "baaa";
+            int expect = 2;
+            Assertions.assertEquals(expect, solution(s));
+        }
+
+        @Test
+        public void case6 () {
+            String s = "aaaaaa";
+            int expect = 1;
+            Assertions.assertEquals(expect, solution(s));
+        }
+
+        @Test
+        public void case7 () {
+            String s = "a";
+            int expect = 1;
+            Assertions.assertEquals(expect, solution(s));
+        }
+
+        @Test
+        public void case8 () {
+            String s = "abaabc";
+            int expect = 4;
+            Assertions.assertEquals(expect, solution(s));
         }
     }
 
     public static int solution (String s) {
-        char selected = s.charAt(0);
-        int same = 1;
-        int diff = 0;
+        return tasker(s, 0);
+    }
 
+    private static int tasker (String s, int count) {
+        if( s.length() == 0 ) return count;
+
+        System.out.println(s);
+
+        char selected = s.charAt(0);
         char[] charArr = s.toCharArray();
 
-        loop =
+        int same = 0;
+        int diff = 0;
+
+
+
+
+        loop : for ( char charac : charArr) {
+            if( charac == selected ) same += 1;
+            else diff += 1;
+
+            if ( same == diff ) {
+                count += 1;
+                break loop;
+            }
+        }
+
+
+      if (diff != same) count +=1 ;
+
+        return tasker(s.substring(same+diff), count);
     }
 }
