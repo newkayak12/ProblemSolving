@@ -117,7 +117,7 @@ public class OurPassword {
             String skip = "";
             int index = 2;
 
-            String result = "bcd";
+            String result = "cdf";
 
             Assertions.assertEquals(result, solution(s, skip, index));
         }
@@ -125,7 +125,7 @@ public class OurPassword {
         @Test
         public void case7 () {
             String s = "xyz";
-            String skip = "z";
+            String skip = "";
             int index = 2;
 
             String result = "zab";
@@ -163,16 +163,14 @@ public class OurPassword {
     }
 
     private static int loopBack ( int number ) {
-        char beforeA = 'a' - 1;
         char z = 'z';
 
-        if ( number > z ) return number - z + beforeA;
+        if ( number > z ) return number - 26;
         else return number;
     }
     private static int checkSkip ( int number, List<Integer> skipArray ) {
         int count = number;
         for ( Integer skip : skipArray ) {
-            System.out.println(skip+":"+count);
             if ( skip == count ) count ++;
         }
 
