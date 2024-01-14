@@ -64,6 +64,7 @@ public class OurPassword {
 
             String result = "happy";
 
+//            Assertions.assertEquals(result, solutionBack(s, skip, index));
             Assertions.assertEquals(result, solution(s, skip, index));
         }
 
@@ -75,6 +76,7 @@ public class OurPassword {
 
             String result = "abcde";
 
+//            Assertions.assertEquals(result, solutionBack(s, skip, index));
             Assertions.assertEquals(result, solution(s, skip, index));
         }
 
@@ -86,6 +88,7 @@ public class OurPassword {
 
             String result = "bcdef";
 
+//            Assertions.assertEquals(result, solutionBack(s, skip, index));
             Assertions.assertEquals(result, solution(s, skip, index));
         }
 
@@ -97,6 +100,7 @@ public class OurPassword {
 
             String result = "klmno";
 
+//            Assertions.assertEquals(result, solutionBack(s, skip, index));
             Assertions.assertEquals(result, solution(s, skip, index));
         }
 
@@ -108,6 +112,7 @@ public class OurPassword {
 
             String result = "bcd";
 
+//            Assertions.assertEquals(result, solutionBack(s, skip, index));
             Assertions.assertEquals(result, solution(s, skip, index));
         }
 
@@ -119,6 +124,7 @@ public class OurPassword {
 
             String result = "cdf";
 
+//            Assertions.assertEquals(result, solutionBack(s, skip, index));
             Assertions.assertEquals(result, solution(s, skip, index));
         }
 
@@ -130,6 +136,7 @@ public class OurPassword {
 
             String result = "zab";
 
+//            Assertions.assertEquals(result, solutionBack(s, skip, index));
             Assertions.assertEquals(result, solution(s, skip, index));
         }
 
@@ -141,48 +148,71 @@ public class OurPassword {
 
             String result = "fhi";
 
-            Assertions.assertEquals(result, solution(s, skip, index));
+            Assertions.assertEquals(result, solutionBack(s, skip, index));
+//            Assertions.assertEquals(result, solution(s, skip, index));
         }
     }
 
     public static String solution( String s, String skip, int index ) {
-
         StringBuilder builder = new StringBuilder();
-        List<Integer> skipArray = new ArrayList<>();
 
-        for ( int i = 0; i < skip.length(); i ++ ) {
-            skipArray.add((int) skip.charAt(i));
-        }
+        for ( int i = 0; i < s.length(); i ++ ) {
+            char tmp = s.charAt(i);
 
-        for ( char charset : s.toCharArray() ) {
-            builder.append((char) moveChar(charset, index, skipArray));
+            for ( int j = 0; j < index; j ++ ) {
+                tmp ++;
+
+                if( tmp > 'z') tmp -= 26;
+
+                if(skip.contains(String.valueOf(tmp))) j -- ;
+            }
+
+
+            builder.append(tmp);
         }
 
 
         return builder.toString();
     }
 
-    private static int loopBack ( int number ) {
-        char z = 'z';
 
-        if ( number > z ) return number - 26;
-        else return number;
-    }
-    private static int checkSkip ( int number, List<Integer> skipArray ) {
-        int count = number;
-        for ( Integer skip : skipArray ) {
-            if ( skip == count ) count ++;
+
+
+
+    public static String solutionBack(String s, String skip, int index ) {
+
+        StringBuilder builder = new StringBuilder();
+
+        for ( int i = 0; i < s.length(); i ++ ) {
+            char tmp = moveChar(s.charAt(i), skip, index);
+            builder.append(tmp);
         }
 
-        return count;
+        return builder.toString();
     }
-    private static int moveChar ( int number, int index, List<Integer> skipArray) {
-        int result = number;
+    private static char checkSkip ( char number, String skip ) {
+       if ( skip.contains(String.valueOf(number))) return (char) (number + 1);
+       else return number;
+    }
+
+    private static char loopBack ( char number ) {
+        if ( number > 'z' ) return (char) (number - 26);
+        else return number;
+    }
+    private static char moveChar ( char number, String skip, int index) {
+        char result = number;
+
+
 
         for ( int i = 1; i <= index; i ++ ) {
             result += 1;
-            result = checkSkip(loopBack( checkSkip(result, skipArray) ), skipArray);
+
+            result = loopBack(result);
+            result = checkSkip(result, skip);
+
         }
+
+        System.out.println(number + ":" + result);
 
         return result;
     }
