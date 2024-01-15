@@ -4,10 +4,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Stack;
-
 public class Repaint {
     //https://school.programmers.co.kr/learn/courses/30/lessons/161989
     /**
@@ -80,16 +76,19 @@ public class Repaint {
     }
 
     public int solution( int n , int m, int[] section ) {
-        if ( section.length == 0 ) return 0;
+        int start = section[0];
+        int end = start + (m - 1);
+        int ans = 1;
 
-        int count = 0;
-        Arrays.sort(section);
-
-
-        for ( int i = 1; i <= n; i ++ ) {
-
+        for ( int num : section ) {
+            if ( num >= start && num <= end ) continue;
+            else {
+                start = num;
+                end = start + (m - 1);
+                ans ++;
+            }
         }
 
-        return count;
+        return ans;
     }
 }
