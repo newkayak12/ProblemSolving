@@ -1,10 +1,14 @@
 package programmers.lv1;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class Jogging {
@@ -67,6 +71,8 @@ public class Jogging {
             String[] park = {"SOO","OOO","OOO"};
             String[] routes = {"E 2","S 2","W 1"};
             int[] result = {2, 1};
+
+            Assertions.assertArrayEquals(result, solution(park,routes));
         }
 
 
@@ -75,6 +81,8 @@ public class Jogging {
             String[] park = {"SOO","OXX","OOO"};
             String[] routes = {"E 2","S 2","W 1"};
             int[] result = {0, 1};
+
+            Assertions.assertArrayEquals(result, solution(park,routes));
         }
 
         @Test
@@ -82,31 +90,122 @@ public class Jogging {
             String[] park = {"OSO","OOO","OXO","OOO"};
             String[] routes = {"E 2","S 3","W 1"};
             int[] result = {0, 0};
+
+            Assertions.assertArrayEquals(result, solution(park,routes));
         }
     }
 
+
     public int[] solution( String[] park, String[] routes ) {
-        int[] answer = {};
+        int startX = 0;
+        int startY = 0;
 
-        List<List<String>> street = Arrays.stream(park)
-                                         .map(road -> Arrays.stream(road.split("")).collect(Collectors.toList()))
-                                         .collect(Collectors.toList());
-        for ( String route : routes ) {
+        String[][] map = Arrays.stream(park)
+                               .map(elemX -> elemX.split(""))
+                               .toArray(String[][]::new);
 
-            String[] navigate = route.split(" ");
-            String direction = navigate[0];
-            Integer howLong = Integer.parseInt(navigate[1]);
+        print(map);
 
-            for ( int i = 1; i <= howLong; i ++ ) {
+        findY: for (; startY < park.length; startY ++ ) {
+            findX: for (; startX < park[0].length(); startX ++ ) {
+                if("S".equals(map[startY][startX])) break findY;
+            }
+        }
 
+
+
+        System.out.println();
+        System.out.println(startY + ", "+ startX);
+        return new int[] {1,0};
+    }
+
+
+    public void print (String[][] map) {
+        for (String[] x : map) {
+            System.out.println(Arrays.stream(x).collect(Collectors.joining("|")));
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+    @Deprecated
+    public int[] solutionBak( String[] park, String[] routes ) {
+       String startPoint = "0,0";
+       List<String> obstacles = new ArrayList();
+
+       int xMin = 0;
+       int yMin = 0;
+       int xMax = park[0].length() - 1;
+       int yMax = park.length - 1;
+
+
+       for ( int y = 0; y < park.length; y ++  ) {
+           String[] xLine = park[y].split("");
+           for ( int x = 0; x < xLine.length; x ++ ) {
+               if( xLine[x].equals("X")) obstacles.add(getPosition(y, x));
+               if( xLine[x].equals("S")) startPoint = getPosition(y, x);
+           }
+       }
+
+
+        for (String path : routes) {
+            System.out.println(startPoint);
+            System.out.println(path);
+
+            String[] pathSplit = path.split(" ");
+            Boolean isHorizontal = "E".equals(pathSplit[0]) || "W".equals(pathSplit[0]) ? true : false;
+            Integer distance = "E".equals(pathSplit[0]) || "S".equals(pathSplit[0]) ? Integer.parseInt(pathSplit[1]) : -1 *Integer.parseInt(pathSplit[1]);
+
+            String[] splitPosition = startPoint.split(",");
+            Integer x = Integer.parseInt(splitPosition[1]);
+            Integer y = Integer.parseInt(splitPosition[0]);
+
+
+            if (
+                   (isHorizontal && (x + distance  < xMin ||  x + distance  >  xMax)) ||
+                   (!isHorizontal && (y + distance < yMin || y + distance  >  yMax ))
+            ) {
+                continue;
             }
 
 
+
+            if ( isHorizontal ) {
+                int max = Math.max(x,(x + distance));
+                int min = Math.min(x,(x + distance));
+                Pattern patternX = Pattern.compile(String.format("%d,"+"[\\d]{%d,%d}", y, min, max), Pattern.DOTALL);
+                Optional<String> obstacle = obstacles.stream().filter(elem -> patternX.matcher(elem).find()).findAny();
+                if ( obstacle.isPresent() ) continue;
+                startPoint = getPosition( y, x + distance);
+            } else {
+                int max = Math.max(y, (y + distance));
+                int min = Math.min(y, (y + distance));
+                Pattern patternY = Pattern.compile(String.format("[\\d]{%d,%d},%d", min, max, x), Pattern.DOTALL);
+                Optional<String> obstacle = obstacles.stream().filter(elem -> patternY.matcher(elem).find()).findAny();
+                if ( obstacle.isPresent() ) continue;
+                startPoint = getPosition( y + distance, x);
+            }
+
+
+//            System.out.println(String.format("-----------%s------------", path));
+//            System.out.println(startPoint);
+//            System.out.println("---------------------------\n");
         }
 
-
-
-
-        return answer;
+        return Arrays.stream(startPoint.split(",")).mapToInt(Integer::parseInt).toArray();
     }
+    private String getPosition( Integer y, Integer x ) {
+        return String.format("%d,%d", y, x);
+    }
+
+
+
 }
