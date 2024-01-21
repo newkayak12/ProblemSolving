@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 public class Repaint {
     //https://school.programmers.co.kr/learn/courses/30/lessons/161989
     /**
+     * TODO
      * <pre>
      *      어느 학교에 페인트가 칠해진 길이가 n미터인 벽이 있습니다.
      *      벽에 동아리 · 학회 홍보나 회사 채용 공고 포스터 등을 게시하기

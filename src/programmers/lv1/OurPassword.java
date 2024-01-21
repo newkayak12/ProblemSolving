@@ -11,6 +11,7 @@ public class OurPassword {
     //https://school.programmers.co.kr/learn/courses/30/lessons/155652
 
     /**
+     * TODO
      *  <pre>
      *      두 문자열 s와 skip, 그리고 자연수 index가 주어질 때,
      *      다음 규칙에 따라 문자열을 만들려 합니다.
