@@ -1,12 +1,11 @@
 package programmers.lv1.kakaoLv1.gift;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public class Gift {
     //https://school.programmers.co.kr/learn/courses/30/lessons/258712
@@ -48,11 +47,14 @@ public class Gift {
 
    @Nested
     class Cases {
+
         @Test
         public void case1 () {
             String[] friends = {"muzi", "ryan", "frodo", "neo"};
             String[] gifts = {"muzi frodo", "muzi frodo", "ryan muzi", "ryan muzi", "ryan muzi", "frodo muzi", "frodo ryan", "neo muzi"};
             int expected = 2;
+
+            Assertions.assertEquals(expected, solution(friends, gifts));
         }
 
         @Test
@@ -60,6 +62,8 @@ public class Gift {
             String[] friends = {"joy", "brad", "alessandro", "conan", "david"};
             String[] gifts = {"alessandro brad", "alessandro joy", "alessandro conan", "david alessandro", "alessandro david"};
             int expected = 4;
+
+            Assertions.assertEquals(expected, solution(friends, gifts));
 
         }
 
@@ -69,10 +73,52 @@ public class Gift {
             String[] gifts = {"a b", "b a", "c a", "a c", "a c", "c a"};
             int expected = 0;
 
+            Assertions.assertEquals(expected, solution(friends, gifts));
+
         }
     }
 
     public int solution ( String[] friends, String[] gifts ) {
+
+
+       Map<String, Integer> gift = Arrays.stream(gifts).collect(Collectors.toMap(elem -> elem.split(" ")[0], elem -> 1, (a,b) -> a + b));
+       Map<String, Integer> receive = Arrays.stream(gifts).collect(Collectors.toMap(elem -> elem.split(" ")[1], elem -> 1, (a,b) -> a + b));
+       Map<String, Integer> giftIndex = new HashMap<>();
+       Map<String, Integer> giftMap = Arrays.stream(gifts).collect(Collectors.toMap(elem -> elem, elem -> 1, (a,b) -> a + b));
+       Map<String, Integer> afterGift = new HashMap<>();
+
+        for ( String f1 : friends ) {
+            giftIndex.put(f1, gift.getOrDefault(f1, 0) - receive.getOrDefault(f1, 0));
+            afterGift.put(f1, 0);
+        }
+
+       for ( String f1 : friends ) {
+            for ( String f2 : friends ) {
+                if( f1.equals(f2) ) continue;
+
+                Integer f1Tof2 = giftMap.getOrDefault(String.format("%s %s", f1, f2), 0);
+                Integer f2Tof1 = giftMap.getOrDefault(String.format("%s %s", f2, f1), 0);
+
+
+                if ( f1Tof2 > f2Tof1  ) afterGift.computeIfPresent(f1, (k, v) -> v + 1);
+                if ( f2Tof1 > f1Tof2  ) afterGift.computeIfPresent(f2, (k, v) -> v + 1);
+                if ( f1Tof2 == f2Tof1 ) {
+                    int f1Index = giftIndex.getOrDefault(f1, 0);
+                    int f2Index = giftIndex.getOrDefault(f2, 0);
+                    if ( f1Index > f2Index) afterGift.computeIfPresent(f1, (k, v) -> v + 1);
+                    if ( f1Index < f2Index) afterGift.computeIfPresent(f2, (k, v) -> v + 1);
+                }
+
+            }
+       }
+
+       int maximum = afterGift.values().stream()
+                                       .sorted((a,b) -> b-a)
+                                       .collect(Collectors.toList()).get(0);
+
+        return maximum / 2;
+    }
+    public int solution2 ( String[] friends, String[] gifts ) {
        Map<String, Integer> indexMap = new LinkedHashMap<>();
        StringTokenizer tokenizer;
        for ( int i = 0; i < friends.length; i ++ ){

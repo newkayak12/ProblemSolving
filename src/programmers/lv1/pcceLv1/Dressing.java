@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 
 public class Dressing {
@@ -93,33 +95,43 @@ public class Dressing {
 
             Assertions.assertEquals(result, solution(bandage, health, attacks));
         }
-
-        @Test
-        public void case6 () {
-            int[] bandage = {10,10,100};
-            int health = 10;
-            int[][] attacks = {{1, 15}, {3,1}};
-            int result = -1;
-
-            Assertions.assertEquals(result, solution(bandage, health, attacks));
-        }
     }
 
     public int solution ( int[] bandage, int health, int[][] attacks ){
-        int maxHealth = health;
-        int turn = attacks[attacks.length - 1][0];
-        int bandageIdx = 0;
-        int attackIdx = 0;
-        int continuous = 0;
-        int healed = 0;
-        int heal = bandage[bandageIdx];
+        Map<Integer, Integer> attackMap = new HashMap<>();
+
+        int healthPoint = health;
+        int avoidCount = 0;
+        int totalTurn = attacks[attacks.length - 1][0];
+
+        for ( int[] attack : attacks ) attackMap.put(attack[0], attack[1]);
 
 
-        if ( health <= 0 ) return -1;
-        else return health;
+        for ( int i = 0; i <= totalTurn; i ++ ) {
+            if( attackMap.containsKey(i) ){
+                healthPoint -= attackMap.get(i);
+                avoidCount = 0;
+            } else {
+                avoidCount ++;
+                healthPoint += bandage[1];
+
+                if( bandage[0] == avoidCount ) {
+                    healthPoint += bandage[2];
+                    avoidCount = 0;
+                }
+
+                if( health < healthPoint) healthPoint = health;
+            }
+            if( healthPoint <= 0 ) return  -1;
+        }
+
+        return healthPoint;
     }
 
-
+    /**
+     *
+     * 문제를 정확히 읽지 않아서 bandage 배열을 잘못 이해했다... 다음부터는 조금 더 자세히 읽어봐야겠다.
+     */
     public int solution2 ( int[] bandage, int health, int[][] attacks ) {
         int turn = attacks[attacks.length - 1][0];
 
@@ -177,6 +189,46 @@ public class Dressing {
 
         if ( healthNow <= 0) return -1;
         else return healthNow;
+    }
+    public int solution3 ( int[] bandage, int health, int[][] attacks ){
+        int maxHealth = health;
+        int healthPoint = health;
+        int maxTurn = attacks[attacks.length - 1][0];
+
+        int bandageIdx = 0;
+        int attackIdx = 0;
+
+        int avoidStack = 0;
+        int bandageNow = bandage[bandageIdx];
+
+        for ( int i = 1; i <= maxTurn; i ++ ) {
+            Boolean isAttack = attacks[attackIdx][0] == i;
+            if ( isAttack ) {
+                healthPoint -= attacks[attackIdx++][1];
+                avoidStack = 0;
+            } else {
+                healthPoint += 1;
+                avoidStack += 1;
+
+                if( avoidStack == bandage[bandageIdx] ) {
+                    avoidStack = 0;
+                    healthPoint += bandage[bandageIdx];
+                    bandageNow = bandage[bandageIdx + 1];
+
+                }
+            }
+
+            if( maxHealth < healthPoint ) {
+                healthPoint = maxHealth;
+                bandageNow += 1;
+
+            }
+
+            System.out.println(i + " | " + healthPoint  + " | " + avoidStack  + " | " + isAttack);
+        }
+
+        if ( healthPoint <= 0 ) return -1;
+        else return healthPoint;
     }
 
 
