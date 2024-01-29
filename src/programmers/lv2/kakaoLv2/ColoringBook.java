@@ -1,5 +1,4 @@
 package programmers.lv2.kakaoLv2;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
