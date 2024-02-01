@@ -1,7 +1,11 @@
 package programmers.lv2;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import java.util.stream.DoubleStream;
 
 public class TwoOnNTile {
 
@@ -46,6 +50,8 @@ public class TwoOnNTile {
              */
             int n = 2;
             int result = 2;
+
+            Assertions.assertEquals(result, solution(n));
         }
 
         @Test
@@ -57,8 +63,9 @@ public class TwoOnNTile {
              */
             int n = 3;
             int result = 3;
-        }
 
+            Assertions.assertEquals(result, solution(n));
+        }
 
         @Test
         public void case2 () {
@@ -71,6 +78,8 @@ public class TwoOnNTile {
              */
             int n = 4;
             int result = 5;
+
+            Assertions.assertEquals(result, solution(n));
         }
 
         @Test
@@ -91,6 +100,8 @@ public class TwoOnNTile {
              */
             int n = 5;
             int result = 8;
+
+            Assertions.assertEquals(result, solution(n));
         }
 
         @Test
@@ -105,29 +116,37 @@ public class TwoOnNTile {
              * | _ | _
              * ||_ _
              *
-             *
-             *
              * _ ||||
-             * |||| _
-             * || _ ||
-             *
              * | _ |||
+             * || _ ||
              * ||| _ |
+             * |||| _
              *
              * ||||||
              */
             int n = 6;
-            int result = 8;
-        }
+            int result = 13;
 
+            Assertions.assertEquals(result, solution(n));
+        }
     }
 
-    public int solution ( int n ) {
-        int dualCount = n / 2;
-        for ( int i = 0; i <= dualCount; i ++ ) {
-            int soloCount = n - (i * 2);
+    /**
+     * n = 1 -> 1
+     * n = 2 -> 2
+     * n = 3 -> 3
+     * n = 4 -> 5
+     * n = 5 -> 8
+     * n = 6 -> 13
+     */
 
-        }
-        return 0;
+    public int solution ( int n ) {
+        return this.calculation(n,  0,0, 1);
+    }
+
+    private int calculation ( int totalTile, int countNow,  int p1, int p2 ) {
+        int div = 1_000_000_007;
+        if ( countNow >= totalTile ) return (p2 % div);
+        else return calculation(totalTile, countNow + 1, p2 % div, (p1 + p2) % div);
     }
 }
