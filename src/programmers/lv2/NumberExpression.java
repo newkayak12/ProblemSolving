@@ -1,5 +1,6 @@
 package programmers.lv2;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -25,15 +26,22 @@ public class NumberExpression {
         public void case1 () {
             int n = 15;
             int result = 4;
+
+            Assertions.assertEquals(result, solution(n));
         }
     }
 
     public int solution ( int n ) {
-        int count = 0;
-        for ( int i = 1; i <= 15; i++ ) {
-            for ( int j = i + 1; j < 15; j++) {
-
+        int count = 1;
+        for ( int i = n - 1; i > 0; i-- ) {
+            int now = i;
+          inner:  for ( int j = i - 1; j > 0; j--) {
+                now += j;
+                if( now == n ) count += 1;
+                else if ( now > n) break inner;
             }
         }
+
+        return count;
     }
 }
