@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class NumberBuddy {
+    //retry
     //https://school.programmers.co.kr/learn/courses/30/lessons/131128
     /**
      * TODO
