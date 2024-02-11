@@ -60,18 +60,36 @@ public class GameMapShortestPath {
     class TestCases {
 
         @Test
-        public void case1() {
+        public void case1Queue() {
             int[][] map = {{1, 0, 1, 1, 1}, {1, 0, 1, 0, 1}, {1, 0, 1, 1, 1}, {1, 1, 1, 0, 1}, {0, 0, 0, 0, 1}};
             int answer = 11;
+
             Assertions.assertEquals(answer, solution(map));
+
         }
 
         @Test
-        public void case2() {
+        public void case1Stack() {
+            int[][] map = {{1, 0, 1, 1, 1}, {1, 0, 1, 0, 1}, {1, 0, 1, 1, 1}, {1, 1, 1, 0, 1}, {0, 0, 0, 0, 1}};
+            int answer = 11;
+
+            Assertions.assertEquals(answer, solutionStack(map));
+        }
+
+        @Test
+        public void case2Queue() {
             int[][] map = {{1, 0, 1, 1, 1}, {1, 0, 1, 0, 1}, {1, 0, 1, 1, 1}, {1, 1, 1, 0, 0}, {0, 0, 0, 0, 1}};
             int answer = -1;
 
             Assertions.assertEquals(answer, solution(map));
+        }
+
+        @Test
+        public void case2Stack() {
+            int[][] map = {{1, 0, 1, 1, 1}, {1, 0, 1, 0, 1}, {1, 0, 1, 1, 1}, {1, 1, 1, 0, 0}, {0, 0, 0, 0, 1}};
+            int answer = -1;
+
+            Assertions.assertEquals(answer, solutionStack(map));
         }
 
         @Test
@@ -125,6 +143,8 @@ public class GameMapShortestPath {
                 queue.add(new int[]{y, x + 1, score + 1});
                 checkMap[y][x + 1] = true;
             }
+
+            print(checkMap);
         }
 
 
@@ -141,11 +161,79 @@ public class GameMapShortestPath {
         else return Boolean.TRUE;
     }
 
+
+    public static int solutionStack(int[][] maps) {
+        int endY = maps.length - 1;
+        int endX = maps[endY].length - 1;
+        if (!checkIsConnectedStack(maps, endX, endY)) return -1;
+
+        Stack<int[]> nextStep = new Stack();
+        boolean[][] checkedMap = new boolean[maps.length][maps[0].length];
+        nextStep.add(new int[]{0, 0, 1});
+        checkedMap[0][0] = true;
+
+        int result = -1;
+
+        while (!nextStep.isEmpty()) {
+            int[] step = nextStep.pop();
+            int y = step[0];
+            int x = step[1];
+            int count = step[2];
+
+            if (y == endY && x == endX) {
+                result = step[2];
+                continue;
+            }
+
+
+            if (y > 0 && maps[y - 1][x] != 0 && (!(checkedMap[y - 1][x]))) {
+                nextStep.push(new int[]{y - 1, x, count + 1});
+                checkedMap[y - 1][x] = true;
+            }
+
+            if (x > 0 && maps[y][x - 1] != 0 && (!(checkedMap[y][x - 1]))) {
+                nextStep.push(new int[]{y, x - 1, count + 1});
+                checkedMap[y][x - 1] = true;
+            }
+
+
+            if (y < maps.length - 1 && maps[y + 1][x] != 0 && (!(checkedMap[y + 1][x]))) {
+                nextStep.push(new int[]{y + 1, x, count + 1});
+                checkedMap[y + 1][x] = true;
+            }
+            if (x < maps[0].length - 1 && maps[y][x + 1] != 0 && (!(checkedMap[y][x + 1]))) {
+                nextStep.push(new int[]{y, x + 1, count + 1});
+                checkedMap[y][x + 1] = true;
+            }
+
+        }
+        return result;
+    }
+
+    private static Boolean checkIsConnectedStack(int[][] map, int x, int y) {
+        if (map[y][x - 1] == 0 && map[y - 1][x] == 0) return Boolean.FALSE;
+        else return Boolean.TRUE;
+    }
+
+
+
+
+    private static void print(boolean[][] map) {
+        System.out.println(" ========== ");
+        for (boolean[] row : map) {
+            for ( boolean b : row ) {
+                System.out.print(String.format("%s ", b ? "T" : "F"));
+            }
+            System.out.println();
+        }
+        System.out.println(" ========== ");
+    }
+
     class Failure1 {
-        public int solution(int[][] maps) {
+        public static int solutionStack(int[][] maps) {
             int endY = maps.length - 1;
             int endX = maps[endY].length - 1;
-            if (!this.checkIsConnected(maps, endX, endY)) return -1;
+            if (!checkIsConnectedStack(maps, endX, endY)) return -1;
 
             Stack<int[]> nextStep = new Stack();
             Boolean[][] checkedMap = new Boolean[maps.length][maps[0].length];
@@ -185,29 +273,15 @@ public class GameMapShortestPath {
                     nextStep.push(new int[]{y, x + 1, count + 1});
                     checkedMap[y][x + 1] = true;
                 }
+
             }
             return result;
         }
 
-        private Boolean checkIsConnected(int[][] map, int x, int y) {
+        private static Boolean checkIsConnectedStack(int[][] map, int x, int y) {
             if (map[y][x - 1] == 0 && map[y - 1][x] == 0) return Boolean.FALSE;
             else return Boolean.TRUE;
         }
 
-        private void print(Stack<int[]> stack) {
-            System.out.println("=========================");
-            for (int[] arr : stack) {
-                System.out.println(Arrays.stream(arr).boxed().map(String::valueOf).collect(Collectors.joining(", ")));
-            }
-            System.out.println("=========================");
-        }
-
-        private void print(Boolean[][] map) {
-            System.out.println(" ========== ");
-            for (Boolean[] row : map) {
-                System.out.println(Arrays.stream(row).map(String::valueOf).collect(Collectors.joining(", ")));
-            }
-            System.out.println(" ========== ");
-        }
     }
 }
