@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class GameMapShortestPath {
     //https://school.programmers.co.kr/learn/courses/30/lessons/1844
@@ -64,7 +63,7 @@ public class GameMapShortestPath {
             int[][] map = {{1, 0, 1, 1, 1}, {1, 0, 1, 0, 1}, {1, 0, 1, 1, 1}, {1, 1, 1, 0, 1}, {0, 0, 0, 0, 1}};
             int answer = 11;
 
-            Assertions.assertEquals(answer, solution(map));
+            Assertions.assertEquals(answer, solutionBFS(map));
 
         }
 
@@ -73,7 +72,7 @@ public class GameMapShortestPath {
             int[][] map = {{1, 0, 1, 1, 1}, {1, 0, 1, 0, 1}, {1, 0, 1, 1, 1}, {1, 1, 1, 0, 1}, {0, 0, 0, 0, 1}};
             int answer = 11;
 
-            Assertions.assertEquals(answer, solutionStack(map));
+            Assertions.assertEquals(answer, solutionDFS(map));
         }
 
         @Test
@@ -81,7 +80,7 @@ public class GameMapShortestPath {
             int[][] map = {{1, 0, 1, 1, 1}, {1, 0, 1, 0, 1}, {1, 0, 1, 1, 1}, {1, 1, 1, 0, 0}, {0, 0, 0, 0, 1}};
             int answer = -1;
 
-            Assertions.assertEquals(answer, solution(map));
+            Assertions.assertEquals(answer, solutionBFS(map));
         }
 
         @Test
@@ -89,7 +88,7 @@ public class GameMapShortestPath {
             int[][] map = {{1, 0, 1, 1, 1}, {1, 0, 1, 0, 1}, {1, 0, 1, 1, 1}, {1, 1, 1, 0, 0}, {0, 0, 0, 0, 1}};
             int answer = -1;
 
-            Assertions.assertEquals(answer, solutionStack(map));
+            Assertions.assertEquals(answer, solutionDFS(map));
         }
 
         @Test
@@ -97,7 +96,7 @@ public class GameMapShortestPath {
             int[][] map = {{1, 0}};
             int answer = -1;
 
-            Assertions.assertEquals(answer, solution(map));
+            Assertions.assertEquals(answer, solutionBFS(map));
         }
         @Test
         public void case4() { //19번 반례
@@ -105,14 +104,13 @@ public class GameMapShortestPath {
             int[][] map = {{1}, {0}};
             int answer = -1;
 
-            Assertions.assertEquals(answer, solution(map));
+            Assertions.assertEquals(answer, solutionBFS(map));
         }
-
     }
 
 
-    public int solution(int[][] maps) {
-        if (!checkIsConnected(maps)) return -1;
+    public int solutionBFS(int[][] maps) {
+        if (!checkIsConnectedBFS(maps)) return -1;
         Queue<int[]> queue = new LinkedList<>();
         boolean[][] checkMap = new boolean[maps.length][maps[0].length];
 
@@ -151,7 +149,7 @@ public class GameMapShortestPath {
         return -1;
     }
 
-    private Boolean checkIsConnected(int[][] map) {
+    private Boolean checkIsConnectedBFS(int[][] map) {
         int yIdx = map.length - 1;
         int xIdx = map[0].length - 1;
 
@@ -161,11 +159,15 @@ public class GameMapShortestPath {
         else return Boolean.TRUE;
     }
 
+    /**
+     * 몇몇 케이스에 실패 떨어짐
+     * -> DFS 실패
+     */
 
-    public static int solutionStack(int[][] maps) {
+    public static int solutionDFS(int[][] maps) {
         int endY = maps.length - 1;
         int endX = maps[endY].length - 1;
-        if (!checkIsConnectedStack(maps, endX, endY)) return -1;
+        if (!checkIsConnectedDFS(maps)) return -1;
 
         Stack<int[]> nextStep = new Stack();
         boolean[][] checkedMap = new boolean[maps.length][maps[0].length];
@@ -210,8 +212,13 @@ public class GameMapShortestPath {
         return result;
     }
 
-    private static Boolean checkIsConnectedStack(int[][] map, int x, int y) {
-        if (map[y][x - 1] == 0 && map[y - 1][x] == 0) return Boolean.FALSE;
+    private static Boolean checkIsConnectedDFS(int[][] map) {
+        int yIdx = map.length - 1;
+        int xIdx = map[0].length - 1;
+
+
+        if(yIdx < 1 || xIdx < 1) return Boolean.TRUE;
+        if (map[yIdx][xIdx - 1] == 0 && map[yIdx - 1][xIdx] == 0) return Boolean.FALSE;
         else return Boolean.TRUE;
     }
 

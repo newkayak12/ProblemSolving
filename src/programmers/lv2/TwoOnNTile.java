@@ -1,13 +1,11 @@
 package programmers.lv2;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.stream.DoubleStream;
-
 public class TwoOnNTile {
+    //https://school.programmers.co.kr/learn/courses/30/lessons/12900
 
     /**
      * <pre>
