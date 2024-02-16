@@ -107,22 +107,24 @@ public class LongJump {
     }
 
     /**
+     * <pre>
      *  n = 3 -> 3
      *  n = 4 -> 5
      *  n = 5 -> 8
      *  n = 6 -> 13
      *
      *  DP?
+     *
+     *  점화식이 p<sub>n</sub> = p<sub>n-1</sub> + p<sub>n-2</sub>
+     * </pre>
      */
 
 
-    public long solution ( int n ) {
-        return this.calculation(n,  0,0L, 1L);
-    }
-
+    public long solution ( int n ) { return this.calculation(n,  0,0L, 1L); }
     private long calculation (int totalTile, int countNow,  long p1, long p2 ) {
         long div = 1_234_567;
         if ( countNow >= totalTile ) return (p2 % div);
         else return calculation(totalTile, countNow + 1, p2 % div, (p1 + p2) % div);
     }
+
 }
