@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 public class WordChain {
     //https://school.programmers.co.kr/learn/courses/30/lessons/12981
@@ -86,19 +87,27 @@ public class WordChain {
     }
 
     public int[] solution( int n, String[] words ) {
-        List<String> used = new ArrayList<>();
+        Stack<String> used = new Stack<>();
         int turn = 0;
         int now = 0;
         for ( int i = 1; i <= words.length; i ++ ) {
 
-            now = (i % n == 0) ? i % n : n;
-            turn = i - (((int) Math.ceil(i / (n * 1.0)) - 1) * n);
+            now = (i % n == 0) ? n : i % n;
+            turn = ((int) Math.ceil(i / (n * 1.0)));
 
-            System.out.println(turn + " _ " + now);
-            if( used.contains(words[i - 1]) ) break;
-            else used.add(words[i - 1]);
+            String nowWord = words[i - 1];
+            if ( used.isEmpty() ) {
+                used.add(words[i - 1]);
+                continue;
+            }
+            if ( used.contains(nowWord) ) return new int[] {now, turn};
+
+            String peeked = used.peek();
+
+            if( peeked.charAt(peeked.length() - 1) == nowWord.charAt(0)) used.add(words[i - 1]);
+            else return new int[] {now, turn};
         }
 
-        return new int[] {turn, now};
+       return new int[] {0, 0};
     }
 }
