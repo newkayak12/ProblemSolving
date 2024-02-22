@@ -1,5 +1,11 @@
 package programmers.lv2;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
+
 public class LeastCommonMultiple {
     //https://school.programmers.co.kr/learn/courses/30/lessons/12953
     /**
@@ -15,4 +21,39 @@ public class LeastCommonMultiple {
      *  - arr은 길이 1이상, 15이하인 배열입니다.
      *  - arr의 원소는 100 이하인 자연수입니다.
      */
+
+    @Nested
+    class TestCases {
+        @Test
+        public void case1 () {
+            int[] arr = {2,6,8,14};
+            int result = 168;
+
+            Assertions.assertEquals(result, solution(arr));
+        }
+
+        @Test
+        public void case2 () {
+            int[] arr = {1,2,3};
+            int result = 6;
+
+            Assertions.assertEquals(result, solution(arr));
+        }
+    }
+
+    public int solution( int[] arr ) {
+        Arrays.sort(arr);
+        int common = lcm(arr[arr.length - 1], arr[arr.length - 2]);
+        for (int i  = arr.length - 3; i > 0; i -- ) {
+            common = lcm(common, arr[i]);
+        }
+        return common;
+    }
+    private int gcd( int a, int b ) {
+        if( a % b == 0 ) return b;
+        else return gcd ( b, a % b );
+    }
+    public int lcm ( int a, int b ) {
+        return (a * b) / gcd(a, b);
+    }
 }
