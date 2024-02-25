@@ -56,4 +56,10 @@ public class LeastCommonMultiple {
     public int lcm ( int a, int b ) {
         return (a * b) / gcd(a, b);
     }
+
+
+    @Test
+    public void test () {
+        System.out.println(gcd(255, 0));
+    }
 }
