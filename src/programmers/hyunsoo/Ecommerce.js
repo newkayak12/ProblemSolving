@@ -1,4 +1,5 @@
 
+/**slvd**/
 const findLowestPrice = ( products, discounts ) => {
     const discountMap = new Map();
     discounts.forEach( v => {

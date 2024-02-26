@@ -1,4 +1,5 @@
 /**
+ * uslv
  * hard_3
  * <pre>
  * Rx C 크기의 흑백 이미지가 있습니다.
@@ -11,54 +12,54 @@
  * 단, 대각선으로 연결된 것은 같은 영역이 아닙니다.
  *
  * 예를 들면,6x5 크기의 이미지
- *
+ *</pre>
  * <table>
  *     <tr>
- *         <td>1</td>
- *         <td>1</td>
- *         <td>0</td>
- *         <td>1</td>
- *         <td>1</td>
+ *         <td style="width:10px; height: 10px; border: 1px green solid;">1</td>
+ *         <td style="width:10px; height: 10px; border: 1px green solid;">1</td>
+ *         <td style="width:10px; height: 10px; border: 1px green solid;">0</td>
+ *         <td style="width:10px; height: 10px; border: 1px green solid;">1</td>
+ *         <td style="width:10px; height: 10px; border: 1px green solid;">1</td>
  *     </tr>
  *     <tr>
- *         <td>0</td>
- *         <td>1</td>
- *         <td>1</td>
- *         <td>0</td>
- *         <td>0</td>
+ *         <td style="width:10px; height: 10px; border: 1px green solid;">0</td>
+ *         <td style="width:10px; height: 10px; border: 1px green solid;">1</td>
+ *         <td style="width:10px; height: 10px; border: 1px green solid;">1</td>
+ *         <td style="width:10px; height: 10px; border: 1px green solid;">0</td>
+ *         <td style="width:10px; height: 10px; border: 1px green solid;">0</td>
  *     </tr>
  *     <tr>
- *         <td>0</td>
- *         <td>0</td>
- *         <td>0</td>
- *         <td>0</td>
- *         <td>0</td>
+ *         <td style="width:10px; height: 10px; border: 1px green solid;">0</td>
+ *         <td style="width:10px; height: 10px; border: 1px green solid;">0</td>
+ *         <td style="width:10px; height: 10px; border: 1px green solid;">0</td>
+ *         <td style="width:10px; height: 10px; border: 1px green solid;">0</td>
+ *         <td style="width:10px; height: 10px; border: 1px green solid;">0</td>
  *     </tr>
  *     <tr>
- *         <td>1</td>
- *         <td>1</td>
- *         <td>0</td>
- *         <td>1</td>
- *         <td>1</td>
+ *         <td style="width:10px; height: 10px; border: 1px green solid;">1</td>
+ *         <td style="width:10px; height: 10px; border: 1px green solid;">1</td>
+ *         <td style="width:10px; height: 10px; border: 1px green solid;">0</td>
+ *         <td style="width:10px; height: 10px; border: 1px green solid;">1</td>
+ *         <td style="width:10px; height: 10px; border: 1px green solid;">1</td>
  *     </tr>
  *     <tr>
- *         <td>1</td>
- *         <td>0</td>
- *         <td>1</td>
- *         <td>1</td>
- *         <td>1</td>
+ *         <td style="width:10px; height: 10px; border: 1px green solid;">1</td>
+ *         <td style="width:10px; height: 10px; border: 1px green solid;">0</td>
+ *         <td style="width:10px; height: 10px; border: 1px green solid;">1</td>
+ *         <td style="width:10px; height: 10px; border: 1px green solid;">1</td>
+ *         <td style="width:10px; height: 10px; border: 1px green solid;">1</td>
  *     </tr>
  *     <tr>
- *         <td>1</td>
- *         <td>0</td>
- *         <td>1</td>
- *         <td>1</td>
- *         <td>1</td>
+ *         <td style="width:10px; height: 10px; border: 1px green solid;">1</td>
+ *         <td style="width:10px; height: 10px; border: 1px green solid;">0</td>
+ *         <td style="width:10px; height: 10px; border: 1px green solid;">1</td>
+ *         <td style="width:10px; height: 10px; border: 1px green solid;">1</td>
+ *         <td style="width:10px; height: 10px; border: 1px green solid;">1</td>
  *     </tr>
  * </table>
  *
  *
- *
+ *<pre>
  * 로 주어질때, 흰색 영역은 4개이며, 가장 큰 넓이는 8이 됩니다.
  * 흑백 이미지가 매개번수 v로 주어질 때,
  * 흰색 영역의 개수와 흰색 영역 중에서 가장 큰 넓이를 return

@@ -1,4 +1,5 @@
 /**
+ * slvd
  * hard - 2
  * N개의 디렉토리가 다음과 같이 트리 형태의 간단한 구조를 이루고 있다.
  * - 모든 디렉토리에는 1 ~ N 번호 있음
@@ -51,5 +52,37 @@ const solution = (n, relation, dirname) => {
         dir[ rel[1] - 1].parent.push(rel[0] - 1)
     }
 
+    console.log(search(dir, 0))
+    return search(dir, 0).length
 }
-console.log(16, solution(7, [ [ 1, 2 ], [ 2, 5 ], [ 2, 6 ], [ 1, 3 ], [ 1, 4 ], [ 3, 7 ] ], [ "root", "abcd", "cs", "hello", "etc", "hello", "solution" ]))
+
+const search = (dir,idx) => {
+    const node = dir[idx];
+    let elem = ''
+
+    /***
+     *
+     *  1root
+     *    ᄂ  2 abcd
+     *    │       ᄂ 5 etc
+     *    │       ᄂ 6 hello
+     *    ᄂ 3 cs
+     *    │     ᄂ 7 solution
+     *    ᄂ4 hello
+     *
+     */
+
+    if( node.children.length === 0) return node.elem
+    for( let child of node.children ) {
+        const value = node.elem+'/'+search(dir, child)
+        if( elem.length < value.length ) {
+            elem = value;
+        }
+    }
+
+
+    return elem
+
+}
+console.log(16, solution(7, [ [ 1, 2 ], [ 1, 3 ], [ 1, 4 ], [ 2, 5 ], [ 2, 6 ], [ 3, 7 ] ], [ "root", "abcd", "cs", "hello", "etc", "hello", "solution" ]))
+console.log(16, solution(8, [ [ 1, 2 ], [ 1, 3 ], [ 1, 4 ], [ 2, 5 ], [ 2, 6 ], [ 3, 7 ], [4, 8] ], [ "root", "abcd", "cs", "hello", "etc", "hello", "solution", 'worlds' ]))

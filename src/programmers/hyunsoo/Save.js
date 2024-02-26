@@ -1,4 +1,6 @@
 /**
+ * slvd
+ * <pre>
  * 처음으로 저축한 날짜부터 마지막으로 저축한 날짜까지 매일 1회 이상 저축을 했다면 1일 1저축에 성공했다고 판단합니다.
  * 예를 들어,
  *
@@ -49,18 +51,83 @@
  *       • 05 SS 559
  * • 예를 들어, 1년 1월 1일 오전 1시 1분 1초는 0001:01:01:01:01:01 형태로 주어집니다.
  *   2021년 11월 30일 오후 10시 4분 24초는 2021:11:38:22:04:24 형태로 주어집니다.
- *
+ *</pre>
  */
 
 const solution = (s, times = []) => {
+    let saveArr = []
+    let split = s.split(":").map(ele => Number(ele))
+    saveArr.push(({
+        date : `${split[0]}-${split[1]}-${split[2]}`,
+        count: 1
+    }))
 
+    for ( let time of times ) {
+        const timeSplit = time.split(":")
+        split[2] += Number(timeSplit[0])
+        split[3] += Number(timeSplit[1])
+        split[4] += Number(timeSplit[2])
+        split[5] += Number(timeSplit[3])
+
+        split = clearUp(split)
+        saveArr.push(({
+            date : `${split[0]}-${split[1]}-${split[2]}`,
+            count: 1
+        }))
+    }
+
+    saveArr = saveArr.reduce((p, n) =>  {
+
+
+        let idx =  p.findIndex(elem => {
+            if ((elem?.date ?? null) == n.date) return elem
+        })
+        if( idx == -1) return [...p, n]
+        else return p
+    }, [])
+
+    const st = saveArr[0].date.split("-")
+    const ed = saveArr[saveArr.length - 1].date.split("-")
+    const start = new Date();
+    const end = new Date();
+    start.setFullYear(st[0], st[1] - 1, st[2])
+    end.setFullYear(ed[0], ed[1] - 1, ed[2])
+
+
+    const totalDay = (end - start) /  (1000 * 60 * 60 * 24) + 1;
+    return [totalDay ===saveArr.length ? 1 : 0, totalDay ]
+}
+const clearUp = (split) => {
+    const result = [...split]
+    for( let i = result.length - 1; i > 1; i --) {
+        if( (i == 5  && result[i] >= 60) || (i == 4 && result[i] >= 60) ) {
+            result[i] &= 60;
+
+            result[i - 1] += Math.floor(result[i] / 60)
+        }
+
+        if( i == 3 && result[i] >= 24) {
+            result[i] &= 24;
+            result[i - 1] += Math.floor(result[i] / 24)
+        }
+
+        if( i == 2 && result[i] >= 30) {
+            result[i] &= 30;
+            result[i - 1] += Math.floor(result[i] / 30)
+        }
+
+        if( i == 1 && result[i] >= 12) {
+            result[i] &= 12;
+            result[i - 1] += Math.floor(result[i] / 12)
+        }
+    }
+
+    return result
 }
 
-console.log([0,4], solution("2021:04:12:16:08:35", [ '01:06:30:00' , '01:04:12:00']))
+console.log([0,4], solution("2021:04:12:16:08:35", ['01:06:30:00', '01:04:12:00']))
 console.log([1,2], solution("2021:04:12:16:08:35", ["01:06:30:00", "00:01:12:00"]))
-console.log([1,2], solution("2021:04:12:16:18:42", [ "01:06:30:00"]))
+console.log([1,2], solution("2021:04:12:16:10:42", ["01:06:30:00"]))
 console.log([1,4], solution("2021:04:12:16:08:35", ["01:06:30:00", "01:01:12:00" , "00:00:09:25"]))
-
-
 
 
