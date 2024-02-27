@@ -12,7 +12,7 @@
  * 단, 대각선으로 연결된 것은 같은 영역이 아닙니다.
  *
  * 예를 들면,6x5 크기의 이미지
- *</pre>
+ * </pre>
  * <table>
  *     <tr>
  *         <td style="width:10px; height: 10px; border: 1px green solid;">1</td>
@@ -59,7 +59,7 @@
  * </table>
  *
  *
- *<pre>
+ * <pre>
  * 로 주어질때, 흰색 영역은 4개이며, 가장 큰 넓이는 8이 됩니다.
  * 흑백 이미지가 매개번수 v로 주어질 때,
  * 흰색 영역의 개수와 흰색 영역 중에서 가장 큰 넓이를 return
@@ -74,6 +74,24 @@
  */
 
 const solution = (v) => {
-
 }
+
+const leftCoordination = (x, y, array) => {
+    if (x - 1 < 0) return null
+    else return ({x: x - 1, y})
+}
+const rightCoordination = (x, y, array) => {
+    if (x + 1 > array[0].length - 1) return null
+    else return ({x: x + 1, y})
+}
+const upCoordination = (x, y, array) => {
+    if (y - 1 < 0) return null
+    else return ({x: x, y: y - 1})
+}
+const downCoordination = (x, y, array) => {
+    if (y + 1 > array.length - 1) return null
+    else return ({x: x, y: y + 1})
+}
+
+
 console.log([4, 8], solution([[1,1,0,1,1],[0,1,1,0,0,0],[0,0,0,0,0],[1,1,0,1,1],[1,0,1,1,1],[1,0,1,1,1]]));

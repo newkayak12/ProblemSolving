@@ -1,6 +1,6 @@
 /**
  * <pre>
- * uslv
+ * slvd
  * hard - 1
  * 정확성 시간 제한 / 효율성 시간 제한 / 메모리 제한
  * 10초 / 언어별로 작성된 정답 코드의 실행 시간의 적정 배수 / 2GB
@@ -8,7 +8,7 @@
  *
  * 당신은 송아지 한 마리를 키우고 있습니다.
  * 지금부터 n일 이내에 이 송아지를 반드시 먼저 팔고 새로운 송아지를 한 마리 사야만 합니다.
- * 송아지 가격은 하루 단위로 갱신되며, 같은 가격으로 유지될 수 도 있습니다.
+ * 송아지 가격은 하루 단위로 갱신되며, 같은 가격으로 유지될 수도 있습니다.
  * 다행히 n일 간의 송아지 가격은 정확히 예측됩니다.
  * 당신은 판매 이의(판매가격 구매 가격)이 최대가 되도록 판매일과 구매일을 잡아야 합니다.
  * 단, 같은 날에 송아지를 팔고 살 수는 없습니다.
@@ -42,20 +42,24 @@
 
 
 const solution = (n, v) => {
-    let answer = 0;
-    for (let i = 0; i < v.length; i += n) {
-        const targetArray = v.slice(i + 1, i + n);
-        const min = Math.min(...targetArray)
-        const minIdx = targetArray.indexOf((elem) => {
-            if( elem == min) return elem
-        })
-        const max = Math.min(...v.slice(i, minIdx));
+  return search(v)
+}
 
-        console.log(max, min)
-        answer += (max - min)
-    }
+const search = (v) => {
+    const {max, maxIdx} = findMax(v, v.length - 1)
+    let min = Math.min(...[...v].slice(maxIdx, v.length))
+    if( max == min) min = v[maxIdx + 1]
+    return max - min
+}
+const findMax = (v, last = 0) => {
+    const max = Math.max(...[...v].slice(0, last))
+    const maxIdx = v.findIndex(elem => {
+        if (elem == max) return elem
+    })
 
-    return answer
+
+    if( maxIdx == v.length - 1) return findMax(v,maxIdx)
+    else return {max, maxIdx}
 }
 
 console.log(7,' : ',solution(10, [3,1,4,1,5,9,2,6,5,3])); // 7
