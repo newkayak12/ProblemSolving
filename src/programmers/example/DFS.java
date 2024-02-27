@@ -22,8 +22,8 @@ public class DFS {
         if(Objects.isNull( element )) return;
         else {
             scan(element.lt);
-            System.out.print(element.data + " → ");
             scan(element.rt);
+            System.out.print(element.data + " → ");
         }
     }
 }
