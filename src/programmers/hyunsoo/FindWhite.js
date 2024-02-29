@@ -74,24 +74,60 @@
  */
 
 const solution = (v) => {
+    const probeMap = new Array(v.length)
+                         .fill(true)
+                         .map(() =>
+                             new Array(v[0].length)
+                                .fill(true)
+                                .map(() => false)
+                         )
+
+    return probe(v, probeMap)
 }
 
-const leftCoordination = (x, y, array) => {
-    if (x - 1 < 0) return null
-    else return ({x: x - 1, y})
+const probe = (v, probeMap) =>  {
+    let size = 0;
+    let area = 0;
+
+    for( let y = 0; y < v.length; y++ ) {
+        for (let x = 0; x < v[0].length; x ++ ) {
+            const count = check(x, y, v, probeMap);
+            if( count > 0 ) {
+                area += 1
+                size = Math.max(size, count)
+            }
+        }
+    }
+
+    return ([area, size])
 }
-const rightCoordination = (x, y, array) => {
-    if (x + 1 > array[0].length - 1) return null
-    else return ({x: x + 1, y})
-}
-const upCoordination = (x, y, array) => {
-    if (y - 1 < 0) return null
-    else return ({x: x, y: y - 1})
-}
-const downCoordination = (x, y, array) => {
-    if (y + 1 > array.length - 1) return null
-    else return ({x: x, y: y + 1})
+const check = (x, y, v, probeMap) => {
+    if (x < 0) return 0
+    if (x  > v[0].length - 1) return 0
+    if (y  < 0) return 0
+    if (y  > v.length - 1) return 0
+    let count = 0;
+
+    if(!probeMap[y][x] && v[y][x] == 1 ) {
+        probeMap[y][x] = true;
+        count +=  1;
+        count += check(x, y + 1, v, probeMap)  //up
+        count += check(x, y - 1, v, probeMap)  //down
+        count += check(x - 1, y, v, probeMap)  //left
+        count += check(x + 1, y, v, probeMap)  //right
+    }
+
+    return count
 }
 
 
-console.log([4, 8], solution([[1,1,0,1,1],[0,1,1,0,0,0],[0,0,0,0,0],[1,1,0,1,1],[1,0,1,1,1],[1,0,1,1,1]]));
+console.log([4, 8], solution(
+    [
+        [ 1, 1, 0, 1, 1 ],
+        [ 0, 1, 1, 0, 0 ],
+        [ 0, 0, 0, 0, 0 ],
+        [ 1, 1, 0, 1, 1 ],
+        [ 1, 0, 1, 1, 1 ],
+        [ 1, 0, 1, 1, 1 ]
+       ]
+));
