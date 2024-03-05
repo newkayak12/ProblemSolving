@@ -4,8 +4,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class ContinuousSequential {
     //https://school.programmers.co.kr/learn/courses/30/lessons/131701
@@ -68,4 +69,8 @@ public class ContinuousSequential {
         if( number <= 1 ) return 1;
         else return number * this.factorial(number - 1);
     }
+
+
+
 }
+
