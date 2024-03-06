@@ -38,5 +38,46 @@
  */
 
 const solution = (playList, listen_time) => {
+    const shortest = Math.min(...playList)
+    const startPoint = playList.map((v, i) => shortest === v ? i : null)
+                               .filter(v => v !== null)
+    let time = listen_time
+    let count = 0;
+    startPoint.forEach((v, i) => {
+        count += 1
+        time -= v;
 
+        const leftIdx = i - 1 < 0 ? playList.length - 1 : i - 1
+        const rightIdx = i + 1 > playList.length - 1 ? 0 : i + 1
+
+        if( playList[leftIdx] > playList[rightIdx] ) {
+            count += right(time, playList, i + 1)
+            count += left(time, playList, i - 1)
+        } else {
+            count += left(time, playList, i - 1)
+            count += right(time, playList, i + 1)
+        }
+
+    })
+
+    return count
 }
+const left = (time, array, idx) => {
+    const leftIdx = idx - 1 < 0 ? array.length - 1 : idx - 1
+    if ( time === 0 ) return 0
+    else if ( array[leftIdx] > time ) return 1 + left(0, array, idx - 1)
+    else return 1 + left( time - array[leftIdx], array, idx - 1)
+}
+
+const right = (time, array, idx) => {
+    const rightIdx = idx + 1 > array.length - 1 ? 0 : idx + 1
+    if ( time === 0 ) return 0
+    else if ( array[rightIdx] > time ) return 1 + right(0, array, idx + 1)
+    else return 1 + right( time - array[rightIdx], array, idx + 1)
+}
+
+
+
+
+console.log(3, solution([2,3,1,4], 3))
+console.log(4, solution([1,2,3,4], 4))
