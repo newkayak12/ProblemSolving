@@ -41,36 +41,80 @@ public class ContinuousSequential {
     }
 
     public int solution ( int [] elements ) {
-        Set<Integer> answer = new HashSet<>();
+        Set<Integer> sumCase = new HashSet<>();
+        int length = elements.length;
 
 
-        return answer.size();
+
+
+
+        System.out.println(sumCase);
+
+        return 0;
     }
 
-    public int permutation ( int [] elements ) {
-        int all = this.factorial(elements.length);
-        int answer = 0;
+    public int solutionFailure ( int [] elements ) {
+        for ( int i = 1; i <= elements.length; i ++ ) {
+            System.out.println("COMBINE");
+            System.out.println(
+                    combine(Arrays.stream(elements).boxed().collect(Collectors.toList()), i)
+                    .stream().map(elem -> Arrays.stream(elem.split("")).map(Integer::parseInt).reduce((p,n) -> p + n).get())
+                    .collect(Collectors.toSet())
+            );
 
-        for ( int i = 1; i <= elements.length; i++ ) {
-            answer += (all / (factorial(elements.length - i)));
+            System.out.println("PERMUTATION");
+            System.out.println(
+                    permutations(Arrays.stream(elements)
+                            .boxed().collect(Collectors.toList()), i)
+                            .stream().map(elem -> elem.stream().reduce((p, n) -> p + n).get())
+                            .collect(Collectors.toSet())
+            );
+
+            System.out.println("\n\n");
         }
-        return answer;
-    }
-    public int combine ( int [] elements ) {
-        int all = this.factorial(elements.length);
-        int answer = 0;
 
-        for ( int i = 1; i <= elements.length; i++ ) {
-            answer += (all / (factorial(elements.length - i) * factorial(i)));
+
+        return 0;
+    }
+
+    List<String> combine( List<Integer> list, int count ) {
+        List<String> result = new ArrayList<>();
+        if( count == 1 ) return list.stream().map(String::valueOf).collect(Collectors.toList());
+        for (AtomicInteger i = new AtomicInteger(0); i.get() < list.size(); i.getAndIncrement() ) {
+            List<String> combinations = combine(
+                    new ArrayList<>(list.subList(i.get() + 1, list.size())),
+                    count - 1
+            ).stream()
+                    .map(v -> list.get(i.get())+v)
+                    .collect(Collectors.toList());
+
+            result.addAll(combinations);
         }
-        return answer;
-    }
-    public int factorial( int number ) {
-        if( number <= 1 ) return 1;
-        else return number * this.factorial(number - 1);
-    }
 
+        return result;
+    }
+    List<List<Integer>> permutations( List<Integer> list, int count ) {
+        List<List<Integer>> result = new ArrayList<>();
+        if( count == 1 ) {
+            return  list.stream()
+                    .map(elem -> new ArrayList<>(List.of(elem)))
+                    .collect(Collectors.toList());
+        }
 
+        for(AtomicInteger i = new AtomicInteger(0); i.get() < list.size(); i.getAndIncrement()) {
+            List<Integer> subList = new ArrayList<>();
+            subList.addAll(list.subList(0, i.get()));
+            subList.addAll(list.subList(i.get() + 1, list.size()));
+            List<List<Integer>> permutations = permutations(subList, count - 1);
+
+            permutations.stream().forEach(l -> {
+                l.add(list.get(i.get()));
+                result.add(l);
+            });
+        }
+
+        return result;
+    }
 
 }
 
