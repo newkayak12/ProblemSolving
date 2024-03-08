@@ -41,16 +41,19 @@ public class ContinuousSequential {
     }
 
     public int solution ( int [] elements ) {
-        Set<Integer> sumCase = new HashSet<>();
-        int length = elements.length;
 
-
-
-
-
-        System.out.println(sumCase);
-
-        return 0;
+        Set<Integer> result = new HashSet<>();
+        for ( int i = 1; i <= elements.length; i ++ ) {
+            for ( int j = 0; j < elements.length; j ++ ) {
+                List<Integer> sub = new ArrayList<>();
+                for ( int l = j;  l < j + i; l ++ ) {
+                    if( l <= elements.length  - 1) sub.add(elements[l]);
+                    else sub.add(elements[l - ( elements.length)] );
+                }
+                result.add(sub.stream().reduce(0, (p,n) -> p + n));
+            }
+        }
+        return result.size();
     }
 
     public int solutionFailure ( int [] elements ) {
