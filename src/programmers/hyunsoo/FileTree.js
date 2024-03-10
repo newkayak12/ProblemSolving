@@ -47,12 +47,14 @@ const solution = (n, relation, dirname) => {
     for (let i = 0; i < n; i ++) {
         dir[i] = {elem: dirname[i], children:[], parent:[]}
     }
+
+
     for (let rel of relation) {
         dir[ rel[0] - 1].children.push(rel[1] - 1)
         dir[ rel[1] - 1].parent.push(rel[0] - 1)
     }
 
-    console.log(search(dir, 0))
+
     return search(dir, 0).length
 }
 
@@ -73,16 +75,19 @@ const search = (dir,idx) => {
      */
 
     if( node.children.length === 0) return node.elem
+
     for( let child of node.children ) {
         const value = node.elem+'/'+search(dir, child)
         if( elem.length < value.length ) {
             elem = value;
         }
+
+        console.log(value)
     }
 
 
     return elem
-
 }
+
 console.log(16, solution(7, [ [ 1, 2 ], [ 1, 3 ], [ 1, 4 ], [ 2, 5 ], [ 2, 6 ], [ 3, 7 ] ], [ "root", "abcd", "cs", "hello", "etc", "hello", "solution" ]))
 console.log(16, solution(8, [ [ 1, 2 ], [ 1, 3 ], [ 1, 4 ], [ 2, 5 ], [ 2, 6 ], [ 3, 7 ], [4, 8] ], [ "root", "abcd", "cs", "hello", "etc", "hello", "solution", 'worlds' ]))
