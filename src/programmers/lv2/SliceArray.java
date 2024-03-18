@@ -77,8 +77,8 @@ public class SliceArray {
         int[] arr = new int[(int) (right - left) + 1];
 
         for( int i = 0; i < arr.length; i++ ) {
-            int row = ((int)( i + left) / n  + 1);
-            int col = ((int)( i + left) % n  + 1);
+            int row = (int)(( i + left ) / n)  + 1;
+            int col = (int)(( i + left ) % n)  + 1;
             arr[i] = ((col > row) ? col : row);
         }
         return arr;
@@ -102,7 +102,8 @@ public class SliceArray {
 
 
     public int[] solutionExceedMemory(int n, long left, long right) {
-        int[][] arr = new int[n][n];
+        int[][] arr =
+                new int[n][n];
         for (int i = 0; i < arr.length; i ++ ) {
             for( int j = 0; j < arr[0].length; j ++ ) {
                 arr[j][i] = 1;
