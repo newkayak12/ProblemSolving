@@ -71,15 +71,45 @@ public class Clothes {
                     {"blue_sunglasses", "face"},
                     {"smoky_makeup", "face"}
             };
+
+
             int result = 3;
 
             Assertions.assertEquals(result, solution(clothes));
+        }
+
+        @Test
+        public void case3 () {
+            String[][] clothes = new String[][]{
+                    {"yellow_hat", "headgear"},
+                    {"green_turban", "headgear"},
+                    {"airpod", "ear"},
+                    {"crow_mask", "face"},
+                    {"blue_sunglasses", "face"},
+                    {"smoky_makeup", "face"}
+            };
+            int result = 23;
+
+            Assertions.assertEquals(result, solution(clothes));
+            /**
+             * 1 -> 6
+             * 2 -> {
+             *   yellow_hat ( blue_sunglasses, crow_mask, airpod, smoky_makeup ) => 4
+             *   green_turban ( blue_sunglasses, crow_mask, airpod, smoky_makeup ) => 4
+             *   blue_sunglasses ( crow_mask, airpod, smoky_makeup )  => 3
+             * } => 11
+             * 3 -> {
+             * yellow_hat (faces) => 3
+             * green_turban (faces) => 3
+             * } => 6
+             */
         }
     }
 
     //hashing...
     public int solution(String[][] clothes) {
-        int answer = 0;
+
+        int answer = 1;
         Map<String, List<String>> setUp = new HashMap<>();
         for( String[] dress : clothes ) {
             if(Objects.isNull(setUp.getOrDefault(dress[1], null))) {
@@ -92,11 +122,8 @@ public class Clothes {
                 return v;
             });
         }
-
-
         Set<String> keys = setUp.keySet();
-        //key 간 조합 + 선택한 요소 간 곱의 축적
-        System.out.println(setUp);
-        return answer;
+        for( String key : keys ) answer *= setUp.get(key).size();
+        return answer - 1;
     }
 }
