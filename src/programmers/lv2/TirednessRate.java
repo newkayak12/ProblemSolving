@@ -1,7 +1,10 @@
 package programmers.lv2;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
 
 public class TirednessRate {
     //https://school.programmers.co.kr/learn/courses/30/lessons/87946
@@ -46,11 +49,66 @@ public class TirednessRate {
             int k = 80; // 현재
             int[][] dungeons = new int[][]{{80,20},{50,40},{30,10}}; //{최소, 소모}
             int result = 3; //최대
+
+            Assertions.assertEquals(result, solution(k, dungeons));
         }
     }
 
+    //BFS?
+    boolean[] probeMap = null;
     public int solution(int k, int[][] dungeons) {
-        int answer = -1;
-        return answer;
+        probeMap = new boolean[dungeons.length];
+        return Math.max(0, prob(dungeons, probeMap, k, 1));
+    }
+
+    private int prob( int[][] dungeons, boolean[] probMap, int tired, int count ) {
+        int innerCount = count;
+
+        print(probMap);
+        for ( int i = 0; i < dungeons.length; i ++ ) {
+            if ( probMap[i] || dungeons[i][0] > tired) continue;
+
+            probMap[i] = true;
+            Math.max(innerCount, prob(dungeons, probMap, tired - dungeons[i][1], count + 1));
+            probMap[i] = false;
+        }
+
+        return innerCount;
+    }
+
+
+    private int probFailure( int[][] dungeons, boolean[] probMap, int idx, int tired, int count ) {
+        int[] start = dungeons[idx];
+        probMap[idx] = true;
+        int max = count;
+
+
+//        print(probMap);
+//        System.out.println("> "+idx);
+
+        if( start[0] > tired && probMap[idx]) return count;
+        else {
+            for ( int i = 1; i <= dungeons.length; i ++  ) {
+
+                int next = idx + i;
+                if( next >= dungeons.length ) next -= dungeons.length;
+                if(probMap[next]) continue;
+
+                boolean[] tmpMap = Arrays.copyOf(probMap, probMap.length);
+                int result = probFailure(dungeons, tmpMap, next, tired -= start[1], count + 1 );
+
+
+                max = Math.max(max, result);
+
+            }
+        }
+
+        return max;
+    }
+
+
+    public void print( boolean[] probeMap ) {
+        for (boolean r : probeMap) System.out.print(r+", ");
+        System.out.println();
     }
 }
