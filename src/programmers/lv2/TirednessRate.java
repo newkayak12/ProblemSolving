@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.Map;
 
 public class TirednessRate {
     //https://school.programmers.co.kr/learn/courses/30/lessons/87946
@@ -52,25 +53,34 @@ public class TirednessRate {
 
             Assertions.assertEquals(result, solution(k, dungeons));
         }
+
+        @Test
+        public void case2 () {
+            int k = 40;
+            int[][] dungeons = new int[][]{{40, 20}, {10, 10}, {10, 10}, {10, 10}, {10, 10}};
+            int result = 4;
+
+            Assertions.assertEquals(result, solution(k, dungeons));
+        }
     }
 
     //BFS?
-    boolean[] probeMap = null;
     public int solution(int k, int[][] dungeons) {
-        probeMap = new boolean[dungeons.length];
-        return Math.max(0, prob(dungeons, probeMap, k, 1));
+
+        boolean[] probeMap = new boolean[dungeons.length];
+        return prob(dungeons, probeMap, k, 0);
     }
 
     private int prob( int[][] dungeons, boolean[] probMap, int tired, int count ) {
         int innerCount = count;
 
-        print(probMap);
         for ( int i = 0; i < dungeons.length; i ++ ) {
-            if ( probMap[i] || dungeons[i][0] > tired) continue;
+            if ( probMap[i] || dungeons[i][0] > tired ) continue;
 
-            probMap[i] = true;
-            Math.max(innerCount, prob(dungeons, probMap, tired - dungeons[i][1], count + 1));
-            probMap[i] = false;
+            boolean[] tmp = Arrays.copyOf(probMap, probMap.length);
+            tmp[i] = true;
+
+            innerCount = Math.max(innerCount, prob(dungeons, tmp, tired - dungeons[i][1], count+1));
         }
 
         return innerCount;
