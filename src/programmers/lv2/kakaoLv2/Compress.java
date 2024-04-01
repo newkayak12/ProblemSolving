@@ -75,7 +75,7 @@ public class Compress {
         }
     }
 
-    public int[] solution(String msg) {
+   public int[] solution(String msg) {
         List<String> dictionary = IntStream.range(65, 65 + 26)
                                            .mapToObj(ascii -> ((char) ascii)+"")
                                            .collect(Collectors.toList());
@@ -86,24 +86,26 @@ public class Compress {
          * A -> 1  (KA) -> 27 ==> A
          *
          */
-        String buffer = "";
-        for ( int i = 1; i < msg.length(); i ++) {
+
+        String tmp = "";
+        for ( int i = 0; i < msg.length() - 1; i ++) {
             String now = String.valueOf(msg.charAt(i));
-            if (buffer.isEmpty()) {
-                buffer += now;
-                continue;
+            String next = String.valueOf(msg.charAt(i + 1));
+
+            if (!tmp.isEmpty()) now = tmp;
+
+
+            int idx = dictionary.indexOf(now + next);
+            if( idx <= -1 ) {
+                list.add(dictionary.indexOf(now) + 1 );
+                dictionary.add(now+next);
+                tmp = "";
+            } else {
+                tmp = now+next;
             }
-
-            int idx = dictionary.indexOf(buffer);
-            if ()
-
-            //사전 추가 -> 현재 글자로 버퍼 변경
-
-            System.out.println(dictionary);
-
         }
 
-        int[] answer = {};
-        return answer;
+        list.add(dictionary.indexOf(String.valueOf(msg.charAt(msg.length() - 1))) + 1);
+        return list.stream().mapToInt(i -> i).toArray();
     }
 }
