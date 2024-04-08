@@ -146,6 +146,7 @@ public class ParkingFee {
         }
 
 
+
         int[] answer = timeMap.keySet().stream()
                               .sorted().map(k -> {
             long totalMin = timeMap.get(k).stream().reduce(0L, (p, n) -> p + n);

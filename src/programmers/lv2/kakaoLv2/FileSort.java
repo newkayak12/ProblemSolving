@@ -70,6 +70,19 @@ public class FileSort {
 
     @Nested
     public class TestCases {
+
+        @Test
+        public void splitTest() {
+            String file = "F-15";
+            String number =  file.replaceAll("([^0-9])", "");
+            String[] split = file.split(number);
+            String head = split[0];
+            String tail = split.length < 2 ? "" : split[1];
+
+            System.out.println(head);
+            System.out.println(number);
+            System.out.println(tail);
+        }
         @Test
         public void case1 () {
             String[] input = new String[] { "img12.png", "img10.png", "img02.png", "img1.png", "IMG01.GIF", "img2.JPG" };
@@ -90,30 +103,20 @@ public class FileSort {
 
     public String[] solution(String[] files) {
         String[] answer = {};
-        Map<String, List<Container>> map = new HashMap<>();
-        String regExp = "/([\\w])([\\d])(\\.*)/";
+        List<Map<String, String>> map = new ArrayList<>();
         for( String file : files ) {
-            String head = file.replaceAll(regExp, "$1");
-            String number = file.replaceAll(regExp, "$2");
-            String tail = file.replaceAll(regExp, "$3");
 
-            System.out.println(head);
-            System.out.println(number);
-
-
-            map.computeIfAbsent(head, s -> {
-                List<Container> containers = new ArrayList<>();
-                containers.add(new Container(head, number, Integer.parseInt(number), tail));
-                return containers;
-            });
+            String number =  file.replaceAll("([^0-9])", "");
+            String[] split = file.split(number);
+            String head = split[0];
+            String tail = split[1];
 
 
-            map.computeIfPresent(head, (k, v) -> {
-                v.add(new Container(head, number, Integer.parseInt(number), tail));
-                return v;
-            });
-
-
+            map.add(Map.of(
+                    "header", head,
+                    "number", number,
+                    "tail", tail
+            ));
         }
 
         System.out.println(map);
