@@ -3,6 +3,8 @@ package programmers.lv2.kakaoLv2;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -71,13 +73,63 @@ public class FileSort {
     @Nested
     public class TestCases {
 
-        @Test
-        public void splitTest() {
-            String file = "F-15";
-            String number =  file.replaceAll("([^0-9])", "");
+        @ParameterizedTest
+        @ValueSource(strings = {"f1","foo9.txt", "foo010bar020.zip", "F-15", "F-0002500 Freedom 002Fighter"})
+        public void splitTest(String file) {
+
+            int start = -1;
+            int end = -1;
+            char[] arr = file.toCharArray();
+            for( int i = 0; i <  arr.length; i ++ ){
+                char check = arr[i];
+                if( start == -1 && (check >= 48 && check <= 57)) start = i;
+                if( start != -1 && (check < 48 || check > 57)) {
+                    end = i;
+                    break;
+                }
+            }
+
+
+            if( end == -1) end = file.length();
+            if( end - start >= 5) end = start + 5;
+            String number = file.substring(start, end);
+
+
             String[] split = file.split(number);
             String head = split[0];
             String tail = split.length < 2 ? "" : split[1];
+
+            System.out.println(head);
+            System.out.println(number);
+            System.out.println(tail);
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = {"f1","foo9.txt", "foo010bar020.zip", "F-15", "F-0002500 Freedom 002Fighter"})
+        public void splitTest2(String s) {
+
+            int startNumberIdx = -1;
+            boolean first = true;
+            int endNumberIdx = -1;
+            int size = 0;
+
+            for(int j = 0; j < s.length(); j++){
+                if(Character.isDigit(s.charAt(j))){
+                    if(first) {
+                        startNumberIdx = j;
+                        first = false;
+                    }
+                    size++;
+                }else{
+                    if(!first) break;
+                }
+            }
+
+            endNumberIdx = startNumberIdx + size - 1;
+
+            String head = s.substring(0, startNumberIdx);
+            String number = s.substring(startNumberIdx, endNumberIdx+1);
+            String tail = s.substring(endNumberIdx+1);
 
             System.out.println(head);
             System.out.println(number);
@@ -98,52 +150,166 @@ public class FileSort {
 
             Assertions.assertArrayEquals(output, solution(input));
         }
+
+        @Test
+        public void case3 () {
+            String[] input = new String[] { "Muzi01.png", "mUzi01.png", "MuZi01.png", "Muzi1.png", "mUzi01.pdf", "MuZi01.dmg", };
+            String[] output = new String[] {"Muzi01.png", "mUzi01.png", "MuZi01.png", "Muzi1.png", "mUzi01.pdf", "MuZi01.dmg", };
+
+            Assertions.assertArrayEquals(output, solution(input));
+        }
+
+        @Test
+        public void case4 () {
+            String[] input = new String[] { "Muzi000001.png", "mUzi000003.png", "MuZi000002.png" };
+            String[] output = new String[] {"Muzi000001.png", "mUzi000003.png", "MuZi000002.png"  };
+
+            Assertions.assertArrayEquals(output, solution(input));
+        }
+
+        @Test
+        public void case6 () {
+            String[] input = new String[] { "F-0002500 Freedom 002Fighter", "F-0002510 Freedom 002Fighter" };
+            String[] output = new String[] { "F-0002500 Freedom 002Fighter", "F-0002510 Freedom 002Fighter" };
+
+            Assertions.assertArrayEquals(output, solution(input));
+        }
+    }
+
+    public String[] solution(String[] files) {
+        String[][] container = new String[files.length][3];
+
+        for( int j = 0; j < files.length; j ++  ) {
+            String file = files[j];
+//13, 20에서 FAIL 원인
+//            char[] arr = file.toCharArray();
+//            String number = "";
+//            for (int i = 0; i < arr.length; i++) {
+//                char check = arr[i];
+//                if (number.length() == 5) break;
+//                if (number.length() <= 0 && !Character.isDigit(check)) continue;
+//                if (Character.isDigit(check)) number += check;
+//                else break;
+//            }
+//
+//            String[] split = file.split(number);
+//            String head = split[0];
+//            String tail = split.length < 2 ? "" : split[1];
+//
+//            container[j][0] = head;
+//            container[j][1] = number;
+//            container[j][2] = tail;
+            int start = -1;
+            int end = -1;
+            char[] arr = file.toCharArray();
+            for( int i = 0; i <  arr.length; i ++ ){
+                char check = arr[i];
+                if( start == -1 && Character.isDigit(check)) start = i;
+                if( start != -1 && !Character.isDigit(check)) {
+                    end = i;
+                    break;
+                }
+            }
+
+
+            if( end == -1) end = file.length();
+            if( end - start > 5) end = start + 5;
+
+            container[j][0] = file.substring(0, start);
+            container[j][1] = file.substring(start, end);
+            container[j][2] = file.substring(end);
+
     }
 
 
-    public String[] solution(String[] files) {
-        String[] answer = {};
-        List<Map<String, String>> map = new ArrayList<>();
-        for( String file : files ) {
 
-            String number =  file.replaceAll("([^0-9])", "");
-            String[] split = file.split(number);
-            String head = split[0];
-            String tail = split[1];
+        Arrays.sort(container,  (o1, o2) -> {
+            int headerResult = o1[0].compareToIgnoreCase(o2[0]);
+            if( headerResult != 0 ) return headerResult;
 
+            int numberResult = Integer.parseInt(o1[1]) - Integer.parseInt(o2[1]);
+            if( numberResult != 0) return numberResult;
 
-            map.add(Map.of(
-                    "header", head,
-                    "number", number,
-                    "tail", tail
-            ));
+            return 0;
+        });
+        String[] answer = new String[files.length];
+        for( int i = 0; i < answer.length; i ++) {
+            answer[i] = container[i][0] +container[i][1] + container[i][2];
         }
 
-        System.out.println(map);
         return answer;
     }
 
-    public static class Container {
-        String head;
-        String numberStringFormat;
-        int number;
-        String tail;
 
-        public Container(String head, String numberStringFormat, int number, String tail) {
-            this.head = head;
-            this.numberStringFormat = numberStringFormat;
-            this.number = number;
-            this.tail = tail;
+    public String[] solutionList(String[] files) {
+
+        String HEADER =  "header";
+        String NUMBER =  "number";
+        String TAIL =  "tail";
+
+        List<Map<String, String>> listMap = new LinkedList<>();
+        for( String file : files ) {
+//            int start = -1;
+//            int end = -1;
+//            char[] arr = file.toCharArray();
+//            for( int i = 0; i <  arr.length; i ++ ){
+//                char check = arr[i];
+//                if( start == -1 && (check >= 48 && check <= 57)) start = i;
+//                if( start != -1 && (check < 48 || check > 57)) {
+//                    end = i;
+//                    break;
+//                }
+//            }
+
+
+//            if( end == -1) end = file.length();
+//            if( end - start > 5) end = start + 5;
+//            String number = file.substring(start, end);
+
+            char[] arr = file.toCharArray();
+            String number = "";
+            for( int i = 0; i <  arr.length; i ++ ){
+                char check = arr[i];
+                if( number.length() == 5) break;
+                if( number.length() <= 0 && !Character.isDigit(check)) continue;
+                if( Character.isDigit(check) ) number += check;
+                else break;
+            }
+
+
+
+
+            String[] split = file.split(number);
+            String head = split[0];
+            String tail = split.length < 2 ? null : split[1];
+
+            listMap.add(Map.of(
+                    HEADER, head,
+                    NUMBER, number,
+                    TAIL, tail
+            ));
         }
 
-        @Override
-        public String toString() {
-            return "Container{" +
-                    "head='" + head + '\'' +
-                    ", numberStringFormat='" + numberStringFormat + '\'' +
-                    ", number=" + number +
-                    ", tail='" + tail + '\'' +
-                    '}';
-        }
+        Collections.sort(listMap, (o1, o2) -> {
+
+
+            int headerResult = o1.get(HEADER).compareToIgnoreCase(o2.get(HEADER));
+            if( headerResult != 0 ) return headerResult;
+
+            int numberResult = Integer.parseInt(o1.get(NUMBER)) - Integer.parseInt(o2.get(NUMBER));
+            if( numberResult != 0) return numberResult;
+
+
+            return 0;
+        });
+
+
+
+        return listMap.stream().map(map -> {
+            String result = map.get(HEADER)+map.get(NUMBER);
+            if(Objects.nonNull(map.get(TAIL))) result+= map.get(TAIL);
+            return result;
+        }).toArray(String[]::new);
     }
+
 }
