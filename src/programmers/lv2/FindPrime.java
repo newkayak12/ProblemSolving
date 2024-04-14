@@ -44,37 +44,59 @@ public class FindPrime {
 
         @Test
         public void case3() {
-            String numbers = "0123456789";
-            int result = 2;
+            String numbers = "232";
+            int result = 4;
             Assertions.assertEquals(result, solution(numbers));
         }
 
         @Test
         public void numberFormatException() {
-            String numbers = "0123456789";
-            for (int i = 0; i < numbers.length(); i++) {
-                String pick = String.valueOf(numbers.charAt(0));
-                numbers = numbers.substring(1) + pick;
-                System.out.println(Long.parseLong(numbers));
-            }
+            String numbers = "0001";
+            // 0
+            // 1
+            // 10
+            // 11
+            // 101
+            // 110
+            Set<Long> permutations = permutation(numbers, "", 0, new boolean[ numbers.length() ]);
+            Set<Long> numberSet = permutations;
+            System.out.println(numberSet);
         }
     }
 
     public int solution(String numbers) {
         int answer = 0;
-        List<Long> primes = new ArrayList<>();
+        Set<Long> numberSet = this.permutation(numbers, "", 0, new boolean[numbers.length()])
+                .stream()
+                .collect(Collectors.toSet());
 
-        for (String isPrime : numbers.split("")) {
-            Long prime = Long.parseLong(isPrime);
-            if (eratosthenes(prime)) primes.add(prime);
+        for (Long isPrime : numberSet) {
+            if (eratosthenes(isPrime)) answer += 1;
         }
         return answer;
     }
 
+    private Set<Long> permutation( String numbers, String prev, int depth, boolean[] visit) {
 
+
+       Set<Long> result = new HashSet<>();
+       if( numbers.length() < depth ) return result;
+
+       String[] arr = numbers.split("");
+       for( int i = 0; i < arr.length; i ++ ) {
+           if(visit[i]) continue;
+
+           visit[i] = true;
+           result.add(Long.parseLong(prev+arr[i]));
+           result.addAll(permutation(numbers, prev+arr[i], depth + 1, visit));
+           visit[i] = false;
+       }
+
+       return result;
+    }
     private boolean eratosthenes(long number) {
-        if (number == 0 || number == 1) return Boolean.FALSE;
-        for (int i = 2; i * i < number; i++) {
+        if (number < 2) return Boolean.FALSE;
+        for (int i = 2; i <= Math.sqrt(number); i++) {
             if (number % i == 0) return Boolean.FALSE;
         }
 

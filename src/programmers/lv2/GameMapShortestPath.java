@@ -237,7 +237,7 @@ public class GameMapShortestPath {
     }
 
     class Failure1 {
-        public static int solutionStack(int[][] maps) {
+        public int solutionStack(int[][] maps) {
             int endY = maps.length - 1;
             int endX = maps[endY].length - 1;
             if (!checkIsConnectedStack(maps, endX, endY)) return -1;
@@ -285,7 +285,7 @@ public class GameMapShortestPath {
             return result;
         }
 
-        private static Boolean checkIsConnectedStack(int[][] map, int x, int y) {
+        private  Boolean checkIsConnectedStack(int[][] map, int x, int y) {
             if (map[y][x - 1] == 0 && map[y - 1][x] == 0) return Boolean.FALSE;
             else return Boolean.TRUE;
         }
