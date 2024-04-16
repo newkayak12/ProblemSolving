@@ -184,6 +184,7 @@ public class Shopping {
                 result.add(target, "");
             } else {
                 break outer;
+
             }
 
         }

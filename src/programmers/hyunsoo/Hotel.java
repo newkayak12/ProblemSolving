@@ -1,7 +1,10 @@
 package programmers.hyunsoo;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
 
 public class Hotel {
     /**
@@ -9,7 +12,8 @@ public class Hotel {
      * 정확성 시간 제한 / 메모리 제한
      * 10초/ 2GB
      * 문제 설명
-     * 한 층에 w 개의 객실이 있는 h 총 호텔이 있습니다. 각 층의 w 개의 객실은 1~ w 의 번호를 가지고 있습니 다. 어떤 객실을 예약한 손님이 있다면, 그 손님이 체크아웃할 때까지 다른 손님은 해당 객실을 예약할 수 없습니 다. 모든 객실의 체크아웃 시각은 오전 11시, 체크인 시각은 오후 2시입니다. (어떤 객실에 대해 체크아웃이 발생 했다면, 같은 날짜에 체크인이 가능합니다.)
+     * 한 층에 w 개의 객실이 있는 h 총 호텔이 있습니다. 각 층의 w 개의 객실은 1~ w 의 번호를 가지고 있습니 다. 어떤 객실을 예약한 손님이 있다면, 그 손님이 체크아웃할 때까지 다른 손님은 해당 객실을 예약할 수 없습니다.
+     * 모든 객실의 체크아웃 시각은 오전 11시, 체크인 시각은 오후 2시입니다. (어떤 객실에 대해 체크아웃이 발생 했다면, 같은 날짜에 체크인이 가능합니다.)
      * 호텔은 다음과 같은 형태의 예약을 받습니다.
      * "객실 수 : 체크인 날짜 ~ 체크아웃 날짜"
      * 객실 수가 k 인 예약을 받으려면 같은 층에서 비어있는 k 개의 연속한 번호의 객실을 배정해야 합니다.
@@ -62,6 +66,7 @@ public class Hotel {
             int[][] books = {{3, 1, 3}, {2, 1, 4}, {1, 1, 2}, {1, 1, 5}, {2, 2, 5}, {2, 3, 5}};
 
             int[] result = new int[]{1, 1, 1, 1, 0, 1};
+            Assertions.assertArrayEquals(result, solution(w, h, books));
         }
 
         @Test
@@ -71,6 +76,7 @@ public class Hotel {
             int[][] books = {{4, 1, 5}, {4, 1, 3}, {4, 1, 7}, {1, 2, 10}, {1, 3, 10}, {1, 4, 10}};
 
             int[] result = new int[]{1, 1, 1, 0, 1, 1};
+            Assertions.assertArrayEquals(result, solution(w, h, books));
         }
 
         @Test
@@ -80,6 +86,7 @@ public class Hotel {
             int[][] books = {{1, 1, 2}, {1, 1, 10}, {1, 1, 2}, {1, 1, 10}, {2, 4, 7}};
 
             int[] result = new int[]{1, 1, 1, 1, 0};
+            Assertions.assertArrayEquals(result, solution(w, h, books));
         }
 
         @Test
@@ -89,6 +96,7 @@ public class Hotel {
             int[][] books = {{100, 1, 10}, {100, 1, 2}, {1, 2, 3}, {1, 3, 4}};
 
             int[] result = new int[]{1, 0, 0, 0};
+            Assertions.assertArrayEquals(result, solution(w, h, books));
         }
 
         @Test
@@ -98,13 +106,63 @@ public class Hotel {
             int[][] books = {{100, 1, 2}, {100, 1, 10}, {7, 2, 3}, {1, 3, 4}};
 
             int[] result = new int[]{1, 0, 1, 1};
+
+            Assertions.assertArrayEquals(result, solution(w, h, books));
         }
     }
 
     int[] solution( int w, int h, int[][] books) {
-        int[] answer = new int[0];
+        int[] answer = new int[books.length];
+        int[][] hotel = new int[h][w];
 
+        //객실 수 체크인 날짜  체크아웃 날짜
+        for( int i = 0; i < books.length; i ++ ) {
+            int[] book = books[i];
+            int roomCount = book[0];
+            int checkIn = book[1];
+            int checkOut = book[2];
+
+
+
+            check: for( int he = 0; he < h; he ++ ) {
+                for ( int we = 0; we < w; we ++ ) {
+                    int count = this.check(hotel[he], we, 1, checkIn, roomCount);
+                    System.out.println(count);
+                    if( count < roomCount ) we += count;
+                    else {
+                        for (int checking = we; checking < we + count; checking ++) hotel[he][checking] = checkOut;
+                        answer[i] = 1;
+                        break check;
+                    }
+                }
+            }
+
+
+            // {3, 1, 3},
+            // {2, 1, 4},
+            // {1, 1, 2},
+            // {1, 1, 5},
+            // {2, 2, 5},
+            // {2, 3, 5}
+            for( int j = hotel.length - 1; j >= 0; j -- ) {
+                System.out.println(Arrays.toString(hotel[j]));
+            }
+            System.out.println("---------------");
+        }
+
+
+        System.out.println(Arrays.toString(answer));
         return answer;
+    }
+
+    private int check( int[] schedule, int index, int count, int checkIn, int roomCount ) {
+
+        if(
+            index < schedule.length  &&
+            schedule[index] <= checkIn &&
+            count <= roomCount
+        ) return 1 + check(schedule, index + 1, count + 1, checkIn, roomCount);
+        else return 0;
     }
 }
 
