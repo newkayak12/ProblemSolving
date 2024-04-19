@@ -65,14 +65,20 @@ public class QuadCompress {
         return quad(arr, 0, 0, arr.length, new int[]{0, 0});
     }
 
-    private boolean zippable(int [][] arr, int x, int y, int size, int ref ) {
+    private boolean zippable(int [][] arr, int x, int y, int size ) {
+        int zero  = 0;
+        int area = (int) Math.pow(size, 2);
+        //sqrt -> 제곱근
+        //pow  -> 제곱
+        // 헷깔리지 말자...
+        int count = 0;
         for( int h = y; h < y + size; h ++) {
             for (int w = x; w < x + size; w ++ ) {
-                if( arr[h][w] != ref) return false;
+                count += arr[h][w];
             }
         }
 
-        return true;
+        return  count == zero || count == area;
     }
 
     private int[] quad(int [][] arr, int x, int y, int size, int[] answer) {
@@ -80,19 +86,22 @@ public class QuadCompress {
         //검증 -> OK면 +
         //    -> 아니면 나누고 검증
 
-            if ( this.zippable(arr, x, y, size, arr[y][x]) ) {
+        // 만약 해당 사이즈에서 압축 가능하면 리턴
+            if ( this.zippable(arr, x, y, size) ) {
                 if( arr[y][x] == 1) answer[1] += 1;
                 else answer[0] += 1;
 
                 return answer;
             }
 
+        // 같은 사이즈이되, 좌표 옮겨가면서 체크
             answer = this.quad(arr, x, y, size/2, answer);
             answer = this.quad(arr, x, y + size/2, size/2,answer);
             answer = this.quad(arr, x + size/2, y, size/2, answer);
             answer = this.quad(arr, x + size/2, y + size/2, size/2, answer);
 
 
+        System.out.println(Arrays.toString(answer));
         return answer;
     }
 
