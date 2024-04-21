@@ -5,7 +5,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
-
+import java.util.stream.Collectors;
+//retry
 public class MakeLargeNumber {
     //https://school.programmers.co.kr/learn/courses/30/lessons/42883
 
@@ -77,57 +78,103 @@ public class MakeLargeNumber {
         }
     }
 
-
-    //Greedy
     public String solution(String number, int k) {
-        /**
-         * 1924 -> 2개를 지운다.
-         * 1회차-----------
-         * 가장 큰 숫자를 찾는다. 9  -> 지울 카운트 보다 남은 요소가 적으면 조정
-         *      9 전의 숫자만큼 지운다. 924
-         *      remove Count를 지운 만큼 줄인다. 1
-         *      9 이후의 숫자를 넘긴다.
-         *      9를 저장한다.
-         *
-         * save [9] next 24
-         * 2회차-----------
-         * 가장 큰 숫자를 찾는다. 4
-         *
-         */
-        return this.search(number, k, 0, number.length() - k);
+        StringBuilder builder = new StringBuilder("");
+        int len = number.length() - k;
+        int start = 0;
+
+        while (start < number.length() && builder.length() != len) {
+            int leftNum = k + builder.length() + 1;
+            //number.length() - k
+            //number.length() - (number.length() - k)  = k
+
+            int max = 0;
+            for (int j = start; j < leftNum; j++) {
+                if (max < number.charAt(j) - '0') {
+                    max = number.charAt(j) - '0';
+                    start = j + 1;
+                }
+            }
+            builder.append(max);
+        }
+        return builder.toString();
     }
 
-    private String search(String number, int removeCount, int start, int targetSize) {
+
+
+    //Greedy
+    public String solution1(String number, int k) {
+        int count = 0;
+        while(count != k) {
+            int i = 0;
+            number = check(number, i);
+            count += 1;
+        }
+        return number ;
+    }
+
+    private String check(String number, int i) {
+        int pre = number.toCharArray()[i];
+        int nex = number.toCharArray()[i + 1];
+        System.out.println((char)pre + "/" + (char)nex);
+
+        if( nex > pre )  number = number.substring(i + 1);
+        else if( nex == pre) {
+            number = check(number, i + 1);
+        }
+        else number = number.substring(0, i+1) + number.substring(i + 2);
+
+
+        System.out.println(number);
+        return number;
+    }
+
+    private List<String> search1(String number, int removeCount, int ref, int targetSize, List<String> list) {
         // 큰 수 찾음
         // 버릴 수 보다 큰 수 이후 수가 적으면
         // 큰 수 인덱스 이전에서 큰 수 다음으로 큰 수를 찾음
-
-        if (number.length() <= targetSize) return number;
+//        System.out.println(ref+"//"+ list.size());
+        if (list.size() == ref) return list;
         else {
 
-            int find = findIdx(number, removeCount, start);
+//            System.out.println("RMCOUNT");
+//            System.out.println(removeCount);
+//            System.out.println();
+            int find = findIdx(number, removeCount, targetSize);
             String nextNumber = number.substring(find + 1); //다음 탐색
             int nextRemoveCount = removeCount - find; //다음 removeCount
-            int passCount = start + 1;
+            int nextTargetSize = targetSize - 1;
+
+            list.add(number.substring(find, find + 1));
 
 
-            return this.search(nextNumber, nextRemoveCount, passCount, targetSize);
+
+            return this.search1(nextNumber, nextRemoveCount, ref, nextTargetSize, list);
         }
     }
 
-    private int findIdx(String number, int deleteCount, int passCount) {
-        int maxNumber = Integer.parseInt(number.split("")[passCount]);
-        int maxIdx = passCount;
+    private int findIdx(String number, int deleteCount, int targetSize) {
 
+        if (deleteCount == 0) return 0;
+//        System.out.println(number);
+        int maxNumber = Integer.parseInt(number.split("")[0]);
+        int maxIdx = 0;
+
+//        System.out.println("SEARCHING");
         for (int i = maxIdx; i <= number.length() - deleteCount; i++) {
             int now = Integer.parseInt(number.split("")[i]);
+//            System.out.println(now);
             if (maxNumber < now) {
                 maxIdx = i;
                 maxNumber = now;
             }
         }
+//        System.out.println("END");
+//        System.out.println(maxNumber);
+//        System.out.println();
 
-        return maxIdx;
+        if ( number.substring(maxIdx).length() >= targetSize) return maxIdx;
+        else return findIdx(number, deleteCount + 1, targetSize);
     }
 
     private List<String> search2(String number, int removeCount, List<String> store) {
