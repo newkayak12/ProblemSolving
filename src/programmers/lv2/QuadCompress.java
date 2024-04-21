@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-
+//retry
 public class QuadCompress {
     //https://school.programmers.co.kr/learn/courses/30/lessons/68936
 
