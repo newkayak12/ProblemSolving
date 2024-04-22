@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 //retry
 public class MakeLargeNumber {
     //https://school.programmers.co.kr/learn/courses/30/lessons/42883
@@ -78,7 +80,61 @@ public class MakeLargeNumber {
         }
     }
 
+
     public String solution(String number, int k) {
+        char[] res = new char[number.length() - k];
+        Stack<Character> stack = new Stack<>();
+
+        for ( int i = 0; i < number.length(); i ++ ) {
+            char now = number.charAt(i);
+            while (!stack.isEmpty() && stack.peek() < now && k-- > 0) {
+                stack.pop();
+            }
+            stack.add(now);
+        }
+
+        for( int i = 0; i < res.length; i ++ ) {
+            res[i] = stack.get(i);
+        }
+
+
+        return new String(res);
+    }
+
+    public String solutionStacking(String number, int k) {
+       char[] piece = number.toCharArray();
+       int[] intArr = new int[piece.length];
+       for ( int i = 0; i < intArr.length; i ++ ) intArr[i] = piece[i] - '0';
+
+       Stack<Integer> result = stacking(intArr, k);
+
+        System.out.println(result);
+        return result.stream().map(String::valueOf).collect(Collectors.joining());
+    }
+    private Stack<Integer> stacking(int[] piece, int deleteCount) {
+        Stack<Integer> stack = new Stack<>();
+
+        int i = 0;
+        int rm = 0;
+        stack.add(piece[i++]);
+
+        while(i < piece.length) {
+            int peek = stack.peek();
+            if( peek < piece[i] && rm < deleteCount) {
+                stack.pop();
+                rm += 1;
+            }
+
+            stack.add(piece[i]);
+            i += 1;
+        }
+
+
+        if( deleteCount > rm ) return stacking(stack.stream().mapToInt(j -> j).toArray(), deleteCount - rm);
+        else return stack;
+    }
+
+    public String solutionSLVD(String number, int k) {
         StringBuilder builder = new StringBuilder("");
         int len = number.length() - k;
         int start = 0;
@@ -87,6 +143,7 @@ public class MakeLargeNumber {
             int leftNum = k + builder.length() + 1;
             //number.length() - k
             //number.length() - (number.length() - k)  = k
+            // 전체 길이 - (전체 길이 - 지울 카운트)
 
             int max = 0;
             for (int j = start; j < leftNum; j++) {
