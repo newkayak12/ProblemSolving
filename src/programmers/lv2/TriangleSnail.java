@@ -38,7 +38,6 @@ public class TriangleSnail {
 
 
         int[] answer = Arrays.stream(snail).flatMap(i -> Arrays.stream(i).boxed().filter(j -> j != 0)).mapToInt(i -> i).toArray();
-        System.out.println(Arrays.toString(answer));
         return answer;
     }
 
@@ -105,7 +104,8 @@ public class TriangleSnail {
              *     4  5  6  7
              * </pre>
              */
-            Assertions.assertArrayEquals(result, solution(n));
+//            Assertions.assertArrayEquals(result, solution(n));
+            Assertions.assertArrayEquals(result, solutionSecond(n));
         }
 
         @Test
@@ -122,7 +122,8 @@ public class TriangleSnail {
              *     5  6  7  8  9
              * </pre>
              */
-            Assertions.assertArrayEquals(result, solution(n));
+//            Assertions.assertArrayEquals(result, solution(n));
+            Assertions.assertArrayEquals(result, solutionSecond(n));
         }
 
         @Test
@@ -140,7 +141,44 @@ public class TriangleSnail {
              *     6  7  8  9 10 11
              * </pre>
              */
-            Assertions.assertArrayEquals(result, solution(n));
+//            Assertions.assertArrayEquals(result, solution(n));
+            Assertions.assertArrayEquals(result, solutionSecond(n));
         }
     }
+
+    public int[] solutionSecond(int n) {
+        int[][] table = new int[n][n];
+
+        int row = -1;
+        int col = 0;
+        int number = 1;
+
+        for ( int i = n; i > 0; i -= 3){
+
+            for(int j = 0; j < i; j++) table[++row][col] = number ++;
+            for(int j = 0; j < i - 1; j ++ ) table[row][++col] = number ++;
+            for(int j = 0; j < i - 2; j ++ ) table[--row][--col] = number ++;
+        }
+
+
+        return Arrays.stream(table).flatMap(ints -> Arrays.stream(ints).boxed()).filter(i -> i > 0).mapToInt( i -> i).toArray();
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
