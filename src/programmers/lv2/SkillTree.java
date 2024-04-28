@@ -164,9 +164,7 @@ public class SkillTree {
             int max = 0;
             char[] chars = tree.toCharArray();
 
-            System.out.println("\n"+tree+"============");
             for( int i = 0; i < chars.length; i++ ) {
-
                 int idx = skill.indexOf(chars[i]);
                 if( idx == -1 ) continue;
 
@@ -178,9 +176,6 @@ public class SkillTree {
                 max = Math.max(idx, max);
                 if( now == idx ) now ++;
             }
-
-
-
             if( max != -1 && now >= max ) answer += 1;
         }
 
