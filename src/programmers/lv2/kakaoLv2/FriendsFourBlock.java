@@ -10,123 +10,7 @@ import java.util.stream.Collectors;
 public class FriendsFourBlock {
     //https://school.programmers.co.kr/learn/courses/30/lessons/17679
 
-    public int solution(int m, int n, String[] board) {
-        Set<String> set = new HashSet<>();
-        int[][] table = createTable(m, n, board);
 
-
-        while (true) {
-            Set<String> collect = checkTable(table);
-            table = dropTable(table, collect.stream().sorted((v1,v2) -> {
-                String[] split1 = v1.split(" ");
-                Integer width1 = Integer.parseInt(split1[0]);
-                Integer height1 = Integer.parseInt(split1[1]);
-                String[] split2 = v2.split(" ");
-                Integer width2 = Integer.parseInt(split2[0]);
-                Integer height2 = Integer.parseInt(split2[1]);
-
-                if( width1 - width2 != 0 ) return width1 - width2;
-                return height2 - height1;
-            }).collect(Collectors.toList()));
-            set.addAll(collect);
-
-            if( collect.isEmpty() ) break;
-        }
-
-        System.out.println(set);
-        return set.size();
-    }
-
-    private int[][] createTable(int m, int n, String[] board) {
-        int height = m;
-        int width = n;
-        int[][] table = new int[height][width];
-
-        for (int h = 0; h < m; h ++) {
-            for (int w = 0; w < n; w++) table[h][w] = board[h].charAt(w);
-        }
-
-        return table;
-    }
-    private Set<String> checkTable(int[][] table) {
-        Set<String> set = new LinkedHashSet<>();
-        for( int h = 0; h < table.length - 1; h ++) {
-            for (int w = 0; w < table[h].length - 1; w++) {
-                int ref = table[h][w];
-                int horizontal = table[h + 1][w];
-                int vertical = table[h][w + 1];
-                int diagonal = table[h + 1][w + 1];
-
-                if(ref == 0 || horizontal == 0 || vertical == 0 ||diagonal == 0) continue;
-
-                if(
-                        ref == horizontal &&
-                        horizontal == vertical &&
-                        vertical == diagonal
-                ) {
-                    set.add(String.format("%s %s",  w, h));
-                    set.add(String.format("%s %s",  w, h + 1));
-                    set.add(String.format("%s %s",  w + 1, h));
-                    set.add(String.format("%s %s",  w + 1, h + 1));
-                }
-            }
-        }
-
-
-        return set;
-    }
-    /**
-     0 : [ _, _, _, A, _, _, ],
-     1 : [ _, _, _, A, _, _, ],
-     2 : [ T, _, T, F, N, T, ],
-     3 : [ T, T, F, R, A, A, ],
-     4 : [ T, T, M, M, M, F, ],
-     5 : [ T, M, M, T, T, J, ],
-     */
-    private int[][] dropTable(int[][] table, List<String> collect) {
-        for( String list : collect) {
-            String[] split = list.split(" ");
-            Integer width = Integer.parseInt(split[0]);
-            Integer height = Integer.parseInt(split[1]);
-            table[height][width] = 0;
-        }
-
-        for( int height = table.length - 1; height >= 0; height -- ) {
-            for( int width = 0; width < table[0].length; width ++ ) {
-                if( table[height][width] != 0) continue;
-                for ( int k = height - 1; k >= 0; k --) {
-                    if( table[k][width] != 0) {
-                        table[height][width] = table[k][width];
-                        table[k][width] = 0;
-                        break;
-                    }
-                }
-            }
-        }
-        print(table);
-        return table;
-    }
-
-    private void print(int[][] table) {
-        System.out.println("[");
-        for (int i = 0; i < table.length; i++) {
-            int[] row = table[i];
-            System.out.print("\t"+ i+" : [ ");
-            for (int col : row) {
-                System.out.print((char) col + ", ");
-            }
-            System.out.println("], ");
-        }
-        System.out.println("]\n");
-    }
-
-    private void print(boolean[][] table) {
-        System.out.println("[");
-        for (boolean[] row : table) {
-            System.out.println("\t" + Arrays.toString(row) + ", ");
-        }
-        System.out.println("]\n");
-    }
 
     /**
      * <pre>
@@ -183,6 +67,124 @@ public class FriendsFourBlock {
         }
     }
 
+
+    public int solution(int m, int n, String[] board) {
+        int answer = 0;
+        int[][] table = createTable(m, n, board);
+
+
+        while (true) {
+            Set<String> collect = checkTable(table);
+            table = dropTable(table, collect.stream().sorted((v1,v2) -> {
+                String[] split1 = v1.split(" ");
+                Integer width1 = Integer.parseInt(split1[0]);
+                Integer height1 = Integer.parseInt(split1[1]);
+                String[] split2 = v2.split(" ");
+                Integer width2 = Integer.parseInt(split2[0]);
+                Integer height2 = Integer.parseInt(split2[1]);
+
+                if( width1 - width2 != 0 ) return width1 - width2;
+                return height2 - height1;
+            }).collect(Collectors.toList()));
+
+            answer += collect.size();
+
+            if( collect.isEmpty() ) break;
+        }
+
+        return answer;
+    }
+
+    private int[][] createTable(int m, int n, String[] board) {
+        int height = m;
+        int width = n;
+        int[][] table = new int[height][width];
+
+        for (int h = 0; h < m; h ++) {
+            for (int w = 0; w < n; w++) table[h][w] = board[h].charAt(w);
+        }
+
+        return table;
+    }
+    private Set<String> checkTable(int[][] table) {
+        Set<String> set = new LinkedHashSet<>();
+        for( int h = 0; h < table.length - 1; h ++) {
+            for (int w = 0; w < table[h].length - 1; w++) {
+                int ref = table[h][w];
+                int horizontal = table[h + 1][w];
+                int vertical = table[h][w + 1];
+                int diagonal = table[h + 1][w + 1];
+
+                if(ref == 0 || horizontal == 0 || vertical == 0 ||diagonal == 0) continue;
+
+                if(
+                        ref == horizontal &&
+                                horizontal == vertical &&
+                                vertical == diagonal
+                ) {
+                    set.add(String.format("%s %s",  w, h));
+                    set.add(String.format("%s %s",  w, h + 1));
+                    set.add(String.format("%s %s",  w + 1, h));
+                    set.add(String.format("%s %s",  w + 1, h + 1));
+                }
+            }
+        }
+
+
+        return set;
+    }
+    /**
+     0 : [ _, _, _, A, _, _, ],
+     1 : [ _, _, _, A, _, _, ],
+     2 : [ T, _, T, F, N, T, ],
+     3 : [ T, T, F, R, A, A, ],
+     4 : [ T, T, M, M, M, F, ],
+     5 : [ T, M, M, T, T, J, ],
+     */
+    private int[][] dropTable(int[][] table, List<String> collect) {
+        for( String list : collect) {
+            String[] split = list.split(" ");
+            Integer width = Integer.parseInt(split[0]);
+            Integer height = Integer.parseInt(split[1]);
+            table[height][width] = 0;
+        }
+
+        for( int height = table.length - 1; height >= 0; height -- ) {
+            for( int width = 0; width < table[0].length; width ++ ) {
+                if( table[height][width] != 0) continue;
+                for ( int k = height - 1; k >= 0; k --) {
+                    if( table[k][width] != 0) {
+                        table[height][width] = table[k][width];
+                        table[k][width] = 0;
+                        break;
+                    }
+                }
+            }
+        }
+//        print(table);
+        return table;
+    }
+
+    private void print(int[][] table) {
+        System.out.println("[");
+        for (int i = 0; i < table.length; i++) {
+            int[] row = table[i];
+            System.out.print("\t"+ i+" : [ ");
+            for (int col : row) {
+                System.out.print((char) col + ", ");
+            }
+            System.out.println("], ");
+        }
+        System.out.println("]\n");
+    }
+
+    private void print(boolean[][] table) {
+        System.out.println("[");
+        for (boolean[] row : table) {
+            System.out.println("\t" + Arrays.toString(row) + ", ");
+        }
+        System.out.println("]\n");
+    }
 
 
     class FirstChallenge {
