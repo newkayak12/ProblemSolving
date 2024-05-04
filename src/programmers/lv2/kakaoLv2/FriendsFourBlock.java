@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
+import java.util.concurrent.Flow;
 import java.util.stream.Collectors;
 
 public class FriendsFourBlock {
@@ -54,6 +55,7 @@ public class FriendsFourBlock {
 
             Assertions.assertEquals(answer, solution(m, n, board));
 
+
         }
 
         @Test
@@ -75,17 +77,7 @@ public class FriendsFourBlock {
 
         while (true) {
             Set<String> collect = checkTable(table);
-            table = dropTable(table, collect.stream().sorted((v1,v2) -> {
-                String[] split1 = v1.split(" ");
-                Integer width1 = Integer.parseInt(split1[0]);
-                Integer height1 = Integer.parseInt(split1[1]);
-                String[] split2 = v2.split(" ");
-                Integer width2 = Integer.parseInt(split2[0]);
-                Integer height2 = Integer.parseInt(split2[1]);
-
-                if( width1 - width2 != 0 ) return width1 - width2;
-                return height2 - height1;
-            }).collect(Collectors.toList()));
+            table = dropTable(table, collect.stream().collect(Collectors.toList()));
 
             answer += collect.size();
 
@@ -148,12 +140,14 @@ public class FriendsFourBlock {
             Integer height = Integer.parseInt(split[1]);
             table[height][width] = 0;
         }
-
+        print(table);
         for( int height = table.length - 1; height >= 0; height -- ) {
             for( int width = 0; width < table[0].length; width ++ ) {
                 if( table[height][width] != 0) continue;
+                //element가 0이 아니면
                 for ( int k = height - 1; k >= 0; k --) {
-                    if( table[k][width] != 0) {
+                    //다음 element부터 확인
+                    if( table[k][width] != 0) { //0이 아닌 경우를 만나면 1:1 교환
                         table[height][width] = table[k][width];
                         table[k][width] = 0;
                         break;
@@ -161,7 +155,7 @@ public class FriendsFourBlock {
                 }
             }
         }
-//        print(table);
+        print(table);
         return table;
     }
 
