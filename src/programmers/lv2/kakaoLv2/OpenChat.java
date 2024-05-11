@@ -94,20 +94,21 @@ public class OpenChat {
             Assertions.assertArrayEquals(result, solution(record));
         }
     }
+    enum ActionSet {
+        Enter("Enter", "님이 들어왔습니다."),
+        Leave("Leave", "님이 나갔습니다."),
+        Change("Change", "");
+        String key;
+        String msg;
+
+        ActionSet(String key, String msg) {
+            this.key = key;
+            this.msg = msg;
+        }
+    }
 
     public String[] solution(String[] record) {
-        enum ActionSet {
-            Enter("Enter", "님이 들어왔습니다."),
-            Leave("Leave", "님이 나갔습니다."),
-            Change("Change", "");
-            String key;
-            String msg;
 
-            ActionSet(String key, String msg) {
-                this.key = key;
-                this.msg = msg;
-            }
-        }
 
         List<String> result = new ArrayList<>();
         Map<String, String> nicknameTrace = new HashMap<>();

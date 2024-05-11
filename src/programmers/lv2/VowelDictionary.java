@@ -122,8 +122,8 @@ public class VowelDictionary {
             Assertions.assertEquals(result, this.solution(word));
         }
 
-        static ArrayList<String> arr = new ArrayList<>();
-        static char[] alphabet = { 'A', 'E', 'I', 'O', 'U' };
+         ArrayList<String> arr = new ArrayList<>();
+         char[] alphabet = { 'A', 'E', 'I', 'O', 'U' };
         public int solution(String word) {
             dfs(0, new StringBuilder());
             Collections.sort(arr);

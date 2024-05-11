@@ -93,7 +93,6 @@ public class Compress {
 
             if (!tmp.isEmpty()) now = tmp;
 
-
             int idx = dictionary.indexOf(now + next);
             if( idx <= -1 ) {
                 list.add(dictionary.indexOf(now) + 1 );
@@ -113,6 +112,8 @@ public class Compress {
 
         return list.stream().mapToInt(i -> i).toArray();
     }
+
+
 }
 
 /**
