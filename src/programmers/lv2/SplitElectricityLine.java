@@ -11,30 +11,7 @@ import java.util.Queue;
 public class SplitElectricityLine {
     //https://school.programmers.co.kr/learn/courses/30/lessons/86971
 
-    public int solution(int n, int[][] wires) {
-        int answer = n;
-/**
- * 노드 수 = n
- * 간선의 수 = n - 1
- *
- * 1. 0부터 시작해서 연결된 선을 하나씩 끊는다.
- * 2. 연결 상태를 점검한다.
- * 3. 연결된 노드의 수를 구한다.
- * 4. ABS(A - B)로 최소 차이를 구한다.
- * 5. 반복
- *
- */
 
-
-        return answer;
-    }
-
-    void print(int[][] wires) {
-        for (int[] wire : wires) {
-            System.out.print(Arrays.toString(wire) + ", ");
-        }
-        System.out.println();
-    }
 
     /**
      * <pre>
@@ -86,6 +63,79 @@ public class SplitElectricityLine {
 
             Assertions.assertEquals(result, solution(n, wires));
         }
+    }
+
+    //3,5,8,11,12 실패
+    public int solution(int n, int[][] wires) {
+        int answer = n;
+
+/**
+ * 노드 수 = n
+ * 간선의 수 = n - 1
+ *
+ * 1. 0부터 시작해서 연결된 선을 하나씩 끊는다.
+ * 2. 연결 상태를 점검한다.
+ * 3. 연결된 노드의 수를 구한다.
+ * 4. ABS(A - B)로 최소 차이를 구한다.
+ * 5. 반복
+ *
+ */
+    for( int i = 0; i < wires.length; i ++ ) {
+        int count = 1 + traverse(wires, i);
+        int partA = n - count;
+        int partB = count;
+        answer = Math.min(answer, Math.abs(partA - partB));
+    }
+
+        return answer;
+    }
+
+    private int traverse( int[][] wires, int skip) {
+        boolean[] check = new boolean[wires.length];
+        Queue<Integer> queue = new LinkedList<>();
+
+            check[0] = true;
+            check[skip] = true;
+
+        if( skip != 0 ) {
+            queue.add(wires[0][1]);
+        }
+        else {
+            check[skip + 1] = true;
+            queue.add(wires[skip + 1][1]);
+        }
+        int  count = 1;
+
+        while( !queue.isEmpty() ) {
+            int end = queue.poll();
+
+            for( int i = 0; i < wires.length; i ++ ) {
+
+                if( check[i] ) continue;
+
+
+                if( wires[i][0] == end ) {
+                    queue.add(wires[i][1]);
+                    check[i] = true;
+                    count += 1;
+                }
+                else if( wires[i][1] == end ) {
+                    queue.add(wires[i][0]);
+                    check[i] = true;
+                    count += 1;
+                }
+
+            }
+        }
+
+        return count;
+    }
+
+    void print(int[][] wires) {
+        for (int[] wire : wires) {
+            System.out.print(Arrays.toString(wire) + ", ");
+        }
+        System.out.println();
     }
 
 }
