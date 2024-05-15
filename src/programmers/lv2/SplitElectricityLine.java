@@ -4,9 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 public class SplitElectricityLine {
     //https://school.programmers.co.kr/learn/courses/30/lessons/86971
@@ -65,9 +63,58 @@ public class SplitElectricityLine {
         }
     }
 
-    //3,5,8,11,12 실패
     public int solution(int n, int[][] wires) {
-        int answer = n;
+        List<Integer>[] graph = new LinkedList[ n + 1 ];
+        int min = Integer.MAX_VALUE;
+        for ( int i = 1; i <= n; i++ ) graph[i] = new LinkedList<>();
+        for ( int i = 0; i < wires.length; i++ ) {
+            int start = wires[i][0];
+            int end = wires[i][1];
+            graph[start].add(end);
+            graph[end].add(start);
+        }
+
+        for ( int i = 0; i < wires.length; i ++ ) {
+            int start = wires[i][0];
+            int end = wires[i][1];
+
+            boolean[] visited = new boolean[n + 1];
+            graph[start].remove(Integer.valueOf(end));
+            graph[end].remove(Integer.valueOf(start));
+
+            int count = dfs(1, visited, graph);
+            int diff = Math.abs(count - (n - count));
+            min = Math.min(diff, min);
+
+            graph[start].add(end);
+            graph[end].add(start);
+
+        }
+
+        System.out.println(Arrays.toString(graph));
+
+        return min;
+    }
+
+    int dfs(int start, boolean[] visited, List<Integer>[] graph) {
+        visited[start] = true;
+        int cnt = 1;
+
+        for (int next : graph[start]) {
+            if (!visited[next]) {
+                cnt += dfs(next, visited, graph);
+            }
+        }
+
+        return cnt;
+    }
+
+
+    class Failure1 {
+
+        //3,5,8,11,12 실패
+        public int solution(int n, int[][] wires) {
+            int answer = n;
 
 /**
  * 노드 수 = n
@@ -80,55 +127,62 @@ public class SplitElectricityLine {
  * 5. 반복
  *
  */
-    for( int i = 0; i < wires.length; i ++ ) {
-        int count = 1 + traverse(wires, i);
-        int partA = n - count;
-        int partB = count;
-        answer = Math.min(answer, Math.abs(partA - partB));
-    }
+            for( int i = 0; i < wires.length; i ++ ) {
+                int count = traverse(wires, i);
+                int partA = n - count;
+                int partB = count;
 
-        return answer;
-    }
+                System.out.println(partA + " - " + partB +" = "+Math.abs(partA - partB));
 
-    private int traverse( int[][] wires, int skip) {
-        boolean[] check = new boolean[wires.length];
-        Queue<Integer> queue = new LinkedList<>();
+                answer = Math.min(answer, Math.abs(partA - partB));
+                System.out.println(answer);
+            }
+
+            return answer;
+        }
+
+        private int traverse( int[][] wires, int skip) {
+            boolean[] check = new boolean[wires.length];
+            Queue<Integer> queue = new LinkedList<>();
 
             check[0] = true;
             check[skip] = true;
 
-        if( skip != 0 ) {
-            queue.add(wires[0][1]);
-        }
-        else {
-            check[skip + 1] = true;
-            queue.add(wires[skip + 1][1]);
-        }
-        int  count = 1;
-
-        while( !queue.isEmpty() ) {
-            int end = queue.poll();
-
-            for( int i = 0; i < wires.length; i ++ ) {
-
-                if( check[i] ) continue;
-
-
-                if( wires[i][0] == end ) {
-                    queue.add(wires[i][1]);
-                    check[i] = true;
-                    count += 1;
-                }
-                else if( wires[i][1] == end ) {
-                    queue.add(wires[i][0]);
-                    check[i] = true;
-                    count += 1;
-                }
-
+            if( skip != 0 ) {
+                queue.add(wires[0][1]);
             }
-        }
+            else {
+                check[skip + 1] = true;
+                queue.add(wires[skip + 1][1]);
+            }
+            int  count = 0;
 
-        return count;
+            while( !queue.isEmpty() ) {
+                int end = queue.poll();
+
+                for( int i = 0; i < wires.length; i ++ ) {
+
+                    if( check[i] ) continue;
+
+
+
+
+                    if( wires[i][0] == end ) {
+                        queue.add(wires[i][1]);
+                        count += 1;
+                        check[i] = true;
+                    }
+                    else if( wires[i][1] == end ) {
+                        queue.add(wires[i][0]);
+                        count += 1;
+                        check[i] = true;
+                    }
+
+                }
+            }
+
+            return count;
+        }
     }
 
     void print(int[][] wires) {
