@@ -63,52 +63,112 @@ public class SplitElectricityLine {
         }
     }
 
-    public int solution(int n, int[][] wires) {
-        List<Integer>[] graph = new LinkedList[ n + 1 ];
-        int min = Integer.MAX_VALUE;
-        for ( int i = 1; i <= n; i++ ) graph[i] = new LinkedList<>();
-        for ( int i = 0; i < wires.length; i++ ) {
+    private Map<Integer, List<Integer>> prepare(int[][] wires) {
+        Map<Integer, List<Integer>> map = new HashMap<>();
+
+
+        for( int i = 0; i < wires.length; i ++ ) {
             int start = wires[i][0];
             int end = wires[i][1];
-            graph[start].add(end);
-            graph[end].add(start);
+
+            map.putIfAbsent(start, new LinkedList<Integer>());
+            map.putIfAbsent(end, new LinkedList<Integer>());
+            map.get(start).add(end);
+            map.get(end).add(start);
         }
+
+        return map;
+    }
+
+    private int traverse(Map<Integer, List<Integer>> map, boolean[] visited) {
+        Queue<Integer> queue = new LinkedList();
+        queue.add(1);
+
+        int count = 0;
+        while (!queue.isEmpty()) {
+            Integer elem = queue.poll();
+            if( visited[ elem - 1 ] ) continue;
+            count += 1;
+            visited[ elem - 1 ] = true;
+            queue.addAll(map.get(elem));
+        }
+
+        return count;
+    }
+    public int solution(int n, int[][] wires) {
+        Map<Integer, List<Integer>> map = prepare(wires);
+
+        int answer = Integer.MAX_VALUE;
 
         for ( int i = 0; i < wires.length; i ++ ) {
             int start = wires[i][0];
             int end = wires[i][1];
+            map.get(start).remove(Integer.valueOf(end));
+            map.get(end).remove(Integer.valueOf(start));
 
-            boolean[] visited = new boolean[n + 1];
-            graph[start].remove(Integer.valueOf(end));
-            graph[end].remove(Integer.valueOf(start));
+            int count = traverse(map, new boolean[map.size()]);
+            answer = Math.min(answer, Math.abs(count - (n - count)));
 
-            int count = dfs(1, visited, graph);
-            int diff = Math.abs(count - (n - count));
-            min = Math.min(diff, min);
-
-            graph[start].add(end);
-            graph[end].add(start);
-
+            map.get(start).add(end);
+            map.get(end).add(start);
         }
 
-        System.out.println(Arrays.toString(graph));
 
-        return min;
+
+        return answer;
     }
 
-    int dfs(int start, boolean[] visited, List<Integer>[] graph) {
-        visited[start] = true;
-        int cnt = 1;
 
-        for (int next : graph[start]) {
-            if (!visited[next]) {
-                cnt += dfs(next, visited, graph);
+
+
+    class success {
+        public int solution(int n, int[][] wires) {
+            List<Integer>[] graph = new LinkedList[ n + 1 ];
+            int min = Integer.MAX_VALUE;
+            for ( int i = 1; i <= n; i++ ) graph[i] = new LinkedList<>();
+            for ( int i = 0; i < wires.length; i++ ) {
+                int start = wires[i][0];
+                int end = wires[i][1];
+                graph[start].add(end);
+                graph[end].add(start);
             }
+
+            for ( int i = 0; i < wires.length; i ++ ) {
+                int start = wires[i][0];
+                int end = wires[i][1];
+
+                boolean[] visited = new boolean[n + 1];
+                graph[start].remove(Integer.valueOf(end));
+                graph[end].remove(Integer.valueOf(start));
+
+                int count = dfs(1, visited, graph);
+                int diff = Math.abs(count - (n - count));
+                min = Math.min(diff, min);
+
+                graph[start].add(end);
+                graph[end].add(start);
+
+            }
+
+            System.out.println(Arrays.toString(graph));
+
+            return min;
         }
 
-        return cnt;
-    }
+        int dfs(int start, boolean[] visited, List<Integer>[] graph) {
+            visited[start] = true;
+            int cnt = 1;
 
+            for (int next : graph[start]) {
+                if (!visited[next]) {
+                    cnt += dfs(next, visited, graph);
+                }
+            }
+
+            return cnt;
+        }
+
+    }
 
     class Failure1 {
 
