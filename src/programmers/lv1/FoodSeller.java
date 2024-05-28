@@ -4,12 +4,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class FoodSeller {
-
+//https://school.programmers.co.kr/learn/courses/30/lessons/135808
     /**
      * 과일 장수가 사과 상자를 포장하고 있습니다.
      * 사과는 상태에 따라 1점부터 k점까지의 점수로 분류하며,
@@ -60,24 +61,44 @@ public class FoodSeller {
     }
 
     public static int solution ( int k, int m, int[] score ) {
+
         int answer = 0;
+        List<Integer> list = Arrays.stream(score).boxed().sorted((a, b) -> b - a).toList();
 
-        List<Integer> filtered =  Arrays.stream(score)
-                                        .boxed()
-                                        .filter(element -> element <= k)
-                                        .collect(Collectors.toList());
-        filtered.sort((a, b) -> b - a);
+        int min = k;
+        for( int i = 0; i < list.size(); i ++ ) {
+            min = Math.min(list.get(i), min);
 
-        for ( int i = 0; i < filtered.size(); i ++ ) {
-            int select = k;
-            select = Math.min(filtered.get(i), select);
             if( (i + 1) % m == 0) {
-                answer += (select * m);
-                select = k;
+                answer += min * m;
+                min = k;
             }
         }
 
+        System.out.println(answer);
 
         return answer;
     }
+
+//    public static int solution ( int k, int m, int[] score ) {
+//        int answer = 0;
+//
+//        List<Integer> filtered =  Arrays.stream(score)
+//                                        .boxed()
+//                                        .filter(element -> element <= k)
+//                                        .collect(Collectors.toList());
+//        filtered.sort((a, b) -> b - a);
+//
+//        for ( int i = 0; i < filtered.size(); i ++ ) {
+//            int select = k;
+//            select = Math.min(filtered.get(i), select);
+//            if( (i + 1) % m == 0) {
+//                answer += (select * m);
+//                select = k;
+//            }
+//        }
+//
+//
+//        return answer;
+//    }
 }

@@ -69,7 +69,7 @@ public class BoxerSorting {
 		return answer;
 	    }
 
-	    public static int[] solution2(int[] weights, String[] head2head) {
+	public static int[] solution2(int[] weights, String[] head2head) {
 		Boxer[] boxerList = new Boxer[weights.length];
 		for(int i =0; i<weights.length; i++){
 			boxerList[i] = new Boxer(i,weights[i],head2head[i].split(""), weights);

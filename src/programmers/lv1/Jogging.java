@@ -97,8 +97,8 @@ public class Jogging {
         @Test
         public void case4() {
             String[] park = {"OSO", "OOO", "O0O", "OOO"};
-            String[] routes = {"E 2", "W 2", "S 4", "N 2"};
-            int[] result = {0, 1};
+            String[] routes = {"E 2", "W 2", "S 3", "N 2"};
+            int[] result = {1, 1};
 
             Assertions.assertArrayEquals(result, solution(park, routes));
         }
@@ -133,13 +133,169 @@ public class Jogging {
         @Test
         public void case8() {
             String[] park = {"XSX", "XOX", "XOO", "OOX"};
-            String[] routes = {"E 2", "W 2", "S 2", "W 1", "E 1", "W 1", "S 1", "E 1", "W 1"};
+            /**
+             * XOX
+             * XOX
+             * XOO
+             * OSX
+             */
+            String[] routes = {
+                    "E 2", "W 2", //ignore
+                    "S 2", "W 1", //S Ok W ignore
+                    "E 1", "W 1",  // OK but SAME
+                    "S 1", "E 1", // S OK E ignore
+                    "W 1"};
             int[] result = {3, 0};
 
             Assertions.assertArrayEquals(result, solution(park, routes));
         }
 
     }
+
+    public int[] solution(String[] park, String[] routes) {
+        int[] coordinate = {0, 0};
+
+
+        String[][] parkMap = new String[park.length][park[0].length()];
+
+
+
+
+
+
+        Map<Character, Integer> moveMap = Map.of(
+                'E', 1,
+                'W', -1,
+                'S', 1,
+                'N', -1
+        );
+
+        for(int y = 0; y < park.length; y ++ ) {
+            String[] row = park[y].split("");
+            for ( int x = 0; x < row.length; x ++ ) {
+                parkMap[y][x] = row[x];
+
+                if( row[x].equalsIgnoreCase("s") ) {
+                    coordinate[0] = y;
+                    coordinate[1] = x;
+                }
+            }
+        }
+
+
+        for (String route : routes) {
+
+
+            if( this.canIWalk( parkMap , coordinate, route)) {
+                Integer walk = Integer.parseInt(String.valueOf(route.charAt(2)));
+                Character direction = route.charAt(0);
+                switch (direction) {
+                    case 'E', 'W':
+                        coordinate[1] += (walk * moveMap.get(direction));
+                        break;
+                    case 'S', 'N':
+                        coordinate[0] += (walk * moveMap.get(direction));;
+                        break;
+                }
+            }
+        }
+
+
+
+        return coordinate;
+    }
+
+    private boolean canIWalk (String[][] parkMap, int[] coordinate, String route) {
+
+        String obstacles = "X";
+        Character direction = route.charAt(0);
+        Integer walk = Integer.parseInt(String.valueOf(route.charAt(2)));
+        int x = coordinate[1];
+        int y = coordinate[0];
+
+        boolean result = Boolean.TRUE;
+
+        System.out.println(Arrays.toString(coordinate));
+        for(String[] map: parkMap) {
+            System.out.println(Arrays.toString(map));
+        }
+
+
+        switch (direction) {
+            case 'E':{
+                walk *= 1;
+                if( parkMap[0].length <=  (walk + x ) ) {
+                    result = Boolean.FALSE;
+                    break;
+                }
+
+
+                for (int i = x; i <= walk + x; i ++ ) {
+                    if( parkMap[y][i].equalsIgnoreCase(obstacles) ) {
+                        result = Boolean.FALSE;
+                        break;
+                    }
+                }
+                break;
+            }
+            case 'S': {
+                walk *= 1;
+
+
+                if( parkMap.length  <=  (walk + y ) ) {
+                    result = Boolean.FALSE;
+                    break;
+                }
+                for (int i = y; i <= walk + y; i ++ ) {
+                    if( parkMap[i][x].equalsIgnoreCase(obstacles) ) {
+                        result = Boolean.FALSE;
+                        break;
+                    }
+                }
+                break;
+            }
+            case 'W': {
+                walk *= -1;
+
+                if( (walk + x)  < 0) {
+                    result = Boolean.FALSE;
+                    break;
+                }
+
+                for (int i = x; i >= walk + x; i -- ) {
+
+                    if( parkMap[y][i].equalsIgnoreCase(obstacles) ) {
+                        result = Boolean.FALSE;
+                        break;
+                    }
+                }
+                break;
+            }
+            case 'N': {
+                walk *= -1;
+                if( (walk + y) < 0) {
+                    result = Boolean.FALSE;
+                    break;
+                }
+                for (int i = y; i >= walk + y; i -- ) {
+                    if( parkMap[i][x].equalsIgnoreCase(obstacles) ) {
+                        result = Boolean.FALSE;
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+
+
+        System.out.println("RESULT :::" + result+"\n");
+        return result;
+    }
+
+
+
+
+  class Success {
 
     /**
      * 정답으로 제출하면 런타임에러만 죄다 남
@@ -212,11 +368,10 @@ public class Jogging {
 
         return new int[]{startY, startX};
     }
-
+  }
 
     /**
      * 다른 사람 풀인데 무슨 차이인지 모르겠음
-     *
      */
     class Solution {
         public int[] solution(String[] park, String[] routes) {

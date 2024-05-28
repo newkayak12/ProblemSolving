@@ -66,7 +66,7 @@ public class Coke {
 
             if ( n < a ) break;
 
-            answer += ( n / a ) * b;
+            answer += ( n / a ); // * b;
             n = ( ( n / a ) * b ) + ( n % a );
         }
 

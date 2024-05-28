@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Stack;
 
 public class HeapOfCards {
@@ -63,37 +64,71 @@ public class HeapOfCards {
     }
 
     public static String solution(String[] cards1, String[] cards2, String[] goal) {
-        Stack<String> cardPile1 = toStack(cards1);
-        Stack<String> cardPile2 = toStack(cards2);
+        String answer = "Yes";
+        Stack<String> cardPile1 = new Stack<>();
+        Stack<String> cardPile2 = new Stack<>();
+        Stack<String> goals = new Stack<>();
 
-        Boolean result = true;
+        for( String card : cards1) cardPile1.add(card);
+        for( String card : cards2) cardPile2.add(card);
+        for( String word : goal) goals.add(word);
 
-        for ( String goalPiece : goal ) {
-            String card1 = cardPile1.isEmpty() ? "" : cardPile1.peek();
-            String card2 = cardPile2.isEmpty() ? "" : cardPile2.peek();
 
-            if ( goalPiece.equals(card1) ) {
+
+        while( !goals.isEmpty() ) {
+            String goalWord = goals.pop();
+
+            if( goalWord.equals(cardPile1.peek()) ) {
                 cardPile1.pop();
                 continue;
             }
-            if ( goalPiece.equals(card2) ) {
+            if(goalWord.equals(cardPile2.peek())) {
                 cardPile2.pop();
                 continue;
             }
-            result &= false;
+
+
+            answer = "No";
+            break;
         }
 
-        return result ? "Yes" : "No";
+        return answer;
     }
 
-    private static Stack<String> toStack(String[] cardPile) {
-        Stack< String > pile = new Stack<>();
-        Arrays.sort(cardPile, (a, b) -> -1);
+    class Success {
+        public static String solution(String[] cards1, String[] cards2, String[] goal) {
+            Stack<String> cardPile1 = toStack(cards1);
+            Stack<String> cardPile2 = toStack(cards2);
 
-        for ( String card : cardPile ) {
-            pile.push(card);
+            Boolean result = true;
+
+            for ( String goalPiece : goal ) {
+                String card1 = cardPile1.isEmpty() ? "" : cardPile1.peek();
+                String card2 = cardPile2.isEmpty() ? "" : cardPile2.peek();
+
+                if ( goalPiece.equals(card1) ) {
+                    cardPile1.pop();
+                    continue;
+                }
+                if ( goalPiece.equals(card2) ) {
+                    cardPile2.pop();
+                    continue;
+                }
+                result &= false;
+            }
+
+            return result ? "Yes" : "No";
         }
 
-        return pile;
+        private static Stack<String> toStack(String[] cardPile) {
+            Stack< String > pile = new Stack<>();
+            Arrays.sort(cardPile, (a, b) -> -1);
+
+            for ( String card : cardPile ) {
+                pile.push(card);
+            }
+
+            return pile;
+        }
     }
 }

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.util.*;
 import java.util.stream.Collectors;
 
+//// NOTSOLVED
 public class MakeQueuesSumSame {
     //https://school.programmers.co.kr/learn/courses/30/lessons/118667
     /**
