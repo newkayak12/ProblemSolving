@@ -79,18 +79,36 @@ public class Repaint {
 
     public int solution( int n , int m, int[] section ) {
         int start = section[0];
-        int end = start + (m - 1);
-        int ans = 1;
+        int end = section[0] + m - 1;
+        int count = 1;
 
-        for ( int num : section ) {
-            if ( num >= start && num <= end ) continue;
-            else {
-                start = num;
-                end = start + (m - 1);
-                ans ++;
-            }
-        }
+       for ( int sec : section ) {
+           if( sec >= start && sec <= end) continue;
 
-        return ans;
+           start = sec;
+           end = start + m - 1;
+           count += 1;
+       }
+
+       return count;
     }
+
+   class Success {
+       public int solution( int n , int m, int[] section ) {
+           int start = section[0];
+           int end = start + (m - 1);
+           int ans = 1;
+
+           for ( int num : section ) {
+               if ( num >= start && num <= end ) continue;
+               else {
+                   start = num;
+                   end = start + (m - 1);
+                   ans ++;
+               }
+           }
+
+           return ans;
+       }
+   }
 }

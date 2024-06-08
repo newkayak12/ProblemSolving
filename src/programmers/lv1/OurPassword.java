@@ -4,8 +4,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.io.*;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.WeakHashMap;
 
 public class OurPassword {
     //retry
@@ -58,6 +62,8 @@ public class OurPassword {
 
     @Nested
     class TestCases {
+
+
         @Test
         public void case1 () {
             String s = "aukks";
@@ -155,8 +161,27 @@ public class OurPassword {
         }
     }
 
-    public static String solution( String s, String skip, int index ) {
+    public String solution( String s, String skip, int index ){
         StringBuilder builder = new StringBuilder();
+
+        for( int i = 0; i < s.length(); i ++) {
+            int charAt = s.charAt(i);
+
+            for (int j = 0; j < index; j ++) {
+                charAt ++;
+                if( charAt  > 'z' )  charAt -= ('z'-'a'+1);
+                if( skip.contains(String.valueOf((char) charAt)) ) j --;
+            }
+
+            builder.append((char) charAt);
+        }
+
+        return builder.toString();
+    }
+    class Success {
+        public static String solution( String s, String skip, int index ) {
+        StringBuilder builder = new StringBuilder();
+
 
         for ( int i = 0; i < s.length(); i ++ ) {
             char tmp = s.charAt(i);
@@ -176,7 +201,7 @@ public class OurPassword {
 
         return builder.toString();
     }
-
+    }
 
 
 

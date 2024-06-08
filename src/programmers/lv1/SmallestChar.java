@@ -4,6 +4,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SmallestChar {
 //https://school.programmers.co.kr/learn/courses/30/lessons/147355
 
@@ -56,7 +59,21 @@ public class SmallestChar {
         }
     }
 
-    public static int solution (String t, String p) {
+    public int solution (String t, String p) {
+        long length = p.length();
+        long pNumber = Long.parseLong(p);
+
+        List<Long> list = new ArrayList<>();
+
+        for( int i = 0; i <= t.length() - length; i ++ ) {
+            list.add(Long.parseLong(t.substring(i, i + (int)length)));
+        }
+
+        return (int) list.stream().filter(elem -> elem <= pNumber).count();
+    }
+
+    class Success {
+        public static int solution (String t, String p) {
         long length = p.length();
         long numberP = Long.parseLong(p);
         int count = 0;
@@ -68,5 +85,6 @@ public class SmallestChar {
 
 
         return count;
+    }
     }
 }

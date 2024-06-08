@@ -53,18 +53,36 @@ public class WalletAndNameCard {
             Assertions.assertEquals(expected, solution(sizes));
         }
     }
-    public static int solution(int[][] sizes) {
-        List<Integer> width = new ArrayList<>();
-        List<Integer> height = new ArrayList<>();
 
-        for ( int[] size : sizes ) {
-            width.add(Math.min(size[0], size[1]));
-            height.add(Math.max(size[0], size[1]));
+    public static int solution(int[][] sizes) {
+        int maxW = Integer.MIN_VALUE;
+        int maxH = Integer.MIN_VALUE;
+        for( int [] size : sizes ) {
+            int w = Math.max(size[0], size[1]);
+            int h = w == size[0] ? size[1] : size[0];
+
+            maxW = Math.max(maxW, w);
+            maxH = Math.max(maxH, h);
         }
 
-        width.sort((o1, o2) -> o1 - o2);
-        height.sort(((o1, o2) -> o1 - o2));
+        return maxW * maxH;
+    }
 
-        return width.get(width.size() - 1) * height.get(height.size() - 1);
+    class Success {
+        public static int solution(int[][] sizes) {
+            List<Integer> width = new ArrayList<>();
+            List<Integer> height = new ArrayList<>();
+
+            for (int[] size : sizes) {
+                width.add(Math.min(size[0], size[1]));
+                height.add(Math.max(size[0], size[1]));
+            }
+
+            width.sort((o1, o2) -> o1 - o2);
+            height.sort(((o1, o2) -> o1 - o2));
+
+            return width.get(width.size() - 1) * height.get(height.size() - 1);
+        }
+
     }
 }

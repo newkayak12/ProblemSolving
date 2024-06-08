@@ -103,29 +103,52 @@ public class RollCakeCutting {
      */
 
     public int solution(int[] topping) {
-        int answer = 0;
-        Set<Integer> set = new HashSet<>();
-        int[] partA = new int[topping.length];
-        int[] partB = new int[topping.length];
+        Map<Integer, Integer> leftSide = new HashMap<>();
+        Map<Integer, Integer> rightSide = Arrays.stream(topping).boxed()
+                .collect(Collectors.toMap(Function.identity(), integer -> 1, (integer, integer2) -> integer + integer2));
 
-        for ( int i = 0; i < topping.length; i ++ ) {
-            set.add(topping[i]);
-            partA[i] = set.size();
+        int count = 0;
+
+        for( int i = 0; i < topping.length; i ++ ) {
+            Integer number = topping[i];
+
+            leftSide.putIfAbsent(number, 1);
+            leftSide.computeIfPresent(number, (k, v) -> leftSide.get(k) + 1);
+
+            Integer right = rightSide.get(number);
+            if(right <= 1) rightSide.remove(number);
+            else rightSide.put(number, right - 1);
+            if( leftSide.keySet().size() == rightSide.keySet().size()) count ++ ;
         }
-        set.clear();
-        for ( int i = topping.length - 1; i >= 0 ; i -- ) {
-            set.add(topping[i]);
-            partB[i] = set.size();
-        }
 
-        for ( int i = 0; i < partA.length - 1; i ++ ) {
-            if( partA[i] == partB[i + 1] ) answer += 1;
-        }
-
-
-        return answer;
+        return count;
     }
 
+    class Success {
+         public int solution(int[] topping) {
+            int answer = 0;
+            Set<Integer> set = new HashSet<>();
+            int[] partA = new int[topping.length];
+            int[] partB = new int[topping.length];
+
+            for ( int i = 0; i < topping.length; i ++ ) {
+                set.add(topping[i]);
+                partA[i] = set.size();
+            }
+            set.clear();
+            for ( int i = topping.length - 1; i >= 0 ; i -- ) {
+                set.add(topping[i]);
+                partB[i] = set.size();
+            }
+
+            for ( int i = 0; i < partA.length - 1; i ++ ) {
+                if( partA[i] == partB[i + 1] ) answer += 1;
+            }
+
+
+            return answer;
+        }
+    }
 
 
     public int solutionErrorAndTimeout(int[] topping){

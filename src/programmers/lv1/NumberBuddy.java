@@ -4,14 +4,14 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class NumberBuddy {
+
+
+
     //retry
     //https://school.programmers.co.kr/learn/courses/30/lessons/131128
     /**
@@ -78,35 +78,81 @@ public class NumberBuddy {
         }
     }
 
-    public static String solution ( String x, String y ) {
-        Map<Integer, Long> xMap = Arrays.stream(x.split("")).collect(Collectors.groupingBy(str -> Integer.parseInt(str), Collectors.counting()));
-        Map<Integer, Long> yMap = Arrays.stream(y.split("")).collect(Collectors.groupingBy(str -> Integer.parseInt(str), Collectors.counting()));
-        List<Integer> result = new ArrayList<>();
+    public static String solution(String x, String y) {
+        PriorityQueue<Character> xQueue = new PriorityQueue<>(Collections.reverseOrder());
+        PriorityQueue<Character> yQueue = new PriorityQueue<>(Collections.reverseOrder());
 
-        IntStream.rangeClosed(0, 9)
-                 .forEach( refValue -> {
-                     long xValue = xMap.getOrDefault(refValue, 0L);
-                     long yValue = yMap.getOrDefault(refValue, 0L);
 
-                     Integer[] tmpArray;
-                     int count = 0;
+        for(Character xChar: x.toCharArray() ) xQueue.add(xChar);
+        for(Character yChar: y.toCharArray() ) yQueue.add(yChar);
 
-                     if( xValue > yValue ) count = (int) yValue;
-                     else if ( xValue < yValue ) count = (int) xValue;
-                     else count = (int) xValue;
+        PriorityQueue<Character> shortQueue = xQueue;
+        PriorityQueue<Character> longQueue = yQueue;
 
-                     tmpArray = new Integer[count];
-                     Arrays.fill(tmpArray, refValue);
+        if(shortQueue.size() > longQueue.size()) {
+            shortQueue = yQueue;
+            longQueue =  xQueue;
+        }
 
-                     result.addAll(Arrays.stream(tmpArray).collect(Collectors.toList()));
-                 });
+        List<Character> result = new ArrayList<>();
 
-        result.sort((p, n) -> n - p);
+        while( !shortQueue.isEmpty() ) {
+            char element = shortQueue.poll();
+            if( longQueue.contains(element) ){
+                while(!longQueue.isEmpty()) {
+                    char longelem = longQueue.poll();
+                    if(longelem == element) {
+                        result.add(element);
+                        break;
+                    }
+                }
+            }
+        }
 
-        if (result.isEmpty()) return "-1";
-        String answer =  result.stream().map(String::valueOf).collect(Collectors.joining());
 
-        if( answer.startsWith("0") ) return "0";
-        else return answer;
+        if( result.isEmpty() ) return "-1";
+        else if ( result.stream().filter(e -> e == '0').count() == result.size()) {
+            return  "0";
+        }
+        else {
+           StringBuilder builder = new StringBuilder();
+           for( char ch : result ) builder.append(ch);
+           return builder.toString();
+        }
+    }
+
+
+    class  Success {
+        public static String solution(String x, String y) {
+            Map<Integer, Long> xMap = Arrays.stream(x.split("")).collect(Collectors.groupingBy(str -> Integer.parseInt(str), Collectors.counting()));
+            Map<Integer, Long> yMap = Arrays.stream(y.split("")).collect(Collectors.groupingBy(str -> Integer.parseInt(str), Collectors.counting()));
+            List<Integer> result = new ArrayList<>();
+
+            IntStream.rangeClosed(0, 9)
+                    .forEach(refValue -> {
+                        long xValue = xMap.getOrDefault(refValue, 0L);
+                        long yValue = yMap.getOrDefault(refValue, 0L);
+
+                        Integer[] tmpArray;
+                        int count = 0;
+
+                        if (xValue > yValue) count = (int) yValue;
+                        else if (xValue < yValue) count = (int) xValue;
+                        else count = (int) xValue;
+
+                        tmpArray = new Integer[count];
+                        Arrays.fill(tmpArray, refValue);
+
+                        result.addAll(Arrays.stream(tmpArray).collect(Collectors.toList()));
+                    });
+
+            result.sort((p, n) -> n - p);
+
+            if (result.isEmpty()) return "-1";
+            String answer = result.stream().map(String::valueOf).collect(Collectors.joining());
+
+            if (answer.startsWith("0")) return "0";
+            else return answer;
+        }
     }
 }
