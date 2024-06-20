@@ -1,4 +1,4 @@
-package programmers.lv1.kakaoLv1.lotteryMaxMin;
+package programmers.lv1;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
