@@ -4,21 +4,37 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class Privacy {
     //https://school.programmers.co.kr/learn/courses/30/lessons/150370
     /**
-     * A라는 약관의 유효기간이 12 달이고, 2021년 1월 5일에 수집된 개인정보가 A약관으로 수집되었다면 해당 개인정보는 2022년 1월 4일까지 보관 가능하며 2022년 1월 5일부터 파기해야 할 개인정보입니다.
+     * <pre>
+     *고객의 약관 동의를 얻어서 수집된 1~n번으로 분류되는 개인정보 n개가 있습니다. 약관 종류는 여러 가지 있으며 각 약관마다 개인정보 보관 유효기간이 정해져 있습니다. 당신은 각 개인정보가 어떤 약관으로 수집됐는지 알고 있습니다. 수집된 개인정보는 유효기간 전까지만 보관 가능하며, 유효기간이 지났다면 반드시 파기해야 합니다.
+     * 예를 들어, A라는 약관의 유효기간이 12 달이고, 2021년 1월 5일에 수집된 개인정보가 A약관으로 수집되었다면 해당 개인정보는 2022년 1월 4일까지 보관 가능하며 2022년 1월 5일부터 파기해야 할 개인정보입니다.
      * 당신은 오늘 날짜로 파기해야 할 개인정보 번호들을 구하려 합니다.
-     *
-     * 모든 달은 28일까지 있다고 가정합니다. *** localDate 쓰기에 애매한 부분?? 그냥 앞뒤 구분만 하면 되려나
+     * 모든 달은 28일까지 있다고 가정합니다.
+     * 다음은 오늘 날짜가 2022.05.19일 때의 예시입니다.
      *
      * 약관 종류	유효기간
-     *    A	     6 달
-     *    B	     12 달
-     *    C	     3 달
+     *   A  	6 달
+     *   B  	12 달
+     *   C  	3 달
+     *
+     * 번호	개인정보 수집 일자	약관 종류
+     *   1  	2021.05.02	  A
+     *   2  	2021.07.01	  B
+     *   3  	2022.02.19	  C
+     *   4  	2022.02.20	  C
+     * 첫 번째 개인정보는 A약관에 의해 2021년 11월 1일까지 보관 가능하며, 유효기간이 지났으므로 파기해야 할 개인정보입니다.
+     * 두 번째 개인정보는 B약관에 의해 2022년 6월 28일까지 보관 가능하며, 유효기간이 지나지 않았으므로 아직 보관 가능합니다.
+     * 세 번째 개인정보는 C약관에 의해 2022년 5월 18일까지 보관 가능하며, 유효기간이 지났으므로 파기해야 할 개인정보입니다.
+     * 네 번째 개인정보는 C약관에 의해 2022년 5월 19일까지 보관 가능하며, 유효기간이 지나지 않았으므로 아직 보관 가능합니다.
+     * 따라서 파기해야 할 개인정보 번호는 [1, 3]입니다.
+     * 오늘 날짜를 의미하는 문자열 today, 약관의 유효기간을 담은 1차원 문자열 배열 terms와 수집된 개인정보의 정보를 담은 1차원 문자열 배열 privacies가 매개변수로 주어집니다. 이때 파기해야 할 개인정보의 번호를 오름차순으로 1차원 정수 배열에 담아 return 하도록 solution 함수를 완성해 주세요.
+     * </pre>
      *
      *
      */
@@ -51,7 +67,6 @@ public class Privacy {
             int[] expect = {1, 3};
 
             Assertions.assertArrayEquals(expect, solution(today, terms, privacies));
-
         }
 
         @Test
@@ -65,7 +80,62 @@ public class Privacy {
         }
     }
     public int[] solution (String today, String[] terms, String[] privacies) {
+        Integer[] todaySplit = Arrays.stream(today.split("\\.")).map(Integer::parseInt).toArray(Integer[]::new);
+        List<Integer> indexes = new ArrayList<>();
 
+        Map<String, Integer> termMap = new HashMap<>();
+        for( String term : terms ) {
+            String[] split = term.split(" ");
+            termMap.put(split[0], Integer.parseInt(split[1]));
+        }
+
+
+        for(int i = 0; i < privacies.length; i ++ ) {
+            String  privacy = privacies[i];
+            String[] privacySplit = privacy.split(" ");
+            String startDate = privacySplit[0];
+            String[] split = startDate.split("\\.");
+
+
+            Integer year = Integer.parseInt(split[0]);
+            Integer month = Integer.parseInt(split[1]);
+            Integer date = Integer.parseInt(split[2]);
+
+            int add = termMap.get(privacySplit[1]);
+
+            System.out.println("----------------");
+            System.out.println(year+"."+month+"."+date);
+            System.out.println("ADD : "+ add);
+
+
+
+            date -= 1;
+            month += add;
+
+
+            if( date == 0){
+                date = 28;
+                month -= 1;
+            }
+            if(month > 12) {
+                year += 1;
+                month -= 13;
+            }
+
+            System.out.println(year+"."+month+"."+date);
+            System.out.println("------------------");
+
+            if(
+                    year < todaySplit[0] ||
+                    month < todaySplit[1] ||
+                    date < todaySplit[2]
+            ) {
+                indexes.add(i + 1);
+            }
+
+        }
+
+        return indexes.stream().mapToInt(i -> i).toArray();
     }
 
     class Success {
