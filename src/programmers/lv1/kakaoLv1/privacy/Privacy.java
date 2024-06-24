@@ -80,7 +80,12 @@ public class Privacy {
         }
     }
     public int[] solution (String today, String[] terms, String[] privacies) {
-        Integer[] todaySplit = Arrays.stream(today.split("\\.")).map(Integer::parseInt).toArray(Integer[]::new);
+        String[] todaySplit = today.split("\\.");
+
+        Integer todaySum = (Integer.parseInt(todaySplit[0])*12 *28)+
+                            (Integer.parseInt(todaySplit[1])*28)+
+                            Integer.parseInt(todaySplit[2]);
+
         List<Integer> indexes = new ArrayList<>();
 
         Map<String, Integer> termMap = new HashMap<>();
@@ -89,51 +94,25 @@ public class Privacy {
             termMap.put(split[0], Integer.parseInt(split[1]));
         }
 
-
-        for(int i = 0; i < privacies.length; i ++ ) {
-            String  privacy = privacies[i];
+        for( int i = 0; i < privacies.length; i ++  ) {
+            String privacy = privacies[i];
             String[] privacySplit = privacy.split(" ");
-            String startDate = privacySplit[0];
-            String[] split = startDate.split("\\.");
 
+            String[] privacyCalendar = privacySplit[0].split("\\.");
 
-            Integer year = Integer.parseInt(split[0]);
-            Integer month = Integer.parseInt(split[1]);
-            Integer date = Integer.parseInt(split[2]);
+            int year = Integer.parseInt(privacyCalendar[0]) * 28 * 12;
+            int mon  = Integer.parseInt(privacyCalendar[1]) * 28;
+            int day  = Integer.parseInt(privacyCalendar[2]);
+            int next = termMap.get(privacySplit[1]) * 28;
 
-            int add = termMap.get(privacySplit[1]);
+            int sum = year+mon+day+next;
 
-            System.out.println("----------------");
-            System.out.println(year+"."+month+"."+date);
-            System.out.println("ADD : "+ add);
-
-
-
-            date -= 1;
-            month += add;
-
-
-            if( date == 0){
-                date = 28;
-                month -= 1;
-            }
-            if(month > 12) {
-                year += 1;
-                month -= 13;
-            }
-
-            System.out.println(year+"."+month+"."+date);
-            System.out.println("------------------");
-
-            if(
-                    year < todaySplit[0] ||
-                    month < todaySplit[1] ||
-                    date < todaySplit[2]
-            ) {
+            if( todaySum >= sum ) {
                 indexes.add(i + 1);
             }
-
         }
+
+
 
         return indexes.stream().mapToInt(i -> i).toArray();
     }
