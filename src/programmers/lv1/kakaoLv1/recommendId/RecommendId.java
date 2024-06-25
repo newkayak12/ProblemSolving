@@ -63,97 +63,6 @@ public class RecommendId {
      */
 
 
-    public static String solution (String newId) {
-        String reference = new String(newId);
-        String change = new String(newId);
-
-        change = toLowerCaseFilter(change);
-        System.out.println("1 :: "+ change);
-        change = removeSpecialCases(change);
-        System.out.println("2 :: "+ change);
-        change = replaceContinuousDot(change);
-        System.out.println("3 :: "+ change);
-        change = removeFirstOrLastDot(change);
-        System.out.println("4 :: "+ change);
-        change = paddingAToEmptyString(change);
-        System.out.println("5 :: "+ change);
-        change = cutTextIfOverSixteen(change);
-        System.out.println("6 :: "+ change);
-        change = addLastCharIfLengthUnderThree(change);
-        System.out.println("7 :: "+ change);
-
-
-        if( reference.equals(change) ) return reference;
-        else return solution(change);
-    }
-
-    private static String toLowerCaseFilter( String input ) {
-        return input.toLowerCase();
-    }
-
-    private static String removeSpecialCases ( String input ) {
-        int alphabetAcode = 97;
-        int alphabetZcode = 122;
-        int numberZero = 48;
-        int numberNine = 57;
-        int hyphen = 45;
-        int dot = 46;
-        int underScore = 95;
-
-        char[] charArray = input.toCharArray();
-        List<Character> characterList = new ArrayList<>();
-
-        for ( char piece : charArray ){
-
-            if (
-                    (piece >= numberZero && piece <= numberNine) ||
-                    (piece >= alphabetAcode && piece <= alphabetZcode) ||
-                    (piece == hyphen) ||
-                    (piece == dot) ||
-                    (piece == underScore)
-            ) {
-                characterList.add(piece);
-            }
-        }
-
-        return characterList.stream()
-                .map(String::valueOf)
-                .collect(Collectors.joining());
-    }
-
-    private static String replaceContinuousDot ( String input ) {
-        return input.replaceAll("(\\.){2,}", ".");
-    }
-
-    private static String removeFirstOrLastDot ( String input ) {
-        String change = input;
-
-        if(Objects.isNull(input) || input.length() == 0) return change;
-
-        if ( input.charAt(0) == '.') change = change.substring(1);
-        if ( input.charAt(input.length() - 1) == '.')  change = change.substring(0, input.length() - 1);
-
-        return change;
-    }
-
-    private static String paddingAToEmptyString ( String input ) {
-        if( "".equals(input) ) return "a";
-        else return input;
-    }
-
-    private static String cutTextIfOverSixteen ( String input ) {
-        if ( input.length() >= 16 ) return input.substring(0, 15);
-        else return input;
-    }
-
-    private static String addLastCharIfLengthUnderThree ( String input ) {
-        return addLast(input);
-    }
-
-    private static String addLast(String input ) {
-        if ( input.length() <= 2 ) return addLast(input+input.charAt(input.length() - 1));
-        else return input;
-    }
 
     @Nested
     class TestCases {
@@ -192,6 +101,133 @@ public class RecommendId {
             Assertions.assertEquals(solution(input), expect);
 
         }
+    }
+
+
+    public static String solution (String newId) {
+        //toLowercase
+        String lower = newId.toLowerCase();
+        String notMatch = lower.replaceAll("([^a-z\\-\\_\\.\\d])", "");
+        String continuousDot = notMatch.replaceAll("[\\.]{1,}", "\\.");
+        String firstEnd = continuousDot;
+        if(continuousDot.startsWith("\\.")) firstEnd = firstEnd.substring(1, firstEnd.length() - 1);
+        if(continuousDot.endsWith("\\.")) firstEnd = firstEnd.substring(0, firstEnd.length() - 2);
+
+        String ifEmpty = firstEnd;
+        if("".equals(firstEnd)) ifEmpty = "a";
+
+        String fifteen = ifEmpty;
+        if( fifteen.length() > 15 ) {
+            fifteen = fifteen.substring(0, 14);
+            if (fifteen.endsWith("\\.")) firstEnd.substring(0, 13);
+        }
+
+        String lengthLowerThanTwo = fifteen;
+        while( lengthLowerThanTwo.length() <= 2 ) {
+            String last = (lengthLowerThanTwo.charAt(lengthLowerThanTwo.length() - 1)+"");
+            lengthLowerThanTwo+=last;
+        }
+
+        return lengthLowerThanTwo;
+    }
+
+
+
+
+
+    class Success {
+        public static String solution (String newId) {
+            String reference = new String(newId);
+            String change = new String(newId);
+
+            change = toLowerCaseFilter(change);
+            System.out.println("1 :: "+ change);
+            change = removeSpecialCases(change);
+            System.out.println("2 :: "+ change);
+            change = replaceContinuousDot(change);
+            System.out.println("3 :: "+ change);
+            change = removeFirstOrLastDot(change);
+            System.out.println("4 :: "+ change);
+            change = paddingAToEmptyString(change);
+            System.out.println("5 :: "+ change);
+            change = cutTextIfOverSixteen(change);
+            System.out.println("6 :: "+ change);
+            change = addLastCharIfLengthUnderThree(change);
+            System.out.println("7 :: "+ change);
+
+
+            if( reference.equals(change) ) return reference;
+            else return solution(change);
+        }
+
+        private static String toLowerCaseFilter( String input ) {
+            return input.toLowerCase();
+        }
+
+        private static String removeSpecialCases ( String input ) {
+            int alphabetAcode = 97;
+            int alphabetZcode = 122;
+            int numberZero = 48;
+            int numberNine = 57;
+            int hyphen = 45;
+            int dot = 46;
+            int underScore = 95;
+
+            char[] charArray = input.toCharArray();
+            List<Character> characterList = new ArrayList<>();
+
+            for ( char piece : charArray ){
+
+                if (
+                        (piece >= numberZero && piece <= numberNine) ||
+                                (piece >= alphabetAcode && piece <= alphabetZcode) ||
+                                (piece == hyphen) ||
+                                (piece == dot) ||
+                                (piece == underScore)
+                ) {
+                    characterList.add(piece);
+                }
+            }
+
+            return characterList.stream()
+                    .map(String::valueOf)
+                    .collect(Collectors.joining());
+        }
+
+        private static String replaceContinuousDot ( String input ) {
+            return input.replaceAll("(\\.){2,}", ".");
+        }
+
+        private static String removeFirstOrLastDot ( String input ) {
+            String change = input;
+
+            if(Objects.isNull(input) || input.length() == 0) return change;
+
+            if ( input.charAt(0) == '.') change = change.substring(1);
+            if ( input.charAt(input.length() - 1) == '.')  change = change.substring(0, input.length() - 1);
+
+            return change;
+        }
+
+        private static String paddingAToEmptyString ( String input ) {
+            if( "".equals(input) ) return "a";
+            else return input;
+        }
+
+        private static String cutTextIfOverSixteen ( String input ) {
+            if ( input.length() >= 16 ) return input.substring(0, 15);
+            else return input;
+        }
+
+        private static String addLastCharIfLengthUnderThree ( String input ) {
+            return addLast(input);
+        }
+
+        private static String addLast(String input ) {
+            if ( input.length() <= 2 ) return addLast(input+input.charAt(input.length() - 1));
+            else return input;
+        }
+
     }
 
 }
