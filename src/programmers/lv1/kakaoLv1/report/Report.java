@@ -67,40 +67,46 @@ public class Report {
     public int[] solution( String [] id_list, String[] report, int k ) {
         Map<String, Integer> reportMap = new HashMap<>();
         Map<String, List<String>> iReported = new HashMap<>();
+        Set<String> status = new HashSet<>();
 
-        for (String element : report) {
-                String[] split = element.split(" ");
-                String reporter = split[0];
-                String reportee = split[1];
+        for( String element : report ) {
+            if( status.contains(element) ) continue;
+            status.add(element);
 
-                reportMap.putIfAbsent(reportee, 0);
-                iReported.putIfAbsent(reporter, new ArrayList<>());
 
-                reportMap.computeIfPresent(reportee, (s, integer) -> integer + 1);
-                iReported.computeIfPresent(reporter, (s, strings) -> {
-                    strings.add(reportee);
-                    return strings;
-                });
+            String[] split = element.split(" ");
+            String reporter = split[0];
+            String reportee = split[1];
+
+
+            iReported.putIfAbsent(reporter, new ArrayList<>());
+            iReported.computeIfPresent(reporter, (s, strings) -> {
+                strings.add(reportee);
+                return strings;
+            });
+
+            reportMap.putIfAbsent(reportee, 0);
+            reportMap.computeIfPresent(reportee, (s, integer) -> integer + 1);
+
         }
 
         System.out.println(reportMap);
         System.out.println(iReported);
-        List<String> keys = reportMap.keySet().stream().filter(el -> reportMap.get(el) >= k).collect(Collectors.toList());
-        int[] result = Arrays.stream(id_list).mapToInt(el -> {
-            List<String> id = iReported.getOrDefault(el, new ArrayList<>());
-            if( id.isEmpty() ) return  0;
+
+        int[] result = Arrays.stream(id_list).mapToInt(key -> {
+            List<String> r = iReported.getOrDefault(key, new ArrayList<>());
+            if( r.isEmpty() ) return 0;
             else {
-                 return (int) id.stream()
-                        .filter(in -> keys.stream()
-                        .anyMatch(keyIn -> in.contains(keyIn)))
-                        .distinct()
-                        .count();
+                return (int) r.stream()
+                        .map(keyIn -> reportMap.getOrDefault(keyIn, 0))
+                        .filter(count -> count >= k).count();
             }
+
         }).toArray();
 
 
-        System.out.println(Arrays.toString(result));
-        return new int[]{};
+
+        return result;
     }
 
     class Success{
