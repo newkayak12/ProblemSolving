@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Deque;
+import java.util.Stack;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -74,101 +75,126 @@ public class Bracket {
 
     }
 
+    public boolean solution( String s ) {
+        Stack<Character> characters = new Stack<>();
+        boolean result = true;
+        char open = '(';
+        char close = ')';
 
-
-    public Boolean solution( String s ) {
-        int openCount = 0;
-        int closeCount = 0;
-
-        for (int i = 0; i < s.length(); i++) {
-            if (s.charAt(i) == '(') {
-                openCount++;
-            } else if (s.charAt(i) == ')') {
-                closeCount++;
+        for(int i = 0; i < s.length(); i ++ ) {
+            char here = s.charAt(i);
+            if( here == open ) {
+                characters.add(here);
             }
-            if (openCount < closeCount) {
-                return false;
-            }
-        }
-        if (openCount == closeCount) {
-            return true;
-        }
-        return false;
-    }
-
-
-
-
-    class FailureCase { //timeout
-        public Boolean solution1( String s ) {
-            String regExp = "\\(\\)";
-            Pattern pattern = Pattern.compile(regExp);
-            Boolean exist = Boolean.FALSE;
-            do {
-                exist = Boolean.FALSE;
-                Matcher m = pattern.matcher(s);
-                exist = m.find();
-
-                if (exist) s = s.replaceFirst(regExp,"");
-            } while ( exist );
-
-            if("".equals(s)) return Boolean.TRUE;
-            else return Boolean.FALSE;
-        }
-        public Boolean solution2( String s ) {
-
-            while(s.contains("()")){
-                s = s.replace("()","");
-            }
-
-            if("".equals(s)) return Boolean.TRUE;
-            else return Boolean.FALSE;
-        }
-        public Boolean solution3( String s ) {
-            String[] brackets = s.split("");
-            Deque<String> deque = new LinkedBlockingDeque<>(Arrays.stream(brackets).collect(Collectors.toList()));
-            Boolean result = Boolean.TRUE;
-
-
-            if( brackets.length % 2 != 0) return Boolean.FALSE;
-            if( brackets[0].equals(")") || brackets[brackets.length - 1].equals("(")) return Boolean.FALSE;
-
-            /**
-             * ())()
-             */
-
-            deque.pollFirst();
-            loop: while (!deque.isEmpty()) {
-                if(")".equals(deque.getFirst()) ) {
-                    deque.pollFirst();
-                    deque.pollFirst();
-                }
-                else if(")".equals(deque.getLast()) ) deque.pollLast();
+            else {
+                if( !characters.empty() ) characters.pop();
                 else {
-                    result = Boolean.FALSE;
-                    break loop;
+                    result = false;
+                    break;
                 }
             }
-
-            return result;
         }
 
-        //
-        public Boolean solution4( String s ) {
 
-            if( s.length() % 2 != 0) return Boolean.FALSE;
-            if( s.charAt(0) == ')' || s.charAt(s.length() - 1) == '(') return Boolean.FALSE;
-
-            Boolean sz = (s.indexOf("(", 1) + 1) % 2 == 0;
-
-            if (
-                    (s.indexOf("(", 1) + 1) % 2 == 0 && (s.lastIndexOf(")") + 1 % 2 !=0 ) ||
-                            (s.indexOf("(", 1) ) % 2 != 0 && (s.lastIndexOf(")", s.length() - 2)  % 2 == 0 ) ||
-                            (s.indexOf(")", 1) + 1) % 2 == 0 && (s.lastIndexOf("(") + 1 % 2 !=0 ) ||
-                            (s.indexOf(")", 1) ) % 2 != 0 && (s.lastIndexOf("(", s.length() - 2)  % 2 == 0 )
-            ) return Boolean.TRUE;
-            else return Boolean.FALSE;
-        }
+        if( !characters.isEmpty() ) return false;
+        else return result;
     }
+
+
+    class Success {
+        public Boolean solution( String s ) {
+            int openCount = 0;
+            int closeCount = 0;
+
+            for (int i = 0; i < s.length(); i++) {
+                if (s.charAt(i) == '(') {
+                    openCount++;
+                } else if (s.charAt(i) == ')') {
+                    closeCount++;
+                }
+                if (openCount < closeCount) {
+                    return false;
+                }
+            }
+            if (openCount == closeCount) {
+                return true;
+            }
+            return false;
+        }
+
+        class FailureCase { //timeout
+            public Boolean solution1( String s ) {
+                String regExp = "\\(\\)";
+                Pattern pattern = Pattern.compile(regExp);
+                Boolean exist = Boolean.FALSE;
+                do {
+                    exist = Boolean.FALSE;
+                    Matcher m = pattern.matcher(s);
+                    exist = m.find();
+
+                    if (exist) s = s.replaceFirst(regExp,"");
+                } while ( exist );
+
+                if("".equals(s)) return Boolean.TRUE;
+                else return Boolean.FALSE;
+            }
+            public Boolean solution2( String s ) {
+
+                while(s.contains("()")){
+                    s = s.replace("()","");
+                }
+
+                if("".equals(s)) return Boolean.TRUE;
+                else return Boolean.FALSE;
+            }
+            public Boolean solution3( String s ) {
+                String[] brackets = s.split("");
+                Deque<String> deque = new LinkedBlockingDeque<>(Arrays.stream(brackets).collect(Collectors.toList()));
+                Boolean result = Boolean.TRUE;
+
+
+                if( brackets.length % 2 != 0) return Boolean.FALSE;
+                if( brackets[0].equals(")") || brackets[brackets.length - 1].equals("(")) return Boolean.FALSE;
+
+                /**
+                 * ())()
+                 */
+
+                deque.pollFirst();
+                loop: while (!deque.isEmpty()) {
+                    if(")".equals(deque.getFirst()) ) {
+                        deque.pollFirst();
+                        deque.pollFirst();
+                    }
+                    else if(")".equals(deque.getLast()) ) deque.pollLast();
+                    else {
+                        result = Boolean.FALSE;
+                        break loop;
+                    }
+                }
+
+                return result;
+            }
+
+            //
+            public Boolean solution4( String s ) {
+
+                if( s.length() % 2 != 0) return Boolean.FALSE;
+                if( s.charAt(0) == ')' || s.charAt(s.length() - 1) == '(') return Boolean.FALSE;
+
+                Boolean sz = (s.indexOf("(", 1) + 1) % 2 == 0;
+
+                if (
+                        (s.indexOf("(", 1) + 1) % 2 == 0 && (s.lastIndexOf(")") + 1 % 2 !=0 ) ||
+                                (s.indexOf("(", 1) ) % 2 != 0 && (s.lastIndexOf(")", s.length() - 2)  % 2 == 0 ) ||
+                                (s.indexOf(")", 1) + 1) % 2 == 0 && (s.lastIndexOf("(") + 1 % 2 !=0 ) ||
+                                (s.indexOf(")", 1) ) % 2 != 0 && (s.lastIndexOf("(", s.length() - 2)  % 2 == 0 )
+                ) return Boolean.TRUE;
+                else return Boolean.FALSE;
+            }
+        }
+
+    }
+
 
 }
