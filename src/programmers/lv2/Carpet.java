@@ -181,15 +181,43 @@ public class Carpet {
             Assertions.assertArrayEquals(result, solution(brown, yellow));
         }
 
+
+        @Test
+        public void case4 () {
+            int brown = 18;
+            int yellow = 6;
+            int[] result = {8,3};
+            Assertions.assertArrayEquals(result, solution(brown, yellow));
+        }
+    }
+    public int[] solution( int brown, int yellow) {
+
+        for( int  height = 1; height <= (yellow / height); height ++ ) {
+            if( yellow % height  != 0) continue;
+
+            int yHeight = height;
+            int yWidth = yellow / yHeight;
+            if((brown - 4) - (yHeight * 2) - (yWidth * 2)  == 0) {
+                return new int[]{yWidth + 2, yHeight + 2};
+            }
+        }
+
+
+        return new int[] {1, 1};
     }
 
-    public int[] solution( int brown, int yellow) {
-        int coverBrown = brown - 4;
-        int width;
-        for ( int height = 1; height <= ( width = (yellow/height) ); height ++ ) {
-            if( yellow % height != 0) continue;
-            if( coverBrown - (width * 2) - (height * 2) == 0 ) return new int[] {width + 2, height + 2};
+
+    class Success {
+        public int[] solution( int brown, int yellow) {
+            int coverBrown = brown - 4;
+            int width;
+            for ( int height = 1; height <= ( width = (yellow/height) ); height ++ ) {
+                if( yellow % height != 0) continue;
+                if( coverBrown - (width * 2) - (height * 2) == 0 ) return new int[] {width + 2, height + 2};
+            }
+
+
+            return new int[] {};
         }
-        return new int[] {};
     }
 }
