@@ -41,76 +41,98 @@ public class ContinuousSequential {
     }
 
 
-
-
     public int solution ( int [] elements ) {
+        Set<Integer> sumSet = new HashSet<>();
 
-        Set<Integer> result = new HashSet<>();
-        int[] dp = new int[elements.length]; // 동적 계획법 사용
-        for ( int i = 1; i <= elements.length; i ++ ) {
-            for ( int j = 0; j < elements.length; j ++ ) {
-                List<Integer> sub = new ArrayList<>();
 
-//                for ( int l = j;  l < j + i; l ++ ) {
-//                    //modular로 아래 if 대체
-//                    sub.add(elements[l % elements.length]);
-//
-////                    if( l <= elements.length  - 1) sub.add(elements[l]);
-////                    else sub.add(elements[l - ( elements.length)] );
-//                }
-//
+        for( int i = 1; i <= elements.length; i++) {
+            for( int j = 0; j < elements.length; j ++ ) {
+                int sum = 0;
+                for( int l = j; l < i + j; l ++ ) {
+                    sum += elements[l % (elements.length)];
+                }
 
-                //dp사용으로 이전 상태 저장.. for를 사용할 필요가 없어짐
-                dp[j] += elements[(i + j - 1) % elements.length];
-                sub.add(dp[j]);
-
-                result.add(sub.stream().reduce(0, (p,n) -> p + n));
+                sumSet.add(sum);
             }
         }
-        return result.size();
+
+
+        return sumSet.size();
     }
 
-    public int solutionFailure ( int [] elements ) {
-        for ( int i = 1; i <= elements.length; i ++ ) {
-            System.out.println("COMBINE");
-            System.out.println(
-                    combine(Arrays.stream(elements).boxed().collect(Collectors.toList()), i)
-                    .stream().map(elem -> Arrays.stream(elem.split("")).map(Integer::parseInt).reduce((p,n) -> p + n).get())
-                    .collect(Collectors.toSet())
-            );
+    class Success {
 
-            System.out.println("PERMUTATION");
-            System.out.println(
-                    permutations(Arrays.stream(elements)
-                            .boxed().collect(Collectors.toList()), i)
-                            .stream().map(elem -> elem.stream().reduce((p, n) -> p + n).get())
-                            .collect(Collectors.toSet())
-            );
 
-            System.out.println("\n\n");
+
+
+        public int solution ( int [] elements ) {
+
+            Set<Integer> result = new HashSet<>();
+            int[] dp = new int[elements.length]; // 동적 계획법 사용
+            for ( int i = 1; i <= elements.length; i ++ ) {
+                for ( int j = 0; j < elements.length; j ++ ) {
+                    List<Integer> sub = new ArrayList<>();
+
+    //                for ( int l = j;  l < j + i; l ++ ) {
+    //                    //modular로 아래 if 대체
+    //                    sub.add(elements[l % elements.length]);
+    //
+    ////                    if( l <= elements.length  - 1) sub.add(elements[l]);
+    ////                    else sub.add(elements[l - ( elements.length)] );
+    //                }
+    //
+
+                    //dp사용으로 이전 상태 저장.. for를 사용할 필요가 없어짐
+                    dp[j] += elements[(i + j - 1) % elements.length];
+                    sub.add(dp[j]);
+
+                    result.add(sub.stream().reduce(0, (p,n) -> p + n));
+                }
+            }
+            return result.size();
         }
 
+        public int solutionFailure ( int [] elements ) {
+            for ( int i = 1; i <= elements.length; i ++ ) {
+                System.out.println("COMBINE");
+                System.out.println(
+                        combine(Arrays.stream(elements).boxed().collect(Collectors.toList()), i)
+                        .stream().map(elem -> Arrays.stream(elem.split("")).map(Integer::parseInt).reduce((p,n) -> p + n).get())
+                        .collect(Collectors.toSet())
+                );
 
-        return 0;
-    }
+                System.out.println("PERMUTATION");
+                System.out.println(
+                        permutations(Arrays.stream(elements)
+                                .boxed().collect(Collectors.toList()), i)
+                                .stream().map(elem -> elem.stream().reduce((p, n) -> p + n).get())
+                                .collect(Collectors.toSet())
+                );
 
-    List<String> combine( List<Integer> list, int count ) {
-        List<String> result = new ArrayList<>();
-        if( count == 1 ) return list.stream().map(String::valueOf).collect(Collectors.toList());
-        for (AtomicInteger i = new AtomicInteger(0); i.get() < list.size(); i.getAndIncrement() ) {
-            List<String> combinations = combine(
-                    new ArrayList<>(list.subList(i.get() + 1, list.size())),
-                    count - 1
-            ).stream()
-                    .map(v -> list.get(i.get())+v)
-                    .collect(Collectors.toList());
+                System.out.println("\n\n");
+            }
 
-            result.addAll(combinations);
+
+            return 0;
         }
 
-        return result;
-    }
-    List<List<Integer>> permutations( List<Integer> list, int count ) {
+        List<String> combine( List<Integer> list, int count ) {
+            List<String> result = new ArrayList<>();
+            if( count == 1 ) return list.stream().map(String::valueOf).collect(Collectors.toList());
+            for (AtomicInteger i = new AtomicInteger(0); i.get() < list.size(); i.getAndIncrement() ) {
+                List<String> combinations = combine(
+                        new ArrayList<>(list.subList(i.get() + 1, list.size())),
+                        count - 1
+                ).stream()
+                        .map(v -> list.get(i.get())+v)
+                        .collect(Collectors.toList());
+
+                result.addAll(combinations);
+            }
+
+            return result;
+        }
+        List<List<Integer>> permutations( List<Integer> list, int count ) {
         List<List<Integer>> result = new ArrayList<>();
         if( count == 1 ) {
             return  list.stream()
@@ -132,6 +154,6 @@ public class ContinuousSequential {
 
         return result;
     }
-
+    }
 }
 

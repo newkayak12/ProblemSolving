@@ -49,57 +49,82 @@ public class FindPrime {
             Assertions.assertEquals(result, solution(numbers));
         }
 
-        @Test
-        public void numberFormatException() {
-            String numbers = "0001";
-            // 0
-            // 1
-            // 10
-            // 11
-            // 101
-            // 110
-            Set<Long> permutations = permutation(numbers, "", 0, new boolean[ numbers.length() ]);
-            Set<Long> numberSet = permutations;
-            System.out.println(numberSet);
-        }
+//        @Test
+//        public void numberFormatException() {
+//            String numbers = "0001";
+//            // 0
+//            // 1
+//            // 10
+//            // 11
+//            // 101
+//            // 110
+//            Set<Long> permutations = permutation(numbers, "", 0, new boolean[ numbers.length() ]);
+//            Set<Long> numberSet = permutations;
+//            System.out.println(numberSet);
+//        }
     }
 
     public int solution(String numbers) {
-        int answer = 0;
-        Set<Long> numberSet = this.permutation(numbers, "", 0, new boolean[numbers.length()])
-                .stream()
-                .collect(Collectors.toSet());
+        Set<String> numberSet = new HashSet<>();
+        String[] split = numbers.split("");
 
-        for (Long isPrime : numberSet) {
-            if (eratosthenes(isPrime)) answer += 1;
-        }
-        return answer;
-    }
-
-    private Set<Long> permutation( String numbers, String prev, int depth, boolean[] visit) {
+        for( int i = 1; i <= numbers.length(); i ++ ) {
+            for( int j = 0; j < numbers.length(); j ++ ) {
+                StringBuilder set = new StringBuilder();
+                for( int l = j; l < j + i; l ++ ) {
+                    set.append(split[l % numbers.length()]);
+                }
 
 
-       Set<Long> result = new HashSet<>();
-       if( numbers.length() < depth ) return result;
-
-       String[] arr = numbers.split("");
-       for( int i = 0; i < arr.length; i ++ ) {
-           if(visit[i]) continue;
-
-           visit[i] = true;
-           result.add(Long.parseLong(prev+arr[i]));
-           result.addAll(permutation(numbers, prev+arr[i], depth + 1, visit));
-           visit[i] = false;
-       }
-
-       return result;
-    }
-    private boolean eratosthenes(long number) {
-        if (number < 2) return Boolean.FALSE;
-        for (int i = 2; i <= Math.sqrt(number); i++) {
-            if (number % i == 0) return Boolean.FALSE;
+                System.out.println(set.toString());
+                numberSet.add(set.toString());
+            }
         }
 
-        return Boolean.TRUE;
+
+        System.out.println(numberSet);
+        return 0;
+    }
+    class Success {
+        public int solution(String numbers) {
+            int answer = 0;
+            Set<Long> numberSet = this.permutation(numbers, "", 0, new boolean[numbers.length()])
+                    .stream()
+                    .collect(Collectors.toSet());
+
+            for (Long isPrime : numberSet) {
+                if (eratosthenes(isPrime)) answer += 1;
+            }
+            return answer;
+        }
+
+
+        private Set<Long> permutation(String numbers, String prev, int depth, boolean[] visit) {
+
+
+            Set<Long> result = new HashSet<>();
+            if (numbers.length() < depth) return result;
+
+            String[] arr = numbers.split("");
+            for (int i = 0; i < arr.length; i++) {
+                if (visit[i]) continue;
+
+                visit[i] = true;
+                result.add(Long.parseLong(prev + arr[i]));
+                result.addAll(permutation(numbers, prev + arr[i], depth + 1, visit));
+                visit[i] = false;
+            }
+
+            return result;
+        }
+
+        private boolean eratosthenes(long number) {
+            if (number < 2) return Boolean.FALSE;
+            for (int i = 2; i <= Math.sqrt(number); i++) {
+                if (number % i == 0) return Boolean.FALSE;
+            }
+
+            return Boolean.TRUE;
+        }
     }
 }

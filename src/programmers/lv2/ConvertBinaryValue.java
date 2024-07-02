@@ -57,11 +57,28 @@ public class ConvertBinaryValue {
         }
     }
 
-    public int[] solution( String s ) {
-        return binaryConversion(s, 0, 0);
-    }
 
-    private int[] binaryConversion(String s, int conversionCount, int zeroCount) {
+    public int[] solution( String s ) {
+        int zeroCount = 0;
+        int convertCount = 0;
+        while( !s.equals("1") ) {
+            int stringCount = 0;
+            for( int i = 0; i < s.length(); i ++ ) {
+                if( s.charAt(i) == '0') zeroCount += 1;
+                else stringCount += 1;
+            }
+            s = Integer.toBinaryString(stringCount);
+            convertCount += 1;
+        }
+
+        return new int[]{ convertCount, zeroCount};
+    }
+    class Success {
+        public int[] solution( String s ) {
+            return binaryConversion(s, 0, 0);
+        }
+
+        private int[] binaryConversion(String s, int conversionCount, int zeroCount) {
         if ("1".equals(s)) return new int[]{conversionCount, zeroCount};
         else {
 
@@ -75,5 +92,6 @@ public class ConvertBinaryValue {
             return binaryConversion(Integer.toBinaryString(builder.toString().length()), conversionCount + 1, zeroCount);
         }
 
+    }
     }
 }
