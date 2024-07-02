@@ -106,8 +106,33 @@ public class Clothes {
         }
     }
 
-    //hashing...
+
     public int solution(String[][] clothes) {
+        int answer = 1;
+        Map< String, List< String > > map = new HashMap<>();
+
+        for( String[] cloth : clothes ) {
+
+            List< String > list;
+            if( Objects.isNull(map.get(cloth[1])) ) {
+                list = new ArrayList<>();
+                list.add(null);
+            }
+            else list = map.get(cloth[1]);
+
+            list.add(cloth[0]);
+            map.put(cloth[1], list);
+
+        }
+
+        for ( String key : map.keySet() ) answer *= map.get(key).size();
+        return answer - 1;
+    }
+
+    public class Success {
+
+
+     public int solution(String[][] clothes) {
 
         int answer = 1;
         Map<String, List<String>> setUp = new HashMap<>();
@@ -122,8 +147,10 @@ public class Clothes {
                 return v;
             });
         }
+
         Set<String> keys = setUp.keySet();
         for( String key : keys ) answer *= setUp.get(key).size();
         return answer - 1;
+    }
     }
 }
