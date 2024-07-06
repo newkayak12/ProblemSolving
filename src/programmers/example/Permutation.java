@@ -1,9 +1,8 @@
 package programmers.example;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import org.junit.jupiter.api.Test;
+
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -31,6 +30,65 @@ public class Permutation {
             });
         }
 
+        return result;
+    }
+
+
+
+
+    @Test
+    public void test1() {
+        String num = "1234";
+
+        System.out.println(permutation(num));
+    }
+
+    public static class Tuple <T1, T2>{
+        T1 t1;
+        T2 t2;
+
+        public Tuple(T1 t1, T2 t2) {
+            this.t1 = t1;
+            this.t2 = t2;
+        }
+
+        public static  <T1, T2> Tuple of(T1 t1, T2 t2) {
+            return new Tuple<>(t1, t2);
+        }
+    }
+
+    private List<String> permutation( String n ) {
+        String[] strings = n.split("");
+        Set<String> set = new HashSet<>();
+
+        for( int i = 0; i < strings.length; i ++ ) {
+            Stack<Tuple<String, boolean[]>> charSet = new Stack<>();
+            boolean[] visit = new boolean[strings.length];
+            String charac = strings[i];
+            set.add(charac);
+            visit[i] = true;
+
+            charSet.add(Tuple.of(charac, Arrays.copyOf(visit, visit.length)));
+
+            while( !charSet.isEmpty() ){
+                Tuple<String, boolean[]> pop = charSet.pop();
+
+
+
+                for(int j = 0; j < strings.length; j ++ ) {
+                    if(!pop.t2[j]) {
+
+                        boolean[] cloneMap = Arrays.copyOf(pop.t2, pop.t2.length);
+                        cloneMap[j] = true;
+                        charSet.add(Tuple.of(pop.t1+strings[j], cloneMap));
+                        set.add(pop.t1+strings[j]);
+                    }
+                }
+            }
+        }
+
+        List<String> result = set.stream().collect(Collectors.toList());
+        Collections.sort(result);
         return result;
     }
 }

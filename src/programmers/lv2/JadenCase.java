@@ -43,13 +43,28 @@ public class JadenCase {
         }
     }
 
-
     public String solution( String s ) {
-        char[] sArr = s.toCharArray();
-        for ( int i = 0; i < s.length(); i ++ ) {
-            if( i == 0 || sArr[i - 1] == ' ') sArr[i] = Character.toUpperCase(sArr[i]);
-            else sArr[i] = Character.toLowerCase(sArr[i]);
+
+        StringBuilder builder = new StringBuilder();
+        char[] charArray = s.toCharArray();
+        for( int i = 0; i < charArray.length; i ++  ) {
+            if(i == 0 || charArray[i - 1] == ' ') builder.append(Character.toUpperCase(charArray[i]));
+            else builder.append(Character.toLowerCase(charArray[i]));
         }
-        return new String(sArr);
+
+        return builder.toString();
     }
+
+    class Success {
+        public String solution( String s ) {
+            char[] sArr = s.toCharArray();
+            for ( int i = 0; i < s.length(); i ++ ) {
+                if( i == 0 || sArr[i - 1] == ' ') sArr[i] = Character.toUpperCase(sArr[i]);
+                else sArr[i] = Character.toLowerCase(sArr[i]);
+            }
+            return new String(sArr);
+        }
+    }
+
+
 }

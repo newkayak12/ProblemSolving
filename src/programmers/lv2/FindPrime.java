@@ -3,6 +3,7 @@ package programmers.lv2;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import programmers.example.Permutation;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -49,6 +50,14 @@ public class FindPrime {
             Assertions.assertEquals(result, solution(numbers));
         }
 
+        @Test
+        public void case4() {
+            String numbers = "1234";
+            int result = 14;
+            Assertions.assertEquals(result, solution(numbers));
+        }
+
+
 //        @Test
 //        public void numberFormatException() {
 //            String numbers = "0001";
@@ -65,26 +74,96 @@ public class FindPrime {
     }
 
     public int solution(String numbers) {
-        Set<String> numberSet = new HashSet<>();
-        String[] split = numbers.split("");
+        int answer = 0;
+//        Set<Long> numberSet = this.permutation(numbers, "", 0, new boolean[numbers.length()]).stream().collect(Collectors.toSet());
+        List<Long> numberSet = this.permutation(numbers);
 
-        for( int i = 1; i <= numbers.length(); i ++ ) {
-            for( int j = 0; j < numbers.length(); j ++ ) {
-                StringBuilder set = new StringBuilder();
-                for( int l = j; l < j + i; l ++ ) {
-                    set.append(split[l % numbers.length()]);
+        for (Long isPrime : numberSet) {  if (eratosthenes(isPrime)) answer += 1; }
+
+        return answer;
+    }
+
+
+
+    private boolean eratosthenes(long number) {
+        if (number < 2) return Boolean.FALSE;
+        for (int i = 2; i <= Math.sqrt(number); i++) {
+            if (number % i == 0) return Boolean.FALSE;
+        }
+
+        return Boolean.TRUE;
+    }
+
+    public static class Tuple <T1, T2>{
+        public T1 t1;
+        public T2 t2;
+
+        public Tuple(T1 t1, T2 t2) {
+            this.t1 = t1;
+            this.t2 = t2;
+        }
+
+        public static  <T1, T2> Tuple of(T1 t1, T2 t2) {
+            return new Tuple<>(t1, t2);
+        }
+    }
+
+    private List<Long> permutation( String n ) {
+        String[] strings = n.split("");
+        Set<String> set = new HashSet<>();
+
+        for( int i = 0; i < strings.length; i ++ ) {
+            Stack<Tuple<String, boolean[]>> charSet = new Stack<>();
+            boolean[] visit = new boolean[strings.length];
+            String charac = strings[i];
+            set.add(charac);
+            visit[i] = true;
+
+            charSet.add(Tuple.of(charac, Arrays.copyOf(visit, visit.length)));
+
+            while( !charSet.isEmpty() ){
+                Tuple<String, boolean[]> pop = charSet.pop();
+
+
+
+                for(int j = 0; j < strings.length; j ++ ) {
+                    if(!pop.t2[j]) {
+
+                        boolean[] cloneMap = Arrays.copyOf(pop.t2, pop.t2.length);
+                        cloneMap[j] = true;
+                        charSet.add(Tuple.of(pop.t1+strings[j], cloneMap));
+                        set.add(pop.t1+strings[j]);
+                    }
                 }
-
-
-                System.out.println(set.toString());
-                numberSet.add(set.toString());
             }
         }
 
-
-        System.out.println(numberSet);
-        return 0;
+        List<Long> result = set.stream().map(Long::parseLong).distinct().collect(Collectors.toList());
+        Collections.sort(result);
+        return result;
     }
+
+    private Set<Long> permutation(String numbers, String prev, int depth, boolean[] visit) {
+
+
+        Set<Long> result = new HashSet<>();
+        if (numbers.length() < depth) return result;
+
+        String[] arr = numbers.split("");
+
+        for (int i = 0; i < arr.length; i++) {
+            if (visit[i]) continue;
+
+            visit[i] = true;
+            result.add(Long.parseLong(prev + arr[i]));
+            result.addAll(permutation(numbers, prev + arr[i], depth + 1, visit));
+            visit[i] = false;
+        }
+
+        return result;
+    }
+
+
     class Success {
         public int solution(String numbers) {
             int answer = 0;
