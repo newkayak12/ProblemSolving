@@ -9,6 +9,7 @@ import java.util.Arrays;
 public class LeastCommonMultiple {
     //https://school.programmers.co.kr/learn/courses/30/lessons/12953
     /**
+     * <pre>
      * 두 수의 최소공배수(Least Common Multiple)란 입력된 두 수의 배수 중
      * 공통이 되는 가장 작은 숫자를 의미합니다.
      *
@@ -20,6 +21,7 @@ public class LeastCommonMultiple {
      *    제한 사항
      *  - arr은 길이 1이상, 15이하인 배열입니다.
      *  - arr의 원소는 100 이하인 자연수입니다.
+     *  </pre>
      */
 
     @Nested
@@ -43,23 +45,42 @@ public class LeastCommonMultiple {
 
     public int solution( int[] arr ) {
         Arrays.sort(arr);
-        int common = lcm(arr[arr.length - 1], arr[arr.length - 2]);
-        for (int i  = arr.length - 3; i > 0; i -- ) {
-            common = lcm(common, arr[i]);
+
+
+        int number = lcm(arr[0], arr[1]);
+        for( int i = 2; i < arr.length; i ++ ) {
+            number = lcm(number, arr[i]);
         }
-        return common;
+        return number;
     }
-    private int gcd( int a, int b ) {
+
+    public int gcd( int a, int b ) {
         if( a % b == 0 ) return b;
-        else return gcd ( b, a % b );
-    }
-    public int lcm ( int a, int b ) {
-        return (a * b) / gcd(a, b);
+        else return gcd(b, a % b);
     }
 
+    public int lcm( int a, int b ) {
+        return ( a * b ) / gcd(a, b);
+    }
 
-    @Test
-    public void test () {
-        System.out.println(gcd(255, 0));
+    class Success {
+        public int solution( int[] arr ) {
+            Arrays.sort(arr);
+            int common = lcm(arr[arr.length - 1], arr[arr.length - 2]);
+            for (int i  = arr.length - 3; i > 0; i -- ) {
+                common = lcm(common, arr[i]);
+            }
+            return common;
+        }
+        private int gcd( int a, int b ) {
+            if( a % b == 0 ) return b;
+            else return gcd ( b, a % b );
+        }
+        public int lcm ( int a, int b ) {
+            return (a * b) / gcd(a, b);
+        }
+
+
+
     }
 }
