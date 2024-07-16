@@ -64,57 +64,76 @@ public class Lifeboat {
             Assertions.assertEquals(returnValue, solution(people, limit));
         }
     }
-    public int solution( int[] people, int limit ) {
-        /**
-         * 어쨋든 최대 2명
-         * 2명의 무게 합이 limit을 넘지않고 최대인 경우를 만들어내야한다.
-         *
-         * 간과했던 부분
-         * 어쨋든 무조건 최대 두 명이다.
-         * 앞에서 큰 사람들끼리 짝지으면 오히려 낭비가 될 수 있다.
-         * 따라서 최고 큰 + 최고 작은 경우가 최적이다.
-         */
 
+    public int solution(int[] people, int limit) {
         Arrays.sort(people);
+        int endIdx = 0;
         int answer = 0;
-        int idx = 0;
 
-        for ( int i = people.length - 1; i >= idx; i -- ) {
-            if( people[i] + people[idx] <= limit ){
-                idx += 1;
+        for( int i = people.length - 1; i >= endIdx; i -- ) {
+            if( people[i] + people[endIdx] <= limit ) {
+                endIdx += 1;
                 answer += 1;
-            } else answer += 1;
-        }
-
-
-
-        return answer;
-    }
-
-
-    public int solutionFailure( int[] people, int limit ) {
-        int answer = 0;
-        Arrays.sort(people);
-        Queue<Integer> queue = new LinkedList<>();
-        for ( int p : people ) queue.add(p);
-
-        queue.add(null);
-
-        int lim = limit;
-        while( !queue.isEmpty()  ) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
             }
-            if(Objects.nonNull(queue.peek()) && lim - queue.peek() >= 0)   lim -= queue.poll();
             else {
-                lim = limit;
                 answer += 1;
-                if (Objects.isNull(queue.peek())) break;
             }
         }
+
         return answer;
     }
 
+    class Success {
+        public int solution(int[] people, int limit) {
+            /**
+             * 어쨋든 최대 2명
+             * 2명의 무게 합이 limit을 넘지않고 최대인 경우를 만들어내야한다.
+             *
+             * 간과했던 부분
+             * 어쨋든 무조건 최대 두 명이다.
+             * 앞에서 큰 사람들끼리 짝지으면 오히려 낭비가 될 수 있다.
+             * 따라서 최고 큰 + 최고 작은 경우가 최적이다.
+             */
+
+            Arrays.sort(people);
+            int answer = 0;
+            int idx = 0;
+
+            for (int i = people.length - 1; i >= idx; i--) {
+                if (people[i] + people[idx] <= limit) {
+                    idx += 1;
+                    answer += 1;
+                } else answer += 1;
+            }
+
+
+            return answer;
+        }
+
+
+        public int solutionFailure(int[] people, int limit) {
+            int answer = 0;
+            Arrays.sort(people);
+            Queue<Integer> queue = new LinkedList<>();
+            for (int p : people) queue.add(p);
+
+            queue.add(null);
+
+            int lim = limit;
+            while (!queue.isEmpty()) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                if (Objects.nonNull(queue.peek()) && lim - queue.peek() >= 0) lim -= queue.poll();
+                else {
+                    lim = limit;
+                    answer += 1;
+                    if (Objects.isNull(queue.peek())) break;
+                }
+            }
+            return answer;
+        }
+    }
 }

@@ -119,12 +119,26 @@ public class LongJump {
      * </pre>
      */
 
-
-    public long solution ( int n ) { return this.calculation(n,  0,0L, 1L); }
-    private long calculation (int totalTile, int countNow,  long p1, long p2 ) {
-        long div = 1_234_567;
-        if ( countNow >= totalTile ) return (p2 % div);
-        else return calculation(totalTile, countNow + 1, p2 % div, (p1 + p2) % div);
+    public long solution(int n) {
+        return this.check(n, 0, 0, 1);
     }
 
+    private long check ( int n , int count, int prev, int next ) {
+        int num = 1_234_567;
+        if( n <= count ) return next % num;
+        else return this.check(n, count + 1, next % num,  prev % num  + next % num);
+    }
+
+    class Success {
+
+        public long solution(int n) {
+            return this.calculation(n, 0, 0L, 1L);
+        }
+
+        private long calculation(int totalTile, int countNow, long p1, long p2) {
+            long div = 1_234_567;
+            if (countNow >= totalTile) return (p2 % div);
+            else return calculation(totalTile, countNow + 1, p2 % div, (p1 + p2) % div);
+        }
+    }
 }
