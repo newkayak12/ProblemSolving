@@ -101,6 +101,12 @@ public class MagicalElevator {
         public void case09 () {
             int storey = 75;
             int result = 8;
+
+            /**
+             * +5 80 5
+             * +20 100 2
+             * -100 0 1
+             */
             Assertions.assertEquals(result, solution(storey));
         }
 
@@ -110,70 +116,78 @@ public class MagicalElevator {
             int result = 14;
             Assertions.assertEquals(result, solution(storey));
         }
+
+        @Test
+        public void case11 () {
+            int storey = 1051;
+            int result = 7;
+            Assertions.assertEquals(result, solution(storey));
+        }
     }
 
     public int solution(int storey) {
-        //정리 -> 마지막이 6이상 -> 더하기
-        //    -> 5미만 -> 빼기
-        //    -> 5 -> 다음 자릿수가 5보다 크거나 같으면 더하고
-        //    -> 5 -> 다음 자릴수가 5보다 작다면 빼고
-        // 특이 케이스
-        // 75의 경우
-        // 70 -(-100)-> -25 -(+ 10 * 2)-> -5 -(1 * 5)-> 0
-        // 총 8
-
-        // 10 * 2 + 1 * 5 - 100 * 1
-        // 10
-        return calculation(storey);
-    }
-
-    private  int calculation (int number) {
-
         int answer = 0;
-        int TEN = 10;
-        if (number == 0) return 0;
-        else {
-            int diff = number - ((number / TEN) * TEN);
+        int target = storey;
 
-            if (diff > 5) {
-                number += (10 - diff);
-                number /= TEN;
-                answer += ((10 - diff) + calculation(number));
-            } else if (diff < 5) {
-                number /= TEN;
-                answer += (diff + calculation(number));
-            } else {
-                int nextNumber = number / TEN;
-                int nextDiff = nextNumber - (nextNumber/TEN) * TEN;
-                if( nextDiff >= 5 ) answer += (5 + calculation(number / TEN + 1));
-                else  answer += (5 + calculation(number / TEN));
+        int TEN = 10;
+        while(true) {
+            if (target == 0) break;
+            int diff = target - ((target / TEN) * TEN);
+
+            if( diff > 5 ) {
+                answer += (TEN - diff);
+                target  /= TEN;
+                target += 1;
+            }
+            else if(diff < 5){
+                target /= TEN;
+                answer += diff;
+            }
+            else {
+                int beforeNext = (target/TEN);
+                int next = beforeNext - (beforeNext/TEN)*TEN;
+
+                if( next >= 5) {
+                    answer += 5;
+                    target /= TEN;
+                    target += 1;
+                } else {
+                    answer += 5;
+                    target /= TEN;
+                }
+                //다음 숫자 고려하고 더하는게 나은지 확인
             }
 
-
-            return answer;
         }
+
+        return answer;
     }
-    class MinusCaseIsNotConsidered {
 
 
+    class Success{
         public int solution(int storey) {
             //정리 -> 마지막이 6이상 -> 더하기
             //    -> 5미만 -> 빼기
             //    -> 5 -> 다음 자릿수가 5보다 크거나 같으면 더하고
             //    -> 5 -> 다음 자릴수가 5보다 작다면 빼고
+            // 특이 케이스
+            // 75의 경우
+            // 70 -(-100)-> -25 -(+ 10 * 2)-> -5 -(1 * 5)-> 0
+            // 총 8
+
+            // 10 * 2 + 1 * 5 - 100 * 1
+            // 10
             return calculation(storey);
         }
 
         private  int calculation (int number) {
 
-            System.out.println(number);
             int answer = 0;
             int TEN = 10;
             if (number == 0) return 0;
             else {
                 int diff = number - ((number / TEN) * TEN);
 
-                System.out.println("DIFF :" +diff);
                 if (diff > 5) {
                     number += (10 - diff);
                     number /= TEN;
@@ -182,11 +196,51 @@ public class MagicalElevator {
                     number /= TEN;
                     answer += (diff + calculation(number));
                 } else {
-                    answer += (5 + calculation(number / TEN));
+                    int nextNumber = number / TEN;
+                    int nextDiff = nextNumber - (nextNumber/TEN) * TEN;
+                    if( nextDiff >= 5 ) answer += (5 + calculation(number / TEN + 1));
+                    else  answer += (5 + calculation(number / TEN));
                 }
 
 
                 return answer;
+            }
+        }
+        class MinusCaseIsNotConsidered {
+
+
+            public int solution(int storey) {
+                //정리 -> 마지막이 6이상 -> 더하기
+                //    -> 5미만 -> 빼기
+                //    -> 5 -> 다음 자릿수가 5보다 크거나 같으면 더하고
+                //    -> 5 -> 다음 자릴수가 5보다 작다면 빼고
+                return calculation(storey);
+            }
+
+            private  int calculation (int number) {
+
+                System.out.println(number);
+                int answer = 0;
+                int TEN = 10;
+                if (number == 0) return 0;
+                else {
+                    int diff = number - ((number / TEN) * TEN);
+
+                    System.out.println("DIFF :" +diff);
+                    if (diff > 5) {
+                        number += (10 - diff);
+                        number /= TEN;
+                        answer += ((10 - diff) + calculation(number));
+                    } else if (diff < 5) {
+                        number /= TEN;
+                        answer += (diff + calculation(number));
+                    } else {
+                        answer += (5 + calculation(number / TEN));
+                    }
+
+
+                    return answer;
+                }
             }
         }
     }
