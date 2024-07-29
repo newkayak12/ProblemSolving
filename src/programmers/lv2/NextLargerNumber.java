@@ -5,12 +5,14 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 import java.util.stream.IntStream;
 
 public class NextLargerNumber {
 
+    //https://school.programmers.co.kr/learn/courses/30/lessons/154539
     /**
      * <pre>
      *     정수로 이루어진 배열 numbers가 있습니다.
@@ -81,47 +83,77 @@ public class NextLargerNumber {
         }
     }
 
+
     public int[] solution(int[] numbers) {
         int[] answer = new int[numbers.length];
-        Stack<Integer> tmp = new Stack<>();
-        for (int i = 0; i < numbers.length; i ++ ) {
-           while(!tmp.isEmpty() && numbers[tmp.peek()] < numbers[i]) {
-             answer[tmp.pop()] = numbers[i];
-           }
-           tmp.add(i);
+        Stack<Integer> indexStack = new Stack<>();
+
+        for( int i = 0; i < numbers.length; i ++ ) {
+
+            while(
+                    !indexStack.isEmpty() &&
+                    numbers[indexStack.peek()] < numbers[i]
+            ) {
+                int index = indexStack.pop();
+                answer[index] = numbers[i];
+            }
+
+            indexStack.add(i);
         }
 
-       while( !tmp.isEmpty() ) answer[tmp.pop()] = -1;
+        for ( int i = 0; i < answer.length; i ++ ) {
+            if( answer[i] == 0 ) answer[i] = -1;
+        }
+
+
         return answer;
     }
-    public int[] solutionTimeout(int[] numbers) {
 
-        int[] answer = new int[numbers.length];
 
-        for (int i = 0; i < numbers.length; i ++ ) {
-            int picked = numbers[i];
-            int larger = picked;
 
-            searcher: for( int j = i + 1; j < numbers.length; j ++ ) {
-                if( numbers[j] > larger ) {
-                    larger = numbers [j];
-                    break searcher;
+
+    class Success {
+
+        public int[] solution(int[] numbers) {
+            int[] answer = new int[numbers.length];
+            Stack<Integer> tmp = new Stack<>();
+            for (int i = 0; i < numbers.length; i ++ ) {
+                while(!tmp.isEmpty() && numbers[tmp.peek()] < numbers[i]) {
+                    answer[tmp.pop()] = numbers[i];
                 }
+                tmp.add(i);
+            }
+
+            while( !tmp.isEmpty() ) answer[tmp.pop()] = -1;
+            return answer;
+        }
+        public int[] solutionTimeout(int[] numbers) {
+
+            int[] answer = new int[numbers.length];
+
+            for (int i = 0; i < numbers.length; i ++ ) {
+                int picked = numbers[i];
+                int larger = picked;
+
+                searcher: for( int j = i + 1; j < numbers.length; j ++ ) {
+                    if( numbers[j] > larger ) {
+                        larger = numbers [j];
+                        break searcher;
+                    }
+                }
+
+
+                if ( picked == larger ) larger = -1;
+
+                answer[i] = larger;
             }
 
 
-            if ( picked == larger ) larger = -1;
-
-            answer[i] = larger;
+            return answer;
         }
-
-
-        return answer;
-    }
-
-
-    private void print(int[] nums) {
-        for( int num : nums) System.out.print(num+", ");
-        System.out.println();
+        private void print(int[] nums) {
+            for( int num : nums) System.out.print(num+", ");
+            System.out.println();
+        }
     }
 }

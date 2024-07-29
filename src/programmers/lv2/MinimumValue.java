@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 public class MinimumValue {
     //https://school.programmers.co.kr/learn/courses/30/lessons/12941
@@ -61,19 +62,38 @@ public class MinimumValue {
         }
     }
 
+
     public int solution( int[] A, int[] B ) {
         Arrays.sort(A);
         Arrays.sort(B);
+        int answer = 0;
 
-        return Math.min(getMin(A, B), getMin(B, A));
+        for( int i = 0; i < A.length; i ++ ) {
+            int numberA = A[i];
+            int numberB = B[B.length - (i + 1)];
+
+            answer += (numberA * numberB);
+        }
+
+        return answer;
     }
 
-    private int getMin( int[] outer, int[] inner ) {
+    class Success {
+
+        public int solution( int[] A, int[] B ) {
+            Arrays.sort(A);
+            Arrays.sort(B);
+
+            return Math.min(getMin(A, B), getMin(B, A));
+        }
+
+        private int getMin( int[] outer, int[] inner ) {
         int result = 0;
         for ( int i = 0; i < outer.length; i ++ ) {
             result += outer[i] * inner[outer.length - 1  - i];
         }
 
         return result;
+    }
     }
 }
