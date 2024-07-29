@@ -4,8 +4,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 public class MatchAndRemove {
     //https://school.programmers.co.kr/learn/courses/30/lessons/12973
@@ -49,12 +49,41 @@ public class MatchAndRemove {
     }
 
     public int solution( String s ) {
-        if( s.length() % 2 != 0 ) return 0;
+        if( s.length() % 2 != 0) return 0;
 
-        return stacker(s.split(""));
+        String target = s;
+        while( true ) {
+            if( target.length() == 0 ) break;
+            Stack<Character> stack = new Stack<>();
+            stack.push(s.charAt(0));
+            int count = 0;
+
+            for( int i = 1; i < target.length(); i ++ ) {
+                if( !stack.isEmpty() && stack.peek() == target.charAt(i) ) {
+                    stack.pop();
+                    count += 1;
+                }
+                else {
+                 stack.push(target.charAt(i));
+                }
+            }
+
+            if( count == 0 ) break;
+            target = stack.stream().map(String::valueOf).collect(Collectors.joining());
+        }
+
+
+        return target.length() == 0 ? 1 : 0;
     }
 
-    private int stacker ( String [] arr ) {
+    class Success {
+        public int solution( String s ) {
+            if( s.length() % 2 != 0 ) return 0;
+
+            return stacker(s.split(""));
+        }
+
+        private int stacker ( String [] arr ) {
         if ( arr.length == 0) return 1;
 
 
@@ -74,5 +103,6 @@ public class MatchAndRemove {
 
         if ( matchCount == 0 ) return 0;
         else return stacker(stack.toArray(String[]::new));
+    }
     }
 }

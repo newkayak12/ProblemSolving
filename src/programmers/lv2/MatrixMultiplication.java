@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-
+//RETRY
 public class MatrixMultiplication {
     //https://school.programmers.co.kr/learn/courses/30/lessons/12949
     /**
@@ -69,74 +69,112 @@ public class MatrixMultiplication {
     }
 
     public int[][] solution(int[][] arr1, int[][] arr2) {
-        /**
-         *  {
-         *    {x0y0,  x1y0},
-         *    {x0y1,  x1y1},
-         *    {x0y2,  x1y2}
-         *  }
-         *
-         *  {
-         *    {a0b0,  a1b0},
-         *    {a0b1,  a1b1},
-         *  }
-         *
-         *
-         *  {
-         *      { x0y0 * a0b0 + x1y0 * a0b1, x0y0 * a1b0 + x1y0 * a1b1 },
-         *      { x0y1 * a0b0 + x1y1 * a0b1, x0y1 * a1b0 + x1y1 * a1b1 },
-         *      { x0y2 * a0b0 + x1y2 * a0b1, x0y2 * a1b0 + x1y2 * a1b1 }
-         *  }
-         *
-         *  r[0][0] = a[0][0] * b[0][0] + a[0][1] * b[1][0]
-         *  r[0][1] = a[0][0] * b[0][1] + a[0][1] * b[1][1]
-         *
-         *
-         *
-         *  r[1][0] = a[1][0] * b[0][0] + a[1][1] * b[1][0]
-         *  r[2][0] = a[2][0] * b[0][0] + a[2][1] * b[1][0]
-         *
-         *
-         *  r[0][i] = a[0][0] * b[0][i] +
-         *            a[0][1] * b[1][i]
-         *  r[j][0] = a[j][0] * b[0][0] +
-         *            a[j][1] * b[1][0]
-         *
-         *  r[j][i] = a[j][0] * b[0][i] + a[j][1] * b[1][i]
-         *
-         */
 
         /**
-         * r[0][1] = a[0][0] * b[0][1] +
-         *           a[0][1] * b[1][1] +
-         *           a[0][2] * b[2][1]
+         * {a1, a2, a3},
+         * {b1, b2, b3},
+         * {c1, c2, c3}
          *
-         * r[1][0] = a[1][0] * b[0][0] +
-         *           a[1][1] * b[1][0] +
-         *           a[1][2] * b[2][0]
+         * {d1, d2, d3},
+         * {e1, e2, e3},
+         * {f1, f2, f3}
          *
-         * r[1][1] = a[1][0] * b[0][1] +
-         *           a[1][1] * b[1][1] +
-         *           a[1][2] * b[2][1]
+         *
+         * { (a1*d1 + a2*e1 + a3*f1), (a1*d2 + a2*e2 + a3*f2), (a1*d3 + a2*e3 + a3*f3) }
+         * { (b1*d1 + b2*e1 + b3*f1), (b1*d2 + b2*e2 + b3*f2), (b1*d3 + b2*e3 + b3*f3) }
+         * { (c1*d1 + c2*e1 + c3*f1), (c1*d2 + c2*e2 + c3*f2), (c1*d3 + c2*e3 + c3*f3) }
          */
+
 
 
         int[][] answer = new int[arr1.length][arr2[0].length];
 
-        for( int i = 0; i < answer.length; i ++ ) {
-            for (int j = 0; j < answer[0].length; j ++ ) {
-                int tmp = 0;
 
-                for( int k = 0; k < arr2.length; k++ ) {
-                    tmp += arr1[i][k] * arr2[k][j];
+
+        for( int h = 0; h < arr1.length; h ++ ) {
+            for(int w = 0; w < arr2[0].length; w ++  ) {
+                for (int k = 0; k < arr2.length; k ++ ) {
+                    answer[h][w] += (arr1[h][k] * arr2[k][w]);
                 }
-
-
-                answer[i][j] = tmp;
             }
         }
 
+
         return answer;
     }
+
+    public class Success {
+        public int[][] solution(int[][] arr1, int[][] arr2) {
+            /**
+             *  {
+             *    {x0y0,  x1y0},
+             *    {x0y1,  x1y1},
+             *    {x0y2,  x1y2}
+             *  }
+             *
+             *  {
+             *    {a0b0,  a1b0},
+             *    {a0b1,  a1b1},
+             *  }
+             *
+             *
+             *  {
+             *      { x0y0 * a0b0 + x1y0 * a0b1, x0y0 * a1b0 + x1y0 * a1b1 },
+             *      { x0y1 * a0b0 + x1y1 * a0b1, x0y1 * a1b0 + x1y1 * a1b1 },
+             *      { x0y2 * a0b0 + x1y2 * a0b1, x0y2 * a1b0 + x1y2 * a1b1 }
+             *  }
+             *
+             *  r[0][0] = a[0][0] * b[0][0] + a[0][1] * b[1][0]
+             *  r[0][1] = a[0][0] * b[0][1] + a[0][1] * b[1][1]
+             *
+             *
+             *
+             *  r[1][0] = a[1][0] * b[0][0] + a[1][1] * b[1][0]
+             *  r[2][0] = a[2][0] * b[0][0] + a[2][1] * b[1][0]
+             *
+             *
+             *  r[0][i] = a[0][0] * b[0][i] +
+             *            a[0][1] * b[1][i]
+             *  r[j][0] = a[j][0] * b[0][0] +
+             *            a[j][1] * b[1][0]
+             *
+             *  r[j][i] = a[j][0] * b[0][i] + a[j][1] * b[1][i]
+             *
+             */
+
+            /**
+             * r[0][1] = a[0][0] * b[0][1] +
+             *           a[0][1] * b[1][1] +
+             *           a[0][2] * b[2][1]
+             *
+             * r[1][0] = a[1][0] * b[0][0] +
+             *           a[1][1] * b[1][0] +
+             *           a[1][2] * b[2][0]
+             *
+             * r[1][1] = a[1][0] * b[0][1] +
+             *           a[1][1] * b[1][1] +
+             *           a[1][2] * b[2][1]
+             */
+
+
+            int[][] answer = new int[arr1.length][arr2[0].length];
+
+            for( int i = 0; i < answer.length; i ++ ) {
+                for (int j = 0; j < answer[0].length; j ++ ) {
+                    int tmp = 0;
+
+                    for( int k = 0; k < arr2.length; k++ ) {
+                        tmp += arr1[i][k] * arr2[k][j];
+                    }
+
+
+                    answer[i][j] = tmp;
+                }
+            }
+
+            return answer;
+        }
+    }
+
 
 }
