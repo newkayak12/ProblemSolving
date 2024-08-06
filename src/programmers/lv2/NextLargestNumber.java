@@ -73,15 +73,65 @@ public class NextLargestNumber {
     }
 
 
+    private int popcount(int x) {
+        int m1  = 0x55555555;
+        int m2  = 0x33333333;
+        int m4  = 0x0f0f0f0f;
+        int m8  = 0x00ff00ff;
+        int m16 = 0x0000ffff;
+        System.out.println(Integer.toBinaryString(x) + " "+x);
+        x = (x & m1 ) + ((x >>  1) & m1 );
+        System.out.println(Integer.toBinaryString(x) + " "+x);
+        x = (x & m2 ) + ((x >>  2) & m2 );
+        System.out.println(Integer.toBinaryString(x) + " "+x);
+        x = (x & m4 ) + ((x >>  4) & m4 );
+        System.out.println(Integer.toBinaryString(x) + " "+x);
+        x = (x & m8 ) + ((x >>  8) & m8 );
+        System.out.println(Integer.toBinaryString(x) + " "+x);
+        x = (x & m16) + ((x >> 16) & m16);
+        System.out.println(Integer.toBinaryString(x) + " "+x);
+        return x;
+    }
+
+    @Test
+    public void test () {
+        System.out.println(Integer.bitCount(70));
+        System.out.println(popcount(70));
+        // HD, Figure 5-2
+//        i = i - ((i >>> 1) & 0x55555555);
+//        i = (i & 0x33333333) + ((i >>> 2) & 0x33333333);
+//        i = (i + (i >>> 4)) & 0x0f0f0f0f;
+//        i = i + (i >>> 8);
+//        i = i + (i >>> 16);
+//        return i & 0x3f;
+
+    }
+
     public int solution ( int n ) {
-        int bitCount = Integer.bitCount(n);
-        int answer = n;
-        loop: while( true ) {
-            answer += 1;
-            if( Integer.bitCount(answer) == bitCount ) {
-                break loop;
+        int number = n ;
+        int count = Integer.bitCount(n);
+        while (true) {
+            number += 1;
+            if( count == Integer.bitCount(number)){
+                break;
             }
         }
-        return answer;
+
+        return number;
     }
+
+    class Success {
+        public int solution ( int n ) {
+            int bitCount = Integer.bitCount(n);
+            int answer = n;
+            loop: while( true ) {
+                answer += 1;
+                if( Integer.bitCount(answer) == bitCount ) {
+                    break loop;
+                }
+            }
+            return answer;
+        }
+    }
+
 }
