@@ -88,6 +88,24 @@ public class MakeQueuesSumSame {
 
             Assertions.assertEquals(result, solution(queue1, queue2));
         }
+
+        @Test
+        public void case4() {
+            int[] queue1 = {10, 5, 1};
+            int[] queue2 = {2, 2, 2};
+            int result = -1;
+
+            Assertions.assertEquals(result, solution(queue1, queue2));
+        }
+
+        @Test
+        public void case5() {
+            int[] queue1 = {1,1, 1,1};
+            int[] queue2 = {1,1,7,1};
+            int result = 9;
+
+            Assertions.assertEquals(result, solution(queue1, queue2));
+        }
     }
 
 
@@ -123,44 +141,33 @@ public class MakeQueuesSumSame {
 
 
     public int solution(int[] queue1, int[] queue2){
-        int answer = 0;
-        Queue<Integer> q1 = new LinkedList<>();
-        Queue<Integer> q2 = new LinkedList<>();
+        int count = 0;
+        int start = 0;
+        int end = queue1.length - 1;
+        long sum1 = 0;
+        long sum2 = 0;
+        long[] window = new long[queue1.length + queue2.length];
 
-        int q1Total = 0;
-        int q2Total = 0;
-        int total = 0;
-        for(int q : queue1) {
-            q1.add(q);
-            total += q;
-            q1Total += q;
-        }
-        for(int q : queue2) {
-            q2.add(q);
-            total += q;
-            q2Total += q;
+
+        for( int i = 0; i < queue1.length; i ++ ) {
+            sum1 += queue1[i];
+            sum2 += queue2[i];
+            window[i] = queue1[i];
+            window[i + queue1.length] = queue2[i];
         }
 
+        long total = sum1 + sum2;
         if( total % 2 != 0 ) return -1;
+        long avg = total / 2;
 
-        long target = total / 2;
-        while ( true ) {
-            if( answer > (queue1.length + queue2.length) * 2 ) return -1;
+        while( true ){
+          if( avg > sum1 && end < window.length - 1 )  sum1 += window[++end];
+          else if ( avg < sum1 &&  start < end) sum1 -= window[start++];
+          else if ( avg == sum1 ) return count;
+          else return -1;
 
-            if( q1Total == target ) break;
-            else if (q1Total > target) {
-                q1Total -= q1.peek();
-                q2.add(q1.poll());
-            }
-            else {
-                q1Total -= q2.peek();
-                q1.add(q1.poll());
-            }
-
-            answer++;
+          count += 1;
         }
-
-        return answer;
     }
 
    class TwoPointerFail {

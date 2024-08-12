@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import javax.print.attribute.SetOfIntegerSyntax;
 import java.util.*;
 
 public class NumberConversion {
@@ -54,123 +55,155 @@ public class NumberConversion {
             Assertions.assertEquals(result, solution(x, y, n));
         }
     }
+    public int solution(int x, int y, int n){
+       Queue<Integer[]> queue = new LinkedList<>();
+       Set<Integer> visit = new HashSet<>();
+       queue.add(new Integer[]{x, 0});
 
-    public int solution(int x, int y, int n) {
-        return this.calc(x, y, n);
+       while( !queue.isEmpty() ) {
+           Integer[] tuple = queue.poll();
+           if( tuple[0] == y ) return tuple[1];
+
+           if( !visit.contains(tuple[0] + n) && tuple[0] < y ) {
+               int calculated = tuple[0] + n;
+               queue.add(new Integer[]{calculated, tuple[1] + 1});
+               visit.add(calculated);
+           }
+           if( !visit.contains(tuple[0] * 2) && tuple[0] < y ) {
+               int calculated = tuple[0] * 2;
+               queue.add(new Integer[]{calculated, tuple[1] + 1});
+               visit.add(calculated);
+           }
+           if( !visit.contains(tuple[0] * 3) && tuple[0] < y ) {
+               int calculated = tuple[0] * 3;
+               queue.add(new Integer[]{calculated, tuple[1] + 1});
+               visit.add(calculated);
+           }
+
+       }
+
+       return -1;
     }
 
-    //BFS
-    private int calc( int x, int y, int n) {
-        int count = 0;
-        Queue<Integer> queue = new LinkedList<>();
-        Set<Integer> visited = new HashSet<>();
-        queue.add(x);
+    class Success {
 
-        while( !queue.isEmpty() ) {
-
-            int nowSize = queue.size();
-            for (int i = 0; i < nowSize; i ++ ) {
-                int prevNum = queue.poll();
-                if( prevNum == y) return count;
-                if( !visited.contains(prevNum + n) && prevNum + n <= y ) {
-                    queue.add(prevNum + n);
-                    visited.add(prevNum + n);
-                }
-                if( !visited.contains(prevNum * 2) && prevNum * 2 <= y ) {
-                    queue.add(prevNum * 2);
-                    visited.add(prevNum * 2);
-                }
-                if( !visited.contains(prevNum * 3) && prevNum * 3 <= y ) {
-                    queue.add(prevNum * 3);
-                    visited.add(prevNum * 3);
-                }
-            }
-            count += 1 ;
+        public int solution(int x, int y, int n) {
+            return this.calc(x, y, n);
         }
 
-        return  -1;
-    }
-//    BFS
-    private int calcQueue( int x, int y, int n, int count) {
-        Queue<List<int[]>> stack = new LinkedList<>();
-        List<Integer> answerList = new ArrayList<>();
-        stack.add(Arrays.asList(new int[] {x, count}));
+        //BFS
+        private int calc( int x, int y, int n) {
+            int count = 0;
+            Queue<Integer> queue = new LinkedList<>();
+            Set<Integer> visited = new HashSet<>();
+            queue.add(x);
 
+            while( !queue.isEmpty() ) {
 
-        while ( !stack.isEmpty() ) {
-            List<int[]> pop = stack.poll();
-            for(int i = 0; i < pop.size(); i ++  ) {
-                int[] state = pop.get(i);
-
-                int prevNum = state[0];
-                int prevCount = state[1];
-
-                if (prevCount  == -1) continue;
-                if (prevNum == y) {
-                    answerList.add(prevCount);
-                    break;
+                int nowSize = queue.size();
+                for (int i = 0; i < nowSize; i ++ ) {
+                    int prevNum = queue.poll();
+                    if( prevNum == y) return count;
+                    if( !visited.contains(prevNum + n) && prevNum + n <= y ) {
+                        queue.add(prevNum + n);
+                        visited.add(prevNum + n);
+                    }
+                    if( !visited.contains(prevNum * 2) && prevNum * 2 <= y ) {
+                        queue.add(prevNum * 2);
+                        visited.add(prevNum * 2);
+                    }
+                    if( !visited.contains(prevNum * 3) && prevNum * 3 <= y ) {
+                        queue.add(prevNum * 3);
+                        visited.add(prevNum * 3);
+                    }
                 }
-
-                List<int[]> tmp = new ArrayList<>();
-
-                tmp.add(new int[]{prevNum * 3, prevNum * 3 > y ? -1 : prevCount + 1});
-                tmp.add(new int[]{prevNum * 2, prevNum * 2 > y ? -1 : prevCount + 1});
-                tmp.add(new int[]{prevNum + n, prevNum + n > y ? -1 : prevCount + 1});
-                stack.add(tmp);
+                count += 1 ;
             }
+
+            return  -1;
         }
-
-        if (answerList.isEmpty()) return  - 1;
-        else return Collections.min(answerList);
-
-    }
-    //DFS
-    //timeout
-    private int calcStack( int x, int y, int n, int count) {
-        List<Integer> answerList = new ArrayList<>();
-        Stack<List<int[]>> stack = new Stack<>();
-        stack.add(Arrays.asList(new int[] {x, count}));
+        //    BFS
+        private int calcQueue( int x, int y, int n, int count) {
+            Queue<List<int[]>> stack = new LinkedList<>();
+            List<Integer> answerList = new ArrayList<>();
+            stack.add(Arrays.asList(new int[] {x, count}));
 
 
-        while ( !stack.isEmpty() ) {
-            List<int[]> pop = stack.pop();
-            for(int i = 0; i < pop.size(); i ++  ) {
-                int[] state = pop.get(i);
+            while ( !stack.isEmpty() ) {
+                List<int[]> pop = stack.poll();
+                for(int i = 0; i < pop.size(); i ++  ) {
+                    int[] state = pop.get(i);
 
-                int prevNum = state[0];
-                int prevCount = state[1];
+                    int prevNum = state[0];
+                    int prevCount = state[1];
 
-                if (prevCount  == -1) continue;
-                if (prevNum == y) {
-                    answerList.add(prevCount);
-                    break;
+                    if (prevCount  == -1) continue;
+                    if (prevNum == y) {
+                        answerList.add(prevCount);
+                        break;
+                    }
+
+                    List<int[]> tmp = new ArrayList<>();
+
+                    tmp.add(new int[]{prevNum * 3, prevNum * 3 > y ? -1 : prevCount + 1});
+                    tmp.add(new int[]{prevNum * 2, prevNum * 2 > y ? -1 : prevCount + 1});
+                    tmp.add(new int[]{prevNum + n, prevNum + n > y ? -1 : prevCount + 1});
+                    stack.add(tmp);
                 }
-
-                List<int[]> tmp = new ArrayList<>();
-
-                tmp.add(new int[]{prevNum * 3, prevNum * 3 > y ? -1 : prevCount + 1});
-                tmp.add(new int[]{prevNum * 2, prevNum * 2 > y ? -1 : prevCount + 1});
-                tmp.add(new int[]{prevNum + n, prevNum + n > y ? -1 : prevCount + 1});
-                stack.add(tmp);
             }
+
+            if (answerList.isEmpty()) return  - 1;
+            else return Collections.min(answerList);
+
         }
+        //DFS
+        //timeout
+        private int calcStack( int x, int y, int n, int count) {
+            List<Integer> answerList = new ArrayList<>();
+            Stack<List<int[]>> stack = new Stack<>();
+            stack.add(Arrays.asList(new int[] {x, count}));
 
-        if (answerList.isEmpty()) return  - 1;
-        else return Collections.min(answerList);
-    }
-    //timeout
-    private int calcRecursive( int x, int y, int n, int count) {
 
-        if ( x == y ) return count - 1;
-        else if ( x < y ) {
+            while ( !stack.isEmpty() ) {
+                List<int[]> pop = stack.pop();
+                for(int i = 0; i < pop.size(); i ++  ) {
+                    int[] state = pop.get(i);
 
-            int pl= this.calcRecursive(x + n, y, n, count + 1);
-            int multTwo = this.calcRecursive(x * 2, y, n, count + 1);
-            int multThree = this.calcRecursive(x * 3, y, n, count + 1);
+                    int prevNum = state[0];
+                    int prevCount = state[1];
 
-            count = Math.min(Math.min(pl, multTwo), multThree);
-            return count;
-        } else return Integer.MAX_VALUE;
+                    if (prevCount  == -1) continue;
+                    if (prevNum == y) {
+                        answerList.add(prevCount);
+                        break;
+                    }
 
+                    List<int[]> tmp = new ArrayList<>();
+
+                    tmp.add(new int[]{prevNum * 3, prevNum * 3 > y ? -1 : prevCount + 1});
+                    tmp.add(new int[]{prevNum * 2, prevNum * 2 > y ? -1 : prevCount + 1});
+                    tmp.add(new int[]{prevNum + n, prevNum + n > y ? -1 : prevCount + 1});
+                    stack.add(tmp);
+                }
+            }
+
+            if (answerList.isEmpty()) return  - 1;
+            else return Collections.min(answerList);
+        }
+        //timeout
+        private int calcRecursive( int x, int y, int n, int count) {
+
+            if ( x == y ) return count - 1;
+            else if ( x < y ) {
+
+                int pl= this.calcRecursive(x + n, y, n, count + 1);
+                int multTwo = this.calcRecursive(x * 2, y, n, count + 1);
+                int multThree = this.calcRecursive(x * 3, y, n, count + 1);
+
+                count = Math.min(Math.min(pl, multTwo), multThree);
+                return count;
+            } else return Integer.MAX_VALUE;
+
+        }
     }
 }
