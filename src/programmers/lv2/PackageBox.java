@@ -100,36 +100,64 @@ public class PackageBox {
         }
     }
 
-    //Queue로 하면 틀리는 이유가 뭘까
     public int solution(int[] order) {
 
-        int answer = 0;
-
-        Stack<Integer> stash = new Stack<>();
-        Queue<Integer> orderQueue = new LinkedList<>(Arrays.stream(order).boxed().collect(Collectors.toList()));
-
+        int count = 0;
+        Queue<Integer> queue = new LinkedList<>(Arrays.stream(order).boxed().collect(Collectors.toList()));
+        Stack<Integer> stack = new Stack<>();
 
 
-        for (int i = 1; i <= order.length; i ++ ){
-            int coming = i ;
+        for (int i = 1; i <= order.length; i ++ ) {
 
-            if(orderQueue.isEmpty()) break;
-
-            if(coming != orderQueue.peek() ) stash.add(coming);
+            if( !queue.isEmpty() && queue.peek() != i ) stack.add(i);
             else {
-                orderQueue.poll();
-                answer += 1;
+                queue.poll();
+                count += 1;
             }
 
-            while( !stash.isEmpty() && stash.peek() == orderQueue.peek()) {
-                stash.pop();
-                orderQueue.poll();
-                answer += 1;
+
+            while (!stack.isEmpty() && stack.peek() == queue.peek() ) {
+                stack.pop();
+                queue.poll();
+                count += 1;
             }
         }
 
+        return count;
+    }
 
-        return answer;
+    class Success {
+        //Queue로 하면 틀리는 이유가 뭘까
+        public int solution(int[] order) {
+
+            int answer = 0;
+
+            Stack<Integer> stash = new Stack<>();
+            Queue<Integer> orderQueue = new LinkedList<>(Arrays.stream(order).boxed().collect(Collectors.toList()));
+
+
+
+            for (int i = 1; i <= order.length; i ++ ){
+                int coming = i ;
+
+                if(orderQueue.isEmpty()) break;
+
+                if(coming != orderQueue.peek() ) stash.add(coming);
+                else {
+                    orderQueue.poll();
+                    answer += 1;
+                }
+
+                while( !stash.isEmpty() && stash.peek() == orderQueue.peek()) {
+                    stash.pop();
+                    orderQueue.poll();
+                    answer += 1;
+                }
+            }
+
+
+            return answer;
+        }
     }
 
 

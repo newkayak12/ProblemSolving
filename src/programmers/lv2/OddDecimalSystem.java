@@ -8,6 +8,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Map;
 
+
+//RETRY * 2
 public class OddDecimalSystem {
     //https://school.programmers.co.kr/learn/courses/30/lessons/12899
     /**
@@ -159,29 +161,132 @@ public class OddDecimalSystem {
 
             Assertions.assertEquals(result, solution(n));
         }
-    }
 
+        @Test
+        public void case5 () {
+            int n = 10;
+            String result = "41";
 
-    private String divThree (int n) {
+            Assertions.assertEquals(result, solution(n));
+        }
 
-        if (n <= 3) return n+"";
-        else {
-            if (n % 3 == 0) {
-                if( (n / 3.0) > 4.0 ) return divThree( (n / 3) - 1)+""+3;
-                return ((n / 3) - 1) + "" + 3;
-            }
-            else {
-                if( (n / 3.0) > 4.0 ) return divThree( (n / 3))+"" + (n % 3);
-                return (n / 3) + "" + (n % 3);
-            }
+        @Test
+        public void case6 () {
+            int n = 13;
+            String result = "111";
+
+            Assertions.assertEquals(result, solution(n));
+        }
+
+        @Test
+        public void case7 () {
+            int n = 16;
+            String result = "121";
+
+            Assertions.assertEquals(result, solution(n));
+        }
+
+        @Test
+        public void case8 () {
+            int n = 19;
+            String result = "141";
+
+            Assertions.assertEquals(result, solution(n));
+        }
+        @Test
+        public void case9 () {
+            int n = 20;
+            String result = "142";
+
+            Assertions.assertEquals(result, solution(n));
+        }
+        @Test
+        public void case10 () {
+            int n = 21;
+            String result = "144";
+
+            Assertions.assertEquals(result, solution(n));
         }
     }
-    private String afterEffect ( String s ) {
-        return s.replaceAll("3", "4");
-    }
+
     public String solution(int n) {
-        return afterEffect(divThree(n));
+
+        /**
+         * 1  : 1  (3*0 + 1)
+         * 2  : 2  (3*0 + 2)
+         * 3  : 4  (3*1 + 0)
+         *
+         * 4  : 11  (3*1 + 1)
+         * 5  : 12  (3*1 + 2)
+         * 6  : 14  (3*2 + 0)
+         *
+         * 7  : 21  (3*2 + 1)
+         * 8  : 22  (3*2 + 2)
+         * 9  : 24  (3*3 + 0)
+         *
+         * 10 : 41  (3*3 + 1)
+         * 11 : 42  (3*3 + 2)
+         * 12 : 44  (3*4 + 0)
+         *
+         *
+         * 13 : 111  (3*4 + 1)
+         * 14 : 112  (3*4 + 2)
+         * 15 : 114  (3*5 + 0)
+         *
+         * 16 : 121  (3*5 + 1)
+         * 17 : 122  (3*5 + 2)
+         * 18 : 124  (3*6 + 0)
+         *
+         * 19 : 141  (3*6 + 1)
+         * 20 : 142  (3*6 + 2)
+         * 21 : 144  (3*7 + 0)
+         */
+
+        int number = n;
+        StringBuffer buffer = new StringBuffer();
+        while ( true ) {
+            if ( number == 0 ) break;
+            int div = number / 3;
+            int modulo = number % 3;
+
+            if (modulo ==  0 ) {
+                buffer.append(4);
+                number = div - 1;
+            }
+            else {
+                buffer.append(modulo);
+                number = div;
+            }
+
+        }
+
+        return  buffer.reverse().toString();
     }
+
+    class Success {
+        private String divThree (int n) {
+
+            if (n <= 3) return n+"";
+            else {
+                if (n % 3 == 0) {
+                    if( (n / 3.0) > 4.0 ) return divThree( (n / 3) - 1)+""+3;
+                    return ((n / 3) - 1) + "" + 3;
+                }
+                else {
+                    if( (n / 3.0) > 4.0 ) return divThree( (n / 3))+"" + (n % 3);
+                    return (n / 3) + "" + (n % 3);
+                }
+            }
+        }
+        private String afterEffect ( String s ) {
+            return s.replaceAll("3", "4");
+        }
+        public String solution(int n) {
+            return afterEffect(divThree(n));
+        }
+    }
+
+
 
     /**
      * 효율성 테스트 시간 초과로 개선 필요

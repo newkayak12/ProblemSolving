@@ -55,6 +55,8 @@ public class NumberConversion {
             Assertions.assertEquals(result, solution(x, y, n));
         }
     }
+
+
     public int solution(int x, int y, int n){
        Queue<Integer[]> queue = new LinkedList<>();
        Set<Integer> visit = new HashSet<>();

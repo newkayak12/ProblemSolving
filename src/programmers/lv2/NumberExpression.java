@@ -32,6 +32,26 @@ public class NumberExpression {
     }
 
     public int solution ( int n ) {
+        int count = 0;
+        for( int i = n; i > 0; i --) {
+            int number = n;
+
+            for( int j = i; j > 0; j --) {
+                number -= j;
+                if(number == 0) {
+                    count += 1;
+                    break;
+                }
+                else if ( number < 0) break;
+            }
+        }
+
+        return count;
+    }
+
+
+    class Success {
+        public int solution ( int n ) {
         int count = 1;
         for ( int i = n - 1; i > 0; i-- ) {
             int now = i;
@@ -43,5 +63,6 @@ public class NumberExpression {
         }
 
         return count;
+    }
     }
 }
