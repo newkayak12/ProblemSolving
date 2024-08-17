@@ -54,7 +54,23 @@ public class PhoneBook {
 
 
     public boolean solution(String[] phone_book){
+        boolean answer = true;
 
+
+        Arrays.sort(phone_book, (o1, o2) -> {
+            int compare = o1.compareTo(o2);
+            if ( compare == 0 ) return o1.length() - o2.length();
+            else return compare;
+        });
+
+        for (int i = 1; i < phone_book.length; i ++ ) {
+            if(phone_book[i].startsWith(phone_book[i - 1])) {
+                answer = false;
+                break;
+            }
+        }
+
+        return answer;
     }
     class Success {
         public boolean solution(String[] phone_book) {
