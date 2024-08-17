@@ -52,7 +52,12 @@ public class PhoneBook {
         }
     }
 
-    public boolean solution(String[] phone_book) {
+
+    public boolean solution(String[] phone_book){
+
+    }
+    class Success {
+        public boolean solution(String[] phone_book) {
         boolean answer = true;
         Arrays.sort(phone_book, (p1, p2) -> {
             int compare = p1.compareTo(p2);
@@ -69,6 +74,7 @@ public class PhoneBook {
         }
 
         return answer;
+    }
     }
 
     void print(String[] arr) {
