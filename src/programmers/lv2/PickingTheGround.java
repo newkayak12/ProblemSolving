@@ -57,56 +57,78 @@ public class PickingTheGround {
         }
     }
 
-    //BFS
-    public int solution( int[][] land) {
 
-        for( int y = 1; y < land.length; y ++ ) {
-            int max = -1;
-            for ( int x = 0; x < land[0].length; x ++ ) {
-                if ( x != 0 ) max = Math.max(land[y][x] + land[y - 1][0], max);
-                if ( x != 1 ) max = Math.max(land[y][x] + land[y - 1][1], max);
-                if ( x != 2 ) max = Math.max(land[y][x] + land[y - 1][2], max);
-                if ( x != 3 ) max = Math.max(land[y][x] + land[y - 1][3], max);
 
-                land[y][x] = max;
-                max = -1;
-            }
-//            System.out.println(Arrays.stream(land[y]).boxed().map(String::valueOf).collect(Collectors.joining(", ")));;
+
+    public int solution( int[][] land){
+        int prev = -1;
+        int sum = 0;
+        for( int i = 0; i < land.length; i ++ ) {
+            int max = 0;
+
+
+
+            sum += max;
         }
 
-        int max = -1;
-        for (int x = 0; x < 4; x ++) max = Math.max(land[land.length - 1 ][x], max);
-        return max;
+        return sum;
     }
-    public int solution2( int[][] land) {
-        // y의 개수 n개
-        // x의 개수 4개
-        int beforeMax = -1;
-        int beforeIndex = -1;
-        int accumulate = 0;
 
-        for( int x = 0; x < land[0].length; x ++ ) {
-            if( beforeMax < land[0][x] ){
-                beforeIndex = x;
-                beforeMax = land[0][x];
+
+
+    class Success {
+        //BFS
+        public int solution( int[][] land) {
+
+            for( int y = 1; y < land.length; y ++ ) {
+                int max = -1;
+                for ( int x = 0; x < land[0].length; x ++ ) {
+                    if ( x != 0 ) max = Math.max(land[y][x] + land[y - 1][0], max);
+                    if ( x != 1 ) max = Math.max(land[y][x] + land[y - 1][1], max);
+                    if ( x != 2 ) max = Math.max(land[y][x] + land[y - 1][2], max);
+                    if ( x != 3 ) max = Math.max(land[y][x] + land[y - 1][3], max);
+
+                    land[y][x] = max;
+                    max = -1;
+                }
+//            System.out.println(Arrays.stream(land[y]).boxed().map(String::valueOf).collect(Collectors.joining(", ")));;
             }
+
+            int max = -1;
+            for (int x = 0; x < 4; x ++) max = Math.max(land[land.length - 1 ][x], max);
+            return max;
         }
-        accumulate += beforeMax;
-        for ( int y = 1; y < land.length; y ++ ) {
-            beforeMax = -1;
-            int indexNow = -1;
-            for ( int x = 0; x < land[0].length; x ++ ) {
-                if ( x == beforeIndex ) continue;
-                if ( beforeMax < land[y][x] ){
-                    indexNow = x;
-                    beforeMax = land[y][x];
+        public int solution2( int[][] land) {
+            // y의 개수 n개
+            // x의 개수 4개
+            int beforeMax = -1;
+            int beforeIndex = -1;
+            int accumulate = 0;
+
+            for( int x = 0; x < land[0].length; x ++ ) {
+                if( beforeMax < land[0][x] ){
+                    beforeIndex = x;
+                    beforeMax = land[0][x];
                 }
             }
-
-            beforeIndex = indexNow;
             accumulate += beforeMax;
-        }
+            for ( int y = 1; y < land.length; y ++ ) {
+                beforeMax = -1;
+                int indexNow = -1;
+                for ( int x = 0; x < land[0].length; x ++ ) {
+                    if ( x == beforeIndex ) continue;
+                    if ( beforeMax < land[y][x] ){
+                        indexNow = x;
+                        beforeMax = land[y][x];
+                    }
+                }
 
-        return accumulate;
+                beforeIndex = indexNow;
+                accumulate += beforeMax;
+            }
+
+            return accumulate;
+        }
     }
+
 }
