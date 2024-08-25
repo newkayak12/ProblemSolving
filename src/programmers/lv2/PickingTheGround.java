@@ -61,14 +61,11 @@ public class PickingTheGround {
 
 
     public int solution( int[][] land){
-        int prev = -1;
         int sum = 0;
         for( int i = 0; i < land.length; i ++ ) {
-            int max = 0;
 
 
 
-            sum += max;
         }
 
         return sum;
