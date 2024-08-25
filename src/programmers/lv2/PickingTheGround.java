@@ -5,8 +5,12 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Stack;
 import java.util.stream.Collectors;
 
+//retry*2
 public class PickingTheGround {
     //https://school.programmers.co.kr/learn/courses/30/lessons/12913
     /**
@@ -60,12 +64,25 @@ public class PickingTheGround {
 
 
 
+    //DFS
     public int solution( int[][] land){
-        int sum = 0;
-        for( int i = 0; i < land.length; i ++ ) {
+        for( int i = 1; i < land.length; i ++ ) {
+            int max = -1;
+            for( int j = 0; j < 4; j ++ ) {
+                if( j != 0 ) max = Math.max(max , land[i - 1][0] + land[i][j]);
+                if( j != 1 ) max = Math.max(max , land[i - 1][1] + land[i][j]);
+                if( j != 2 ) max = Math.max(max , land[i - 1][2] + land[i][j]);
+                if( j != 3 ) max = Math.max(max , land[i - 1][3] + land[i][j]);
 
+                land[i][j] = max;
+                max = -1;
+            }
 
+        }
 
+        int sum = -1;
+        for( int i = 0; i < 4; i ++ ) {
+          sum = Math.max(land[land.length - 1][i], sum);
         }
 
         return sum;
