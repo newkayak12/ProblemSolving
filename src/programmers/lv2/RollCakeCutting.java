@@ -103,119 +103,157 @@ public class RollCakeCutting {
      */
 
     public int solution(int[] topping) {
-        Map<Integer, Integer> leftSide = new HashMap<>();
-        Map<Integer, Integer> rightSide = Arrays.stream(topping).boxed()
-                .collect(Collectors.toMap(Function.identity(), integer -> 1, (integer, integer2) -> integer + integer2));
+        Map<Integer, Integer> leftSide = Arrays.stream(topping)
+                                               .boxed()
+                                               .collect(Collectors.toMap(
+                                                       Function.identity(),
+                                                       key -> 1,
+                                                       (keyV1, keyV2) -> keyV1 + keyV2
+                                               ));
+
+        Map<Integer, Integer> rightSide = new HashMap<>();
 
         int count = 0;
 
         for( int i = 0; i < topping.length; i ++ ) {
-            Integer number = topping[i];
+            int number = topping[i];
+            int countNumber = leftSide.getOrDefault(number, 0);
 
-            leftSide.putIfAbsent(number, 1);
-            leftSide.computeIfPresent(number, (k, v) -> leftSide.get(k) + 1);
+            if( countNumber - 1 > 0) leftSide.put(number, leftSide.get(number) - 1);
+            else leftSide.remove(number);
 
-            Integer right = rightSide.get(number);
-            if(right <= 1) rightSide.remove(number);
-            else rightSide.put(number, right - 1);
-            if( leftSide.keySet().size() == rightSide.keySet().size()) count ++ ;
+            rightSide.putIfAbsent(number, 0);
+            rightSide.computeIfPresent(number, (k, v) -> v + 1);
+
+            if(
+                    leftSide.keySet().size() ==
+                    rightSide.keySet().size()
+            ) {
+                count += 1;
+            }
         }
+
 
         return count;
     }
 
-    class Success {
-         public int solution(int[] topping) {
+
+    class SuccessSolv {
+        public int solution(int[] topping) {
+            Map<Integer, Integer> leftSide = new HashMap<>();
+            Map<Integer, Integer> rightSide = Arrays.stream(topping).boxed()
+                    .collect(Collectors.toMap(Function.identity(), integer -> 1, (integer, integer2) -> integer + integer2));
+
+            int count = 0;
+
+            for( int i = 0; i < topping.length; i ++ ) {
+                Integer number = topping[i];
+
+                leftSide.putIfAbsent(number, 1);
+                leftSide.computeIfPresent(number, (k, v) -> leftSide.get(k) + 1);
+
+                Integer right = rightSide.get(number);
+                if(right <= 1) rightSide.remove(number);
+                else rightSide.put(number, right - 1);
+                if( leftSide.keySet().size() == rightSide.keySet().size()) count ++ ;
+            }
+
+            return count;
+        }
+        class Success {
+            public int solution(int[] topping) {
+                int answer = 0;
+                Set<Integer> set = new HashSet<>();
+                int[] partA = new int[topping.length];
+                int[] partB = new int[topping.length];
+
+                for ( int i = 0; i < topping.length; i ++ ) {
+                    set.add(topping[i]);
+                    partA[i] = set.size();
+                }
+                set.clear();
+                for ( int i = topping.length - 1; i >= 0 ; i -- ) {
+                    set.add(topping[i]);
+                    partB[i] = set.size();
+                }
+
+                for ( int i = 0; i < partA.length - 1; i ++ ) {
+                    if( partA[i] == partB[i + 1] ) answer += 1;
+                }
+
+
+                return answer;
+            }
+        }
+
+
+        public int solutionErrorAndTimeout(int[] topping){
             int answer = 0;
-            Set<Integer> set = new HashSet<>();
-            int[] partA = new int[topping.length];
-            int[] partB = new int[topping.length];
+            Map<Integer, Long> map = Arrays.stream(topping).boxed()
+                    .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+            int avg = (int) Math.ceil(topping.length/ map.size() * 1.0);
+            Set<Integer> keySets = map.keySet().stream()
+                    .filter(k -> map.get(k) <= avg)
+                    .sorted((o1, o2) -> map.get(o1).intValue() - map.get(o2).intValue())
+                    .collect(Collectors.toSet());
 
-            for ( int i = 0; i < topping.length; i ++ ) {
-                set.add(topping[i]);
-                partA[i] = set.size();
-            }
-            set.clear();
-            for ( int i = topping.length - 1; i >= 0 ; i -- ) {
-                set.add(topping[i]);
-                partB[i] = set.size();
-            }
+            for ( int i = 1; i < topping.length;  i ++ ) {
+                if( !keySets.contains(topping[i]) ) continue;
+                else {
 
-            for ( int i = 0; i < partA.length - 1; i ++ ) {
-                if( partA[i] == partB[i + 1] ) answer += 1;
+                    System.out.println(i+"----------");
+                    if( check (topping, i) ) answer += 1;
+                    System.out.println((i + 1)+"--------------");
+                    if( check (topping, i + 1))  answer += 1;
+                }
             }
 
 
             return answer;
         }
-    }
+        private boolean check (int[] topping,  int idx) {
+            if( idx >= topping.length) return false;
 
+            int[] partA = Arrays.copyOfRange(topping, 0, idx);
+            int[] partB = Arrays.copyOfRange(topping, idx , topping.length);
+            long countA = count(partA);
+            long countB = count(partB);
 
-    public int solutionErrorAndTimeout(int[] topping){
-        int answer = 0;
-        Map<Integer, Long> map = Arrays.stream(topping).boxed()
-                                       .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-        int avg = (int) Math.ceil(topping.length/ map.size() * 1.0);
-        Set<Integer> keySets = map.keySet().stream()
-                                  .filter(k -> map.get(k) <= avg)
-                                  .sorted((o1, o2) -> map.get(o1).intValue() - map.get(o2).intValue())
-                                  .collect(Collectors.toSet());
-
-        for ( int i = 1; i < topping.length;  i ++ ) {
-            if( !keySets.contains(topping[i]) ) continue;
-            else {
-
-                System.out.println(i+"----------");
-               if( check (topping, i) ) answer += 1;
-                System.out.println((i + 1)+"--------------");
-               if( check (topping, i + 1))  answer += 1;
-            }
+            print(partA);
+            print(partB);
+            if( countA == countB) return true;
+            else return false;
         }
 
 
-        return answer;
-    }
-    private boolean check (int[] topping,  int idx) {
-        if( idx >= topping.length) return false;
+        public int solutionTimout(int[] topping) {
 
-        int[] partA = Arrays.copyOfRange(topping, 0, idx);
-        int[] partB = Arrays.copyOfRange(topping, idx , topping.length);
-        long countA = count(partA);
-        long countB = count(partB);
+            int answer = 0;
+            for ( int i  = 1; i < topping.length - 1; i ++ ) {
+                int[] partA = Arrays.copyOfRange(topping, 0, i);
+                int[] partB = Arrays.copyOfRange(topping, i , topping.length);
 
-        print(partA);
-        print(partB);
-        if( countA == countB) return true;
-        else return false;
-    }
-
-
-    public int solutionTimout(int[] topping) {
-
-        int answer = 0;
-        for ( int i  = 1; i < topping.length - 1; i ++ ) {
-            int[] partA = Arrays.copyOfRange(topping, 0, i);
-            int[] partB = Arrays.copyOfRange(topping, i , topping.length);
-
-            long countA = count(partA);
-            long countB = count(partB);
+                long countA = count(partA);
+                long countB = count(partB);
 
 //            print(partA);
 //            print(partB);
 //            System.out.println(countA);
 //            System.out.println(countB);
 //            System.out.println("--------");
-            if( countA == countB) answer += 1;
+                if( countA == countB) answer += 1;
 
 
+            }
+            return answer;
         }
-        return answer;
+        private long count ( int [] topping ) {
+            return Arrays.stream(topping).boxed().distinct().count();
+        }
+        private void print( int [] topping ) {
+            for( int top : topping) System.out.print(top +", ");
+            System.out.println();
+        }
     }
-    private long count ( int [] topping ) {
-        return Arrays.stream(topping).boxed().distinct().count();
-    }
-    private void print( int [] topping ) {
-        for( int top : topping) System.out.print(top +", ");
-        System.out.println();
-    }
+
 }

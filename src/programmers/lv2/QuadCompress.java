@@ -68,13 +68,27 @@ public class QuadCompress {
         int sum = 0;
         for( int i = 0; i < size; i ++ ) {
             for ( int j = 0; j < size; j ++  ) {
-
+                sum += arr[y + i][x + j];
             }
         }
+
+        return sum == 0 || sum == Math.pow(size, 2);
     }
     public int[] quadZip(int[][] arr, int x, int y, int size, int[] answer) {
+        if( this.zippable(arr, x, y, size)){
+            if( arr[y][x] == 1) answer[1] += 1;
+            else answer[0] += 1;
+
+            return answer;
+        }
 
 
+        answer = quadZip(arr, x, y , size / 2, answer);
+        answer = quadZip(arr, x, y + size / 2, size / 2, answer);
+        answer = quadZip(arr, x + size / 2, y , size / 2, answer);
+        answer = quadZip(arr, x + size / 2, y + size / 2, size / 2, answer);
+
+        return answer;
     }
 
     class Success {

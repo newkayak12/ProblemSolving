@@ -4,9 +4,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Stack;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class RotatingParenthesis {
     //https://school.programmers.co.kr/learn/courses/30/lessons/76502
@@ -77,26 +76,74 @@ public class RotatingParenthesis {
         }
     }
 
+    public int solution( String s ){
 
-
-    public int solution( String s ) {
         int answer = 0;
-        Queue<String> queue = new LinkedList<>();
-        for(String parenthesis : s.split("")) queue.add(parenthesis);
+        Queue<Character> queue = new LinkedList<>();
 
+        for( Character c : s.toCharArray()) queue.add(c);
 
-        if (s.length() % 2 != 0) return 0;
-
-        for( int i = 0; i < queue.size(); i ++ ) {
-            if( check(queue) ) answer += 1;
-            String piece = queue.poll();
-            queue.add(piece);
+        for(int i = 0; i < s.length(); i ++ ) {
+            if( this.check(queue)) answer += 1;
+            queue.add(queue.poll());
         }
-
         return answer;
     }
 
-    private boolean check( Queue<String>  s ) {
+    private boolean check ( Queue<Character> parentheses ) {
+        Stack<Character> stack = new Stack<>();
+        char largeOpen = '[';
+        char mediumOpen = '{';
+        char smallOpen = '(';
+
+        char largeClose = ']';
+        char mediumClose = '}';
+        char smallClose = ')';
+
+
+        for ( Character now : parentheses ){
+            if( now == largeClose || now == mediumClose || now == smallClose) {
+                if( stack.isEmpty() ) return false;
+                char stackNow = stack.peek();
+
+                if( stackNow == largeOpen && (now == mediumClose || now == smallClose)) return false;
+                if( stackNow == mediumOpen && (now == largeClose || now == smallClose)) return false;
+                if( stackNow == smallOpen && (now == mediumClose || now == largeClose)) return false;
+
+                stack.pop();
+            }
+            else {
+                stack.add(now);
+            }
+        }
+
+        if(!stack.isEmpty()) return false;
+        else return true;
+
+    }
+
+
+
+
+    class Success {
+        public int solution( String s ) {
+            int answer = 0;
+            Queue<String> queue = new LinkedList<>();
+            for(String parenthesis : s.split("")) queue.add(parenthesis);
+
+
+            if (s.length() % 2 != 0) return 0;
+
+            for( int i = 0; i < queue.size(); i ++ ) {
+                if( check(queue) ) answer += 1;
+                String piece = queue.poll();
+                queue.add(piece);
+            }
+
+            return answer;
+        }
+
+        private boolean check( Queue<String>  s ) {
         Stack<String > stack = new Stack<>();
         String smOpen = "(";
         String smClose = ")";
@@ -129,5 +176,6 @@ public class RotatingParenthesis {
             } else stack.push(c);
         }
         return true;
+    }
     }
 }
