@@ -66,7 +66,12 @@ public class SaleEvent {
         public void case1() {
             String[] want = new String[]{"banana", "apple", "rice", "pork", "pot"};
             int[] number = new int[]{3, 2, 2, 2, 1};
-            String[] discount = new String[]{"chicken", "apple", "apple", "banana", "rice", "apple", "pork", "banana", "pork", "rice", "pot", "banana", "apple", "banana"};
+            String[] discount = new String[]{
+                    "chicken", "apple", "apple",
+                    "banana", "rice", "apple",
+                    "pork", "banana", "pork",
+                    "rice", "pot", "banana",
+                    "apple", "banana"};
             int result = 3;
 
             Assertions.assertEquals(result, solution(want, number, discount));
@@ -83,43 +88,69 @@ public class SaleEvent {
         }
     }
 
-    //slidingWindow
     public int solution(String[] want, int[] number, String[] discount) {
-        int answer = 0;
         Map<String, Integer> wantMap = new HashMap<>();
-        for ( int i = 0; i < want.length; i ++ ) wantMap.put(want[i], i);
-        List<String> discountList = Arrays.stream(discount).collect(Collectors.toList());
+        int answer = 0;
+        for( int i = 0; i < want.length; i ++ ) wantMap.put(want[i], i);
 
-        for ( int i = 0; i <= discount.length - 10; i ++ ) {
+
+        for( int i = 0;  i <= discount.length - 10; i ++ ) {
             int[] numberCopy = Arrays.copyOf(number, number.length);
-            List<String> sub = discountList.subList(i, i + 10);
-
-            for( String w : sub) {
-                Integer idx = wantMap.getOrDefault(w, -1);
-                if( idx != -1) numberCopy[idx] -= 1;
+//
+            for( int j = 0; j < 10; j ++  ) {
+                int wantIdx = wantMap.getOrDefault(discount[i + j], -1);
+                if( wantIdx == -1 ) break;
+                else numberCopy[wantIdx] -= 1;
             }
 
 
-            print(numberCopy);
-
-            int count = 0;
-            for( int num : numberCopy ) {
-                if( num > 0) count += 1;
-            }
-
-
+            long count = Arrays.stream(numberCopy).filter(k -> k > 0).count();
             if ( count == 0) answer += 1;
         }
-
 
         return answer;
     }
 
-    private void print( int[] arr) {
-        System.out.println("[");
-        for (int p: arr) {
-            System.out.println("\t"+p+",");
+    class Success {
+        //slidingWindow
+        public int solution(String[] want, int[] number, String[] discount) {
+            int answer = 0;
+            Map<String, Integer> wantMap = new HashMap<>();
+            for ( int i = 0; i < want.length; i ++ ) wantMap.put(want[i], i);
+            List<String> discountList = Arrays.stream(discount).collect(Collectors.toList());
+
+            for ( int i = 0; i <= discount.length - 10; i ++ ) {
+                int[] numberCopy = Arrays.copyOf(number, number.length);
+                List<String> sub = discountList.subList(i, i + 10);
+
+                for( String w : sub) {
+                    Integer idx = wantMap.getOrDefault(w, -1);
+                    if( idx != -1) numberCopy[idx] -= 1;
+                }
+
+
+                print(numberCopy);
+
+                int count = 0;
+                for( int num : numberCopy ) {
+                    if( num > 0) count += 1;
+                }
+
+
+                if ( count == 0) answer += 1;
+            }
+
+
+            return answer;
         }
-        System.out.println("]");
+
+        private void print( int[] arr) {
+            System.out.println("[");
+            for (int p: arr) {
+                System.out.println("\t"+p+",");
+            }
+            System.out.println("]");
+        }
     }
+
 }
