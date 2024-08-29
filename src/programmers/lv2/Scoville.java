@@ -43,47 +43,70 @@ public class Scoville {
         }
     }
 
-    public int solution(int[] scoville, int K) {
+
+    public int solution(int[] scoville, int K){
         PriorityQueue<Integer> queue = new PriorityQueue<>();
-        int answer = 0;
-        for ( int sc : scoville) queue.add(sc);
+        for( int element : scoville ) queue.add(element);
 
-        if (K == 0) return -1;
+        int count = 0;
         if (queue.peek() > K) return - 1;
-        else {
-            while( queue.size() >= 2 && queue.peek() < K ) {
-                answer += 1;
-                int smallest = queue.poll();
-                int nextOne = queue.poll();
-                queue.add(smallest + nextOne * 2);
-            }
 
-            if( queue.peek() < K ) return -1;
+        while (queue.size() >= 2 && queue.peek() < K) {
+            count += 1;
+            int first = queue.poll();
+            int second = queue.poll();
+            queue.add(first +( second * 2));
         }
 
-        return answer;
+        if( queue.peek() < K) return -1;
+        else return count;
+    }
+
+    class Success {
+        public int solution(int[] scoville, int K) {
+            PriorityQueue<Integer> queue = new PriorityQueue<>();
+            int answer = 0;
+            for ( int sc : scoville) queue.add(sc);
+
+            if (K == 0) return -1;
+            if (queue.peek() > K) return - 1;
+            else {
+                while( queue.size() >= 2 && queue.peek() < K ) {
+                    answer += 1;
+                    int smallest = queue.poll();
+                    int nextOne = queue.poll();
+                    queue.add(smallest + nextOne * 2);
+                }
+
+                if( queue.peek() < K ) return -1;
+            }
+
+            return answer;
+        }
+
+
+        public int solutionOutOfMemory(int[] scoville, int K) {
+            PriorityQueue<Integer> queue = new PriorityQueue<>();
+            for ( int sc : scoville) queue.add(sc);
+
+            if (queue.peek() > K) return - 1;
+            else return mixingBowl(queue, K, 1);
+        }
+
+        private int mixingBowl ( PriorityQueue<Integer> mix, int k, int count ) {
+
+            int smallest = mix.poll();
+            int nextOne = mix.poll();
+
+            int result = smallest + nextOne * 2;
+            mix.add(result);
+
+            System.out.println(mix);
+
+            if( mix.peek() > k) return count;
+            else return mixingBowl(mix, k, count + 1);
+        }
     }
 
 
-    public int solutionOutOfMemory(int[] scoville, int K) {
-        PriorityQueue<Integer> queue = new PriorityQueue<>();
-        for ( int sc : scoville) queue.add(sc);
-
-        if (queue.peek() > K) return - 1;
-        else return mixingBowl(queue, K, 1);
-    }
-
-    private int mixingBowl ( PriorityQueue<Integer> mix, int k, int count ) {
-
-        int smallest = mix.poll();
-        int nextOne = mix.poll();
-
-        int result = smallest + nextOne * 2;
-        mix.add(result);
-
-        System.out.println(mix);
-
-        if( mix.peek() > k) return count;
-        else return mixingBowl(mix, k, count + 1);
-    }
 }
