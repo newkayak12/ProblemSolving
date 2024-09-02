@@ -157,66 +157,101 @@ public class SkillTree {
     //1,3,5,8,12,13
     //3,6,7,9,10,11,12,14
     //3,7    ,10,11,12,14
+
     public int solution(String skill, String[] skill_trees) {
-        int answer = 0;
-        for ( String tree : skill_trees ) {
-            int now = 0;
-            int max = 0;
-            char[] chars = tree.toCharArray();
 
-            for( int i = 0; i < chars.length; i++ ) {
-                int idx = skill.indexOf(chars[i]);
-                if( idx == -1 ) continue;
+        int result = 0;
 
-                if( idx > now ) {
-                    max = -1;
+        List<String> tree = new LinkedList<>();
+        for( char element: skill.toCharArray() ) tree.add(String.valueOf(element));
+
+
+
+        for(String skillSet : skill_trees) {
+            Queue<String> queue = new LinkedList<>(tree);
+            boolean check = true;
+            for( char set : skillSet.toCharArray()) {
+                if(!queue.contains(String.valueOf(set))) continue;
+
+                if(queue.peek().equals(String.valueOf(set))) queue.poll();
+                else {
+                    check = false;
                     break;
                 }
-
-                max = Math.max(idx, max);
-                if( now == idx ) now ++;
             }
-            if( max != -1 && now >= max ) answer += 1;
+
+            if( check ) result += 1;
+
         }
 
-        return answer;
+
+        return result;
     }
 
-    public int solutionStack(String skill, String[] skill_trees) {
-        int answer = 0;
-        Queue<Character> stack = new LinkedList<>();
+
+    class Success {
+        public int solution(String skill, String[] skill_trees) {
+            int answer = 0;
+            for ( String tree : skill_trees ) {
+                int now = 0;
+                int max = 0;
+                char[] chars = tree.toCharArray();
+
+                for( int i = 0; i < chars.length; i++ ) {
+                    int idx = skill.indexOf(chars[i]);
+                    if( idx == -1 ) continue;
+
+                    if( idx > now ) {
+                        max = -1;
+                        break;
+                    }
+
+                    max = Math.max(idx, max);
+                    if( now == idx ) now ++;
+                }
+                if( max != -1 && now >= max ) answer += 1;
+            }
+
+            return answer;
+        }
+
+        public int solutionStack(String skill, String[] skill_trees) {
+            int answer = 0;
+            Queue<Character> stack = new LinkedList<>();
 
 
-        for ( String tree : skill_trees ) {
+            for ( String tree : skill_trees ) {
 //            System.out.println("NOW =========== "+tree);
-            int existCount = 0;
-            stack.clear();
-            char[] skillSet = skill.toCharArray();
-            for( char set : skillSet ) stack.add(set);
+                int existCount = 0;
+                stack.clear();
+                char[] skillSet = skill.toCharArray();
+                for( char set : skillSet ) stack.add(set);
 
 
-            search: for( int i = 0; i < tree.length(); i ++ ) {
-                char traverse = tree.charAt(i);
-                if( stack.isEmpty() ) break search;
-                if( !stack.contains(traverse) ) continue;
+                search: for( int i = 0; i < tree.length(); i ++ ) {
+                    char traverse = tree.charAt(i);
+                    if( stack.isEmpty() ) break search;
+                    if( !stack.contains(traverse) ) continue;
 
-                char now = stack.peek();
-                existCount += 1;
+                    char now = stack.peek();
+                    existCount += 1;
 
 
-                if( now == traverse ) stack.poll();
-                else break search;
+                    if( now == traverse ) stack.poll();
+                    else break search;
+                }
+
+
+                System.out.println(stack);
+                System.out.println(skill.length()+"/"+ stack.size()+"/"+ existCount);
+                if(
+                        (skill.length() != stack.size()) ||
+                                existCount == 0
+                ) answer += 1;
             }
 
-
-            System.out.println(stack);
-            System.out.println(skill.length()+"/"+ stack.size()+"/"+ existCount);
-            if(
-                    (skill.length() != stack.size()) ||
-                    existCount == 0
-            ) answer += 1;
+            return answer;
         }
-
-        return answer;
     }
+
 }
