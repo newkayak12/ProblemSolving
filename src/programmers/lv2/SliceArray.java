@@ -67,88 +67,130 @@ public class SliceArray {
     // 2 2 3  / 4
     // 3 3 3  / 8
 
+
+
     // 1 2 3 4 /  0
     // 2 2 3 4 /  5
     // 3 3 3 4 /  10
     // 4 4 4 4 /  15
 
-
     public int[] solution(int n, long left, long right) {
-        int[] arr = new int[(int) (right - left) + 1];
+        int[] result = new int[(int) (right - left) + 1];
+        for( int i = 0; i < result.length; i ++ ) {
+            int height = (int)(( i + left) / n) + 1;
+            int width = (int)((i + left) % n) + 1;
 
-        for( int i = 0; i < arr.length; i++ ) {
-            int row = (int)(( i + left ) / n)  + 1;
-            int col = (int)(( i + left ) % n)  + 1;
-            arr[i] = ((col > row) ? col : row);
+            result[i] = Math.max(height, width);
+            //이차원 만들던 점화식을 그냥 바로 대입
         }
-        return arr;
+        return result;
     }
 
-    public int[] solutionOptimized(int n, long left, long right) {
-        int[] arr = new int[n * n];
-        for( int i = 0; i < arr.length; i++ ) {
-            int row = (( i / n ) + 1);
-            int col = (( i % n ) + 1);
+    public int[] solutionTimeOut(int n, long left, long right) {
+        int[][] matrix = new int[n][n];
+        int[] result = new int[(int) (right - left + 1)];
+
+        for( int i = 0; i < matrix.length; i ++ ) {
+            for (int j = 0; j < matrix.length; j ++ ) {
+                matrix[i][j] = Math.max(i, j) + 1;
+            }
+        }
+        /**
+         * (0,0) (0,1) (0,2)
+         * (0,1) (1,1) (2,2)
+         * (0,2) (1,2) (2,2)
+         */
+
+
+        for( long i = left; i <= right; i ++ ) {
+            int height = (int)i / n;
+            int width = (int) i % n;
+
+            result[(int)(i - left)] = matrix[height][width];
+        }
+        return result;
+    }
+
+    class Success {
+
+
+        public int[] solution(int n, long left, long right) {
+            int[] arr = new int[(int) (right - left) + 1];
+
+            for( int i = 0; i < arr.length; i++ ) {
+                int row = (int)(( i + left ) / n)  + 1;
+                int col = (int)(( i + left ) % n)  + 1;
+                arr[i] = ((col > row) ? col : row);
+            }
+            return arr;
+        }
+
+        public int[] solutionOptimized(int n, long left, long right) {
+            int[] arr = new int[n * n];
+            for( int i = 0; i < arr.length; i++ ) {
+                int row = (( i / n ) + 1);
+                int col = (( i % n ) + 1);
 //            System.out.println(i + "//" + ((col > row) ? col : row));
 
-            arr[i] = ((col > row) ? col : row);
-        }
-
-
-        print(arr);
-
-        return Arrays.copyOfRange(arr, (int)left, (int)right + 1);
-    }
-
-
-    public int[] solutionExceedMemory(int n, long left, long right) {
-        int[][] arr =
-                new int[n][n];
-        for (int i = 0; i < arr.length; i ++ ) {
-            for( int j = 0; j < arr[0].length; j ++ ) {
-                arr[j][i] = 1;
+                arr[i] = ((col > row) ? col : row);
             }
+
+
+            print(arr);
+
+            return Arrays.copyOfRange(arr, (int)left, (int)right + 1);
         }
 
 
-
-        for (int i = 0; i < n; i ++ ) {
-            for( int j = 0; j < n; j ++ ) {
-                if( i <= n - 2 && j <= n - 2 ) arr[i + 1][j + 1] = arr[i ][j ] + 1 ;
-                if( i <= n - 2 && arr[i + 1][j] == 1 ) arr[i + 1][j] = arr[i][j] + 1;
-                if( j <= n - 2 && arr[i][j + 1] == 1 ) arr[i][j + 1] = arr[i][j] + 1;
+        public int[] solutionExceedMemory(int n, long left, long right) {
+            int[][] arr =
+                    new int[n][n];
+            for (int i = 0; i < arr.length; i ++ ) {
+                for( int j = 0; j < arr[0].length; j ++ ) {
+                    arr[j][i] = 1;
+                }
             }
-        }
 
-        int[] answer = new int[n * n];
-        for (int i = 0; i < n; i ++ ) {
-            for( int j = 0; j < n; j ++ ) {
-                answer[i * n + j] = arr[i][j];
+
+
+            for (int i = 0; i < n; i ++ ) {
+                for( int j = 0; j < n; j ++ ) {
+                    if( i <= n - 2 && j <= n - 2 ) arr[i + 1][j + 1] = arr[i ][j ] + 1 ;
+                    if( i <= n - 2 && arr[i + 1][j] == 1 ) arr[i + 1][j] = arr[i][j] + 1;
+                    if( j <= n - 2 && arr[i][j + 1] == 1 ) arr[i][j + 1] = arr[i][j] + 1;
+                }
             }
-        }
 
-
-        return Arrays.copyOfRange(answer, (int)left, (int)right + 1);
-    }
-
-    private void print( int [][] arr) {
-        System.out.println("[");
-        for( int[] inner : arr ) {
-
-            System.out.print("\t[");
-            for( int other: inner) {
-                System.out.print(" "+other+",");
+            int[] answer = new int[n * n];
+            for (int i = 0; i < n; i ++ ) {
+                for( int j = 0; j < n; j ++ ) {
+                    answer[i * n + j] = arr[i][j];
+                }
             }
-            System.out.println("],");
+
+
+            return Arrays.copyOfRange(answer, (int)left, (int)right + 1);
         }
-        System.out.println("]");
-    }
-    private void print( int [] arr) {
+
+        private void print( int [][] arr) {
+            System.out.println("[");
+            for( int[] inner : arr ) {
+
+                System.out.print("\t[");
+                for( int other: inner) {
+                    System.out.print(" "+other+",");
+                }
+                System.out.println("],");
+            }
+            System.out.println("]");
+        }
+        private void print( int [] arr) {
 
             System.out.print("[");
             for( int other: arr) {
                 System.out.print(" "+other+",");
             }
             System.out.println("]");
+        }
     }
 }
