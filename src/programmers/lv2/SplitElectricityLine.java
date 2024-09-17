@@ -6,10 +6,9 @@ import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
+//retry * 2
 public class SplitElectricityLine {
     //https://school.programmers.co.kr/learn/courses/30/lessons/86971
-
-
 
     /**
      * <pre>
@@ -63,56 +62,64 @@ public class SplitElectricityLine {
         }
     }
 
-    private Map<Integer, List<Integer>> prepare(int[][] wires) {
-        Map<Integer, List<Integer>> map = new HashMap<>();
 
-
-        for( int i = 0; i < wires.length; i ++ ) {
-            int start = wires[i][0];
-            int end = wires[i][1];
-
-            map.putIfAbsent(start, new LinkedList<Integer>());
-            map.putIfAbsent(end, new LinkedList<Integer>());
-            map.get(start).add(end);
-            map.get(end).add(start);
-        }
-
-        return map;
-    }
-
-    private int traverse(Map<Integer, List<Integer>> map, boolean[] visited) {
-        Queue<Integer> queue = new LinkedList();
+    private int search (Map<Integer, List<Integer>> map, boolean[] visit) {
+        Queue<Integer> queue = new LinkedList<>();
         queue.add(1);
 
+
+
         int count = 0;
-        while (!queue.isEmpty()) {
-            Integer elem = queue.poll();
-            if( visited[ elem - 1 ] ) continue;
-            count += 1;
-            visited[ elem - 1 ] = true;
-            queue.addAll(map.get(elem));
+        while( !queue.isEmpty() ) {
+           int number = queue.poll();
+           if (visit[number - 1]) continue;
+
+           count += 1;
+           visit[number - 1] = true;
+           queue.addAll(map.get(number));
         }
 
         return count;
     }
+
     public int solution(int n, int[][] wires) {
-        Map<Integer, List<Integer>> map = prepare(wires);
+        Map<Integer, List<Integer>> map = new HashMap<>();
+        for(int[] element : wires) {
+            int start = element[0];
+            int end = element[1];
+
+
+            map.putIfAbsent(start, new LinkedList<>());
+            map.putIfAbsent(end, new LinkedList<>());
+
+            map.computeIfPresent(start, (integer, integers) -> {
+                integers.add(end);
+                return integers;
+            });
+            map.computeIfPresent(end, (integer, integers) -> {
+                integers.add(start);
+                return integers;
+            });
+
+
+
+        }
 
         int answer = Integer.MAX_VALUE;
 
-        for ( int i = 0; i < wires.length; i ++ ) {
-            int start = wires[i][0];
-            int end = wires[i][1];
-            map.get(start).remove(Integer.valueOf(end));
-            map.get(end).remove(Integer.valueOf(start));
 
-            int count = traverse(map, new boolean[map.size()]);
-            answer = Math.min(answer, Math.abs(count - (n - count)));
+        for( int i = 0; i < wires.length; i ++ ) {
+            int departure = wires[i][0];
+            int destination = wires[i][1];
+            map.get(departure).remove(Integer.valueOf(destination));
+            map.get(destination).remove(Integer.valueOf(departure));
 
-            map.get(start).add(end);
-            map.get(end).add(start);
+            int count = search(map, new boolean[n]);
+            answer = Math.min(Math.abs(2 * count - n), answer);
+
+            map.get(departure).add(Integer.valueOf(destination));
+            map.get(destination).add(Integer.valueOf(departure));
         }
-
 
 
         return answer;
@@ -120,8 +127,64 @@ public class SplitElectricityLine {
 
 
 
+    class SuccessSecond {
+        private Map<Integer, List<Integer>> prepare(int[][] wires) {
+            Map<Integer, List<Integer>> map = new HashMap<>();
 
-    class success {
+
+            for( int i = 0; i < wires.length; i ++ ) {
+                int start = wires[i][0];
+                int end = wires[i][1];
+
+                map.putIfAbsent(start, new LinkedList<Integer>());
+                map.putIfAbsent(end, new LinkedList<Integer>());
+                map.get(start).add(end);
+                map.get(end).add(start);
+            }
+
+            return map;
+        }
+        private int traverse(Map<Integer, List<Integer>> map, boolean[] visited) {
+            Queue<Integer> queue = new LinkedList();
+            queue.add(1);
+
+            int count = 0;
+            while (!queue.isEmpty()) {
+                Integer elem = queue.poll();
+                if( visited[ elem - 1 ] ) continue;
+                count += 1;
+                visited[ elem - 1 ] = true;
+                queue.addAll(map.get(elem));
+            }
+
+            return count;
+        }
+        public int solution(int n, int[][] wires) {
+            Map<Integer, List<Integer>> map = prepare(wires);
+
+            int answer = Integer.MAX_VALUE;
+
+            for ( int i = 0; i < wires.length; i ++ ) {
+                int start = wires[i][0];
+                int end = wires[i][1];
+                map.get(start).remove(Integer.valueOf(end));
+                map.get(end).remove(Integer.valueOf(start));
+
+                int count = traverse(map, new boolean[map.size()]);
+                answer = Math.min(answer, Math.abs(count - (n - count)));
+
+                map.get(start).add(end);
+                map.get(end).add(start);
+            }
+
+
+
+            return answer;
+        }
+
+    }
+
+    class Success {
         public int solution(int n, int[][] wires) {
             List<Integer>[] graph = new LinkedList[ n + 1 ];
             int min = Integer.MAX_VALUE;

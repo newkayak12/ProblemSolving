@@ -63,52 +63,55 @@ public class SliceArray {
         }
     }
 
-    // 1 2 3  / 0
-    // 2 2 3  / 4
-    // 3 3 3  / 8
-
-
-
-    // 1 2 3 4 /  0
-    // 2 2 3 4 /  5
-    // 3 3 3 4 /  10
-    // 4 4 4 4 /  15
-
     public int[] solution(int n, long left, long right) {
         int[] result = new int[(int) (right - left) + 1];
-        for( int i = 0; i < result.length; i ++ ) {
-            int height = (int)(( i + left) / n) + 1;
-            int width = (int)((i + left) % n) + 1;
+        for (long i = 0; i < result.length ; i ++ ) {
+            int x = (int) (i + left) % n;
+            int y = (int) (i + left) / n;
 
-            result[i] = Math.max(height, width);
-            //이차원 만들던 점화식을 그냥 바로 대입
+            result[(int) i] = Math.max(x, y) + 1;
         }
         return result;
     }
 
-    public int[] solutionTimeOut(int n, long left, long right) {
-        int[][] matrix = new int[n][n];
-        int[] result = new int[(int) (right - left + 1)];
+    class SuccessSecond {
+        public int[] solution(int n, long left, long right) {
+            int[] result = new int[(int) (right - left) + 1];
+            for( int i = 0; i < result.length; i ++ ) {
+                int height = (int)(( i + left) / n) + 1;
+                int width = (int)((i + left) % n) + 1;
 
-        for( int i = 0; i < matrix.length; i ++ ) {
-            for (int j = 0; j < matrix.length; j ++ ) {
-                matrix[i][j] = Math.max(i, j) + 1;
+                result[i] = Math.max(height, width);
+                //이차원 만들던 점화식을 그냥 바로 대입
             }
+            return result;
         }
-        /**
-         * (0,0) (0,1) (0,2)
-         * (0,1) (1,1) (2,2)
-         * (0,2) (1,2) (2,2)
-         */
+
+        public int[] solutionTimeOut(int n, long left, long right) {
+            int[][] matrix = new int[n][n];
+            int[] result = new int[(int) (right - left + 1)];
+
+            for( int i = 0; i < matrix.length; i ++ ) {
+                for (int j = 0; j < matrix.length; j ++ ) {
+                    matrix[i][j] = Math.max(i, j) + 1;
+                }
+            }
+            /**
+             * (0,0) (0,1) (0,2)
+             * (0,1) (1,1) (2,2)
+             * (0,2) (1,2) (2,2)
+             */
 
 
-        for( long i = left; i <= right; i ++ ) {
-            int height = (int)i / n;
-            int width = (int) i % n;
+            for( long i = left; i <= right; i ++ ) {
+                int height = (int) i / n;
+                int width = (int) i % n;
 
-            result[(int)(i - left)] = matrix[height][width];
+                result[(int)(i - left)] = matrix[height][width];
+            }
+            return result;
         }
-        return result;
+
     }
 
     class Success {

@@ -102,41 +102,69 @@ public class RollCakeCutting {
      * 이걸 따로 어디에 넣어 체크하고 반환하면?
      */
 
+
     public int solution(int[] topping) {
-        Map<Integer, Integer> leftSide = Arrays.stream(topping)
-                                               .boxed()
-                                               .collect(Collectors.toMap(
-                                                       Function.identity(),
-                                                       key -> 1,
-                                                       (keyV1, keyV2) -> keyV1 + keyV2
-                                               ));
-
-        Map<Integer, Integer> rightSide = new HashMap<>();
-
-        int count = 0;
-
-        for( int i = 0; i < topping.length; i ++ ) {
-            int number = topping[i];
-            int countNumber = leftSide.getOrDefault(number, 0);
-
-            if( countNumber - 1 > 0) leftSide.put(number, leftSide.get(number) - 1);
-            else leftSide.remove(number);
-
-            rightSide.putIfAbsent(number, 0);
-            rightSide.computeIfPresent(number, (k, v) -> v + 1);
-
-            if(
-                    leftSide.keySet().size() ==
-                    rightSide.keySet().size()
-            ) {
-                count += 1;
-            }
+        int answer = 0;
+        Map<Integer, Integer> preSet = new HashMap<>();
+        Set<Integer> left = new HashSet<>();
+        for(int element : topping) {
+            preSet.computeIfPresent(element, (key, value) -> value + 1);
+            preSet.putIfAbsent(element, 1);
         }
 
 
-        return count;
+        for(int element : topping) {
+            left.add(element);
+
+            if( preSet.get(element) <= 1 ) preSet.remove(element);
+            else  preSet.computeIfPresent(element, (k, v) -> v - 1);
+
+
+            if(left.size() == preSet.keySet().size()) answer += 1;
+
+        }
+
+        return answer;
     }
 
+
+
+    class Success {
+        public int solution(int[] topping) {
+            Map<Integer, Integer> leftSide = Arrays.stream(topping)
+                    .boxed()
+                    .collect(Collectors.toMap(
+                            Function.identity(),
+                            key -> 1,
+                            (keyV1, keyV2) -> keyV1 + keyV2
+                    ));
+
+            Map<Integer, Integer> rightSide = new HashMap<>();
+
+            int count = 0;
+
+            for( int i = 0; i < topping.length; i ++ ) {
+                int number = topping[i];
+                int countNumber = leftSide.getOrDefault(number, 0);
+
+                if( countNumber - 1 > 0) leftSide.put(number, leftSide.get(number) - 1);
+                else leftSide.remove(number);
+
+                rightSide.putIfAbsent(number, 0);
+                rightSide.computeIfPresent(number, (k, v) -> v + 1);
+
+                if(
+                        leftSide.keySet().size() ==
+                                rightSide.keySet().size()
+                ) {
+                    count += 1;
+                }
+            }
+
+
+            return count;
+        }
+    }
 
     class SuccessSolv {
         public int solution(int[] topping) {

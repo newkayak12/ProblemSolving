@@ -66,73 +66,103 @@ public class SumOfContinuousNumbers {
         }
     }
 
+
     public int[] solution(int[] sequence, int k) {
-//{1,2,3,4,5};
         int start = 0;
         int end = 0;
-        int number = sequence[start];
-        List<Map<String, Integer>> maps = new ArrayList<>();
 
-        while ( true ){
+        int sum = sequence[start];
+        if( sum == k ) return new int[]{0, 0};
 
-            if( number == k ) {
-                maps.add(Map.of(
-                        "length", end - start,
-                        "start", start,
-                        "end", end
-                ));
-            }
+        List<Integer[]> list = new ArrayList<>();
 
-            if( start == sequence.length && end == sequence.length ) break;
-            if( number <= k && end < sequence.length) {
-                if( ++end < sequence.length ) number += sequence[end];
-            } else {
-                if( start < sequence.length ) number -= sequence[start];
-                start ++;
-            }
+        while( true ) {
+
+            if( start == sequence.length || end == sequence.length )break;
+
+            if( sum == k ) list.add(new Integer[]{start, end});
+            if( sum >= k ) sum -= sequence[start++];
+            if( sum < k && ++end < sequence.length  ) sum += sequence[end];
+
         }
 
-        Collections.sort(maps, (o1, o2) -> o1.get("length") - o2.get("length"));
-        Map<String , Integer> found = maps.stream().findFirst().get();
-        int startPoint = found.get("start");
-        int endPoint = found.get("end");
+        Collections.sort(list, (o1, o2) -> {
+            return (o1[1] - o1[0]) - (o2[1] - o2[0]);
+        });
 
-        return new int[] { startPoint, endPoint };
+        return  new int[]{list.get(0)[0], list.get(0)[1]};
     }
 
-    class Timeout {
+    class Success {
         public int[] solution(int[] sequence, int k) {
-            int[] answer = {0, sequence.length - 1};
+//{1,2,3,4,5};
+            int start = 0;
+            int end = 0;
+            int number = sequence[start];
+            List<Map<String, Integer>> maps = new ArrayList<>();
 
-            for( int i = 0; i < sequence.length; i ++ ) {
-                int number = 0;
-                int start = i;
-                int end = i;
-
-
-
-                for( int j = i; j < sequence.length; j++) {
-                    number += sequence[j];
-
-
-                    if( number == k ) {
-                        end = j;
-                        break;
-                    }
-
-                }
+            while ( true ){
 
                 if( number == k ) {
-                    int gap = answer[1] - answer[0] + 1;
-                    int newGap = end - start + 1;
+                    maps.add(Map.of(
+                            "length", end - start,
+                            "start", start,
+                            "end", end
+                    ));
+                }
 
-                    if( newGap < gap) {
-                        answer[0] = start;
-                        answer[1] = end;
-                    }
+                if( start == sequence.length && end == sequence.length ) break;
+                if( number <= k && end < sequence.length) {
+                    if( ++end < sequence.length ) number += sequence[end];
+                } else {
+                    if( start < sequence.length ) number -= sequence[start];
+                    start ++;
                 }
             }
-            return answer;
+
+            Collections.sort(maps, (o1, o2) -> o1.get("length") - o2.get("length"));
+            Map<String , Integer> found = maps.stream().findFirst().get();
+            int startPoint = found.get("start");
+            int endPoint = found.get("end");
+
+            return new int[] { startPoint, endPoint };
+        }
+
+        class Timeout {
+            public int[] solution(int[] sequence, int k) {
+                int[] answer = {0, sequence.length - 1};
+
+                for( int i = 0; i < sequence.length; i ++ ) {
+                    int number = 0;
+                    int start = i;
+                    int end = i;
+
+
+
+                    for( int j = i; j < sequence.length; j++) {
+                        number += sequence[j];
+
+
+                        if( number == k ) {
+                            end = j;
+                            break;
+                        }
+
+                    }
+
+                    if( number == k ) {
+                        int gap = answer[1] - answer[0] + 1;
+                        int newGap = end - start + 1;
+
+                        if( newGap < gap) {
+                            answer[0] = start;
+                            answer[1] = end;
+                        }
+                    }
+                }
+                return answer;
+            }
         }
     }
+
 }

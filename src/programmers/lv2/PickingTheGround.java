@@ -59,7 +59,6 @@ public class PickingTheGround {
 
 
 
-    //DFS
     public int solution( int[][] land){
         for( int i = 1; i < land.length; i ++ ) {
             int max = -1;

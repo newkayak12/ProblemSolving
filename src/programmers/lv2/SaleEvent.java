@@ -89,26 +89,49 @@ public class SaleEvent {
     }
 
     public int solution(String[] want, int[] number, String[] discount) {
-        Map<String, Integer> wantMap = new HashMap<>();
         int answer = 0;
-        for( int i = 0; i < want.length; i ++ ) wantMap.put(want[i], i);
 
-
-        for( int i = 0;  i <= discount.length - 10; i ++ ) {
-            int[] numberCopy = Arrays.copyOf(number, number.length);
-//
-            for( int j = 0; j < 10; j ++  ) {
-                int wantIdx = wantMap.getOrDefault(discount[i + j], -1);
-                if( wantIdx == -1 ) break;
-                else numberCopy[wantIdx] -= 1;
-            }
-
-
-            long count = Arrays.stream(numberCopy).filter(k -> k > 0).count();
-            if ( count == 0) answer += 1;
+        Map<String, Integer> wantMap = new HashMap<>();
+        for( int i = 0; i < want.length; i ++ ) {
+            wantMap.put(want[i], i);
         }
 
+        for (int i = 0; i < discount.length - 10 ; i ++  ) {
+            int[] copyNumber = Arrays.copyOfRange(number, 0, number.length);
+            for( int j = 0; j < 10; j ++ ) {
+                if(wantMap.containsKey(discount[i + j])) copyNumber[wantMap.get(discount[i + j])] -=1;
+                else break;
+            }
+            if( Arrays.stream(copyNumber).sum() == 0 ) answer += 1;
+        }
+
+
         return answer;
+    }
+
+    class Success2 {
+        public int solution(String[] want, int[] number, String[] discount) {
+            Map<String, Integer> wantMap = new HashMap<>();
+            int answer = 0;
+            for( int i = 0; i < want.length; i ++ ) wantMap.put(want[i], i);
+
+
+            for( int i = 0;  i <= discount.length - 10; i ++ ) {
+                int[] numberCopy = Arrays.copyOf(number, number.length);
+//
+                for( int j = 0; j < 10; j ++  ) {
+                    int wantIdx = wantMap.getOrDefault(discount[i + j], -1);
+                    if( wantIdx == -1 ) break;
+                    else numberCopy[wantIdx] -= 1;
+                }
+
+
+                long count = Arrays.stream(numberCopy).filter(k -> k > 0).count();
+                if ( count == 0) answer += 1;
+            }
+
+            return answer;
+        }
     }
 
     class Success {

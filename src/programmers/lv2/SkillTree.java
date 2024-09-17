@@ -158,36 +158,68 @@ public class SkillTree {
     //3,6,7,9,10,11,12,14
     //3,7    ,10,11,12,14
 
+
     public int solution(String skill, String[] skill_trees) {
-
-        int result = 0;
-
-        List<String> tree = new LinkedList<>();
-        for( char element: skill.toCharArray() ) tree.add(String.valueOf(element));
+        int answer = 0;
+        List<Character> list = new LinkedList<>();
+        for ( Character element : skill.toCharArray() ) list.add(element);
 
 
+        for( String element : skill_trees) {
+            Queue<Character> queue = new LinkedList<>(list);
+            boolean isPass = true;
+            int i = 0;
 
-        for(String skillSet : skill_trees) {
-            Queue<String> queue = new LinkedList<>(tree);
-            boolean check = true;
-            for( char set : skillSet.toCharArray()) {
-                if(!queue.contains(String.valueOf(set))) continue;
-
-                if(queue.peek().equals(String.valueOf(set))) queue.poll();
-                else {
-                    check = false;
+            while(i < element.length() && !queue.isEmpty()) {
+                if(queue.contains(element.charAt(i)) && queue.peek() == element.charAt(i) ) {
+                    queue.poll();
+                }
+                else if(queue.contains(element.charAt(i)) && queue.peek() != element.charAt(i)) {
+                    isPass = false;
                     break;
                 }
+                i ++;
             }
 
-            if( check ) result += 1;
-
+            if( isPass ) answer += 1;
         }
 
 
-        return result;
+        return answer;
     }
 
+
+    class SuccessSecond {
+        public int solution(String skill, String[] skill_trees) {
+
+            int result = 0;
+
+            List<String> tree = new LinkedList<>();
+            for( char element: skill.toCharArray() ) tree.add(String.valueOf(element));
+
+
+
+            for(String skillSet : skill_trees) {
+                Queue<String> queue = new LinkedList<>(tree);
+                boolean check = true;
+                for( char set : skillSet.toCharArray()) {
+                    if(!queue.contains(String.valueOf(set))) continue;
+
+                    if(queue.peek().equals(String.valueOf(set))) queue.poll();
+                    else {
+                        check = false;
+                        break;
+                    }
+                }
+
+                if( check ) result += 1;
+
+            }
+
+
+            return result;
+        }
+    }
 
     class Success {
         public int solution(String skill, String[] skill_trees) {
