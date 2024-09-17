@@ -56,30 +56,47 @@ public class TargetNumber {
         }
     }
 
-
     public int solution(int[] numbers, int target) {
-
-        return calc(numbers,  0,0, target);
+        return search(numbers, 0, 0, target);
     }
 
-    /**
-     *
-     *              1
-     *          +       -
-     *       1    1   1   1
-     *     +  -
-     *
-     *
-     */
-
-    public int calc ( int[] arr, int idx, int sum, int target) {
-        int count = 0;
-
-        if( arr.length  <= idx) return sum == target? 1 : 0;
-        count += calc(arr, idx + 1, sum + arr[idx], target);
-        count += calc(arr, idx + 1, sum - arr[idx], target);
+    private int search (int[] numbers, int index, int number, int target ) {
+        if( numbers.length <= index ) return number == target ? 1 : 0;
+        else {
+            int count = 0;
+            count += search(numbers, index + 1, number + numbers[index], target );
+            count += search(numbers, index + 1, number - numbers[index], target );
+            return count;
+        }
+    }
 
 
-        return count;
+    class Success {
+
+        public int solution(int[] numbers, int target) {
+
+            return calc(numbers,  0,0, target);
+        }
+
+        /**
+         *
+         *              1
+         *          +       -
+         *       1    1   1   1
+         *     +  -
+         *
+         *
+         */
+
+        public int calc ( int[] arr, int idx, int sum, int target) {
+            int count = 0;
+
+            if( arr.length  <= idx) return sum == target? 1 : 0;
+            count += calc(arr, idx + 1, sum + arr[idx], target);
+            count += calc(arr, idx + 1, sum - arr[idx], target);
+
+
+            return count;
+        }
     }
 }

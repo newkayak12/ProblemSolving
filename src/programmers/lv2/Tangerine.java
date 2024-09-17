@@ -61,32 +61,65 @@ public class Tangerine {
         }
     }
 
-    public int solution( int k, int[] tangerine) {
-        Map<Integer, Integer> map = new HashMap<>();
-        List< String > array = new ArrayList<>();
-        int answer = 0;
-        int count = k;
 
-        for ( int  tanger : tangerine ) {
-            map.computeIfPresent(tanger, (key, value) ->  value + 1);
-            map.putIfAbsent(tanger, 1);
-        }
-        for (Integer integer : map.keySet()) {
-            array.add(String.format("%d %d", integer, map.get(integer)));
-        }
-        Collections.sort(array, (a, b) -> {
-            String[] aSplit = a.split(" ");
-            String[] bSplit = b.split(" ");
-            return Integer.parseInt(bSplit[1]) - Integer.parseInt(aSplit[1]);
-        });
+    public int solution( int k, int[] tangerine ) {
+        Map<Integer, Integer> tangerineMap = new HashMap<>();
+        List<Integer> index = new LinkedList<>();
 
-        for( String piece : array ) {
-            if ( count <= 0 ) break;
-            String[] split = piece.split(" ");
-            answer += 1;
-            count -= Integer.parseInt(split[1]);
+        for( int tan : tangerine ) {
+            tangerineMap.computeIfPresent(tan, (key, value) ->  value + 1);
+            tangerineMap.putIfAbsent(tan, 1);
         }
-        return answer;
+
+        tangerineMap.keySet()
+                .stream()
+                .sorted((o1, o2) -> tangerineMap.get(o2) - tangerineMap.get(o1))
+                .forEachOrdered(v ->index.add(v));
+
+
+        int count = 0;
+
+
+        for (int i = 0; i < index.size(); i ++ ) {
+            if( k <= 0 ) break;
+            else {
+                count += 1;
+                k -= tangerineMap.get(index.get(i));
+            }
+        }
+
+        return count;
     }
+
+    class Success {
+        public int solution( int k, int[] tangerine) {
+            Map<Integer, Integer> map = new HashMap<>();
+            List< String > array = new ArrayList<>();
+            int answer = 0;
+            int count = k;
+
+            for ( int  tanger : tangerine ) {
+                map.computeIfPresent(tanger, (key, value) ->  value + 1);
+                map.putIfAbsent(tanger, 1);
+            }
+            for (Integer integer : map.keySet()) {
+                array.add(String.format("%d %d", integer, map.get(integer)));
+            }
+            Collections.sort(array, (a, b) -> {
+                String[] aSplit = a.split(" ");
+                String[] bSplit = b.split(" ");
+                return Integer.parseInt(bSplit[1]) - Integer.parseInt(aSplit[1]);
+            });
+
+            for( String piece : array ) {
+                if ( count <= 0 ) break;
+                String[] split = piece.split(" ");
+                answer += 1;
+                count -= Integer.parseInt(split[1]);
+            }
+            return answer;
+        }
+    }
+
 
 }
