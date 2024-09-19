@@ -9,43 +9,7 @@ import java.util.Arrays;
 public class TriangleSnail {
     //https://school.programmers.co.kr/learn/courses/30/lessons/68645
 
-    public int[] solution(int n) {
-        int[][] snail = new int[n][n];
 
-        int total = 0;
-        for (int i = n; i > 0; i--) total += i;
-
-        int number = 1;
-        int row = -1;
-        int col = 0;
-
-        for (int turn = n; turn >= 0; turn -= 3) {
-            for (int down = 0; down < turn; down++) {//4
-                snail[++row][col] = number++;
-                //3, 0
-            }
-            print(snail);
-            for (int right = 0; right < turn - 1; right++) { //3
-                snail[row][++col] = number++;
-                //3, 3
-            }
-            print(snail);
-            for (int leftUp = 0; leftUp < turn - 2; leftUp++) {
-                snail[--row][--col] = number++;
-            }
-            print(snail);
-        }
-
-
-        int[] answer = Arrays.stream(snail).flatMap(i -> Arrays.stream(i).boxed().filter(j -> j != 0)).mapToInt(i -> i).toArray();
-        return answer;
-    }
-
-    void print(int[][] arr) {
-        System.out.println("STORKE========");
-        for (int[] a : arr) System.out.println(Arrays.toString(a));
-        System.out.println("==============");
-    }
 
     /**
      * <pre>
@@ -104,8 +68,8 @@ public class TriangleSnail {
              *     4  5  6  7
              * </pre>
              */
-//            Assertions.assertArrayEquals(result, solution(n));
-            Assertions.assertArrayEquals(result, solutionSecond(n));
+            Assertions.assertArrayEquals(result, solution(n));
+//            Assertions.assertArrayEquals(result, solutionSecond(n));
         }
 
         @Test
@@ -122,8 +86,8 @@ public class TriangleSnail {
              *     5  6  7  8  9
              * </pre>
              */
-//            Assertions.assertArrayEquals(result, solution(n));
-            Assertions.assertArrayEquals(result, solutionSecond(n));
+            Assertions.assertArrayEquals(result, solution(n));
+//            Assertions.assertArrayEquals(result, solutionSecond(n));
         }
 
         @Test
@@ -141,28 +105,167 @@ public class TriangleSnail {
              *     6  7  8  9 10 11
              * </pre>
              */
-//            Assertions.assertArrayEquals(result, solution(n));
-            Assertions.assertArrayEquals(result, solutionSecond(n));
+            Assertions.assertArrayEquals(result, solution(n));
+//            Assertions.assertArrayEquals(result, solutionSecond(n));
         }
     }
 
-    public int[] solutionSecond(int n) {
-        int[][] table = new int[n][n];
+    public int[] solution(int n) {
+        /**
+         * 1 (0, 0)
+         * 2 (1, 0) 9  (1, 1)
+         * 3 (2, 0) 10 (2, 1)  8 (2, 2)
+         * 4 (3, 0) 5  (3, 1)  6 (3, 2) 7 (3, 3)
+         *
+         * 1
+         * 2 12
+         * 3 13 11
+         * 4 14 15 10
+         * 5  6  7  8  9
+         *
+         * 1
+         * 2 15
+         * 3 16 14
+         * 4 17 21 13
+         * 5 17 19 20 12
+         * 6  7  8  9 10 11
+         */
+        return  null;
+    }
+    class Success {
+        public int[] solution(int n) {
+            int[][] snail = new int[n][n];
 
-        int row = -1;
-        int col = 0;
-        int number = 1;
+            int total = 0;
+            for (int i = n; i > 0; i--) total += i;
 
-        for ( int i = n; i > 0; i -= 3){
+            int number = 1;
+            int row = -1;
+            int col = 0;
 
-            for(int j = 0; j < i; j++) table[++row][col] = number ++;
-            for(int j = 0; j < i - 1; j ++ ) table[row][++col] = number ++;
-            for(int j = 0; j < i - 2; j ++ ) table[--row][--col] = number ++;
+            for (int turn = n; turn >= 0; turn -= 3) {
+                for (int down = 0; down < turn; down++) {//4
+                    snail[++row][col] = number++;
+                    //3, 0
+                }
+                print(snail);
+                for (int right = 0; right < turn - 1; right++) { //3
+                    snail[row][++col] = number++;
+                    //3, 3
+                }
+                print(snail);
+                for (int leftUp = 0; leftUp < turn - 2; leftUp++) {
+                    snail[--row][--col] = number++;
+                }
+                print(snail);
+            }
+
+
+            int[] answer = Arrays.stream(snail).flatMap(i -> Arrays.stream(i).boxed().filter(j -> j != 0)).mapToInt(i -> i).toArray();
+            return answer;
+        }
+
+        void print(int[][] arr) {
+            System.out.println("STORKE========");
+            for (int[] a : arr) System.out.println(Arrays.toString(a));
+            System.out.println("==============");
+        }
+        public int[] solutionSecond(int n) {
+            int[][] table = new int[n][n];
+
+            int row = -1;
+            int col = 0;
+            int number = 1;
+
+            for ( int i = n; i > 0; i -= 3){
+
+                for(int j = 0; j < i; j++) table[++row][col] = number ++;
+                for(int j = 0; j < i - 1; j ++ ) table[row][++col] = number ++;
+                for(int j = 0; j < i - 2; j ++ ) table[--row][--col] = number ++;
+            }
+
+
+            return Arrays.stream(table).flatMap(ints -> Arrays.stream(ints).boxed()).filter(i -> i > 0).mapToInt( i -> i).toArray();
+        }
+    }
+
+
+
+    @Nested
+    class  SquareSnail {
+        @Test
+        public void case1 () {
+            /**
+             * 1 4
+             * 2 3
+             */
+            int n = 2;
+            int[] result = {1,4,2,3};
+
+            Assertions.assertArrayEquals(result, solution(n));
+        }
+        @Test
+        public void case2 () {
+            /**
+             * 1 8 7
+             * 2 9 6
+             * 3 4 5
+             */
+            int n = 3;
+            int[] result = {1,8,7, 2,9,6, 3,4,5};
+
+
+            Assertions.assertArrayEquals(result, solution(n));
+        }
+
+        @Test
+        public void case3 () {
+            /**
+             * 1  12  11  10
+             * 2  13  16   9
+             * 3  14  15   8
+             * 4   5   6   7
+             */
+            int n = 4;
+            int[] result = {1,12, 11, 10, 2, 13, 16, 9, 3, 14, 15, 8, 4, 5, 6, 7};
+
+
+            Assertions.assertArrayEquals(result, solution(n));
         }
 
 
-        return Arrays.stream(table).flatMap(ints -> Arrays.stream(ints).boxed()).filter(i -> i > 0).mapToInt( i -> i).toArray();
+        public int[] solution( int n  ) {
+
+            int[][] square = new int[n][n];
+            int number = 1;
+            int x = 0;
+            int y = 0;
+
+/**
+ * 1 8 7  > i = 1
+ * 2 9 6  > i = 2 ( i
+ * 3 4 5  > i = 3 ( if ( i == n ) -> col ++ )
+ */
+
+//(0,0),(0,1),(0,2)
+//(1,2),(2,2)
+//(2,1),(2,0)
+//(1,0),(1,1)
+
+
+            for( int side = n; side > 0; side -= 4 ) {
+//                if(int j = )
+            }
+
+
+
+            for(int[] arr : square) {
+                System.out.println(Arrays.toString(arr));
+            }
+            return null;
+        }
     }
+
 }
 
 

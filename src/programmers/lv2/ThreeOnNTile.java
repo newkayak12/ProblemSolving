@@ -48,6 +48,11 @@ public class ThreeOnNTile {
     class TestCases {
 
         @Test
+        void modulo () {
+            System.out.println(-10 % 2);
+        }
+
+        @Test
         public void case1 () {
             int n = 2;
             int result = 3;
@@ -73,13 +78,30 @@ public class ThreeOnNTile {
     }
 
 
-    public int solution ( int n ) {
-
+    public long solution ( int n ) {
+        int[] arr = new int[5001];
+        int mod = 1_000_000_007;
+        arr[0] = 1;
+        arr[2] = 3;
         /**
+         * 0 = 1
          * 2 = 3
-         * 4 = 11
-         * 6 = 41
+         * 4 = 11 (3 * 3 + 2)
+         * 6 = 41 (3 * 3 * 3 + (2 * 3 * 2) + 2)
+         *
+         * f(n) = f(n - 2) * 4 - f(n - 4)
+         *
          */
-        return 0;
+
+
+        for ( int i = 4; i <= n; i +=2 ) {
+            arr[i] = ( (arr[i - 2] * 4) % mod -  (arr[i - 4] % mod) + mod) % mod;
+            if( arr[i] < 0 ) arr[i] = (arr[i] +  mod) % mod;
+        }
+
+
+        return arr[n];
     }
+
+
 }

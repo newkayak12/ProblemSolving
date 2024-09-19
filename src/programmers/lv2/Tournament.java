@@ -38,8 +38,8 @@ public class Tournament {
         @Test
         public void case1() {
             int N = 8;
-            int A = 4;
-            int B = 7;
+            int A = 4; // 2
+            int B = 7; // 3
             int answer = 3;
 
 
@@ -47,17 +47,40 @@ public class Tournament {
         }
     }
 
+
     public int solution(int n, int a, int b) {
+        int count = 1;
+        int aNumber = ( int ) Math.ceil(a / 2.0);
+        int bNumber = ( int ) Math.ceil(b / 2.0);
 
 
-        return calculate(a, b, 0) + 1;
+        while ( true ) {
+            if( aNumber - bNumber == 0.0 ) break;
+
+            aNumber = ( int ) Math.ceil(aNumber / 2.0);
+            bNumber = ( int ) Math.ceil(bNumber / 2.0);
+            count += 1;
+        }
+
+
+        return count;
     }
 
-    private int calculate(int a, int b, int round) {
-        int newA = (int) Math.ceil(a / 2.0);
-        int newB = (int) Math.ceil(b / 2.0);
 
-        if( newA == newB ) return round;
-        else return calculate(newA, newB, round + 1);
+    class Success {
+        public int solution(int n, int a, int b) {
+
+
+            return calculate(a, b, 0) + 1;
+        }
+
+        private int calculate(int a, int b, int round) {
+            int newA = (int) Math.ceil(a / 2.0);
+            int newB = (int) Math.ceil(b / 2.0);
+
+            if( newA == newB ) return round;
+            else return calculate(newA, newB, round + 1);
+        }
     }
+
 }

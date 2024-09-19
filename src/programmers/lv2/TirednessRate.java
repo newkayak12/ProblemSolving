@@ -64,61 +64,87 @@ public class TirednessRate {
         }
     }
 
-    //BFS?
+
     public int solution(int k, int[][] dungeons) {
+        boolean[] visitMap = new boolean[dungeons.length];
 
-        boolean[] probeMap = new boolean[dungeons.length];
-        return prob(dungeons, probeMap, k, 0);
+        return probe(k, dungeons, visitMap, 0);
     }
 
-    private int prob( int[][] dungeons, boolean[] probMap, int tired, int count ) {
-        int innerCount = count;
+    private int probe (int k, int[][] dungeons, boolean[] visitMap, int count) {
 
-        for ( int i = 0; i < dungeons.length; i ++ ) {
-            if ( probMap[i] || dungeons[i][0] > tired ) continue;
+        int inner = count;
 
-            boolean[] tmp = Arrays.copyOf(probMap, probMap.length);
-            tmp[i] = true;
+        for( int i = 0; i < dungeons.length; i++ ) {
+            if(visitMap[i]) continue;
+            if(k < dungeons[i][0]) continue;
+            visitMap[i] = true;
+            inner = Math.max(probe(k - dungeons[i][1], dungeons, visitMap, count + 1), inner);
+            visitMap[i] = false;
+        }
+        return inner;
+    }
 
-            innerCount = Math.max(innerCount, prob(dungeons, tmp, tired - dungeons[i][1], count+1));
+
+    class Success {
+
+
+        //BFS?
+        public int solution(int k, int[][] dungeons) {
+
+            boolean[] probeMap = new boolean[dungeons.length];
+            return prob(dungeons, probeMap, k, 0);
         }
 
-        return innerCount;
-    }
+        private int prob( int[][] dungeons, boolean[] probMap, int tired, int count ) {
+            int innerCount = count;
 
+            for ( int i = 0; i < dungeons.length; i ++ ) {
+                if ( probMap[i] || dungeons[i][0] > tired ) continue;
 
-    private int probFailure( int[][] dungeons, boolean[] probMap, int idx, int tired, int count ) {
-        int[] start = dungeons[idx];
-        probMap[idx] = true;
-        int max = count;
+                boolean[] tmp = Arrays.copyOf(probMap, probMap.length);
+                tmp[i] = true;
 
-
-//        print(probMap);
-//        System.out.println("> "+idx);
-
-        if( start[0] > tired && probMap[idx]) return count;
-        else {
-            for ( int i = 1; i <= dungeons.length; i ++  ) {
-
-                int next = idx + i;
-                if( next >= dungeons.length ) next -= dungeons.length;
-                if(probMap[next]) continue;
-
-                boolean[] tmpMap = Arrays.copyOf(probMap, probMap.length);
-                int result = probFailure(dungeons, tmpMap, next, tired -= start[1], count + 1 );
-
-
-                max = Math.max(max, result);
-
+                innerCount = Math.max(innerCount, prob(dungeons, tmp, tired - dungeons[i][1], count+1));
             }
+
+            return innerCount;
         }
 
-        return max;
-    }
+
+        private int probFailure( int[][] dungeons, boolean[] probMap, int idx, int tired, int count ) {
+            int[] start = dungeons[idx];
+            probMap[idx] = true;
+            int max = count;
 
 
-    public void print( boolean[] probeMap ) {
+    //        print(probMap);
+    //        System.out.println("> "+idx);
+
+            if( start[0] > tired && probMap[idx]) return count;
+            else {
+                for ( int i = 1; i <= dungeons.length; i ++  ) {
+
+                    int next = idx + i;
+                    if( next >= dungeons.length ) next -= dungeons.length;
+                    if(probMap[next]) continue;
+
+                    boolean[] tmpMap = Arrays.copyOf(probMap, probMap.length);
+                    int result = probFailure(dungeons, tmpMap, next, tired -= start[1], count + 1 );
+
+
+                    max = Math.max(max, result);
+
+                }
+            }
+
+            return max;
+        }
+
+
+        public void print( boolean[] probeMap ) {
         for (boolean r : probeMap) System.out.print(r+", ");
         System.out.println();
+    }
     }
 }
