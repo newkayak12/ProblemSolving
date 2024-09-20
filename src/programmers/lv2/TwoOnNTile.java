@@ -4,6 +4,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
+
 public class TwoOnNTile {
     //https://school.programmers.co.kr/learn/courses/30/lessons/12900
 
@@ -41,11 +44,6 @@ public class TwoOnNTile {
     public class TestCases{
         @Test
         public void case0 () {
-            /**
-             * ||
-             *
-             * ㅡ
-             */
             int n = 2;
             int result = 2;
 
@@ -54,11 +52,6 @@ public class TwoOnNTile {
 
         @Test
         public void case1 () {
-            /**
-             * |||
-             * |_
-             * _|
-             */
             int n = 3;
             int result = 3;
 
@@ -67,13 +60,6 @@ public class TwoOnNTile {
 
         @Test
         public void case2 () {
-            /**
-             * _ _
-             * ||_
-             * |_|
-             * _||
-             * ||||
-             */
             int n = 4;
             int result = 5;
 
@@ -82,20 +68,6 @@ public class TwoOnNTile {
 
         @Test
         public void case3() {
-            /**
-             * _ _|
-             * _ | _
-             * |_ _
-             *
-             * _ |||
-             * |_||
-             * ||_|
-             * |||_
-             *
-             * |||||
-             *
-             *
-             */
             int n = 5;
             int result = 8;
 
@@ -104,24 +76,6 @@ public class TwoOnNTile {
 
         @Test
         public void case4() {
-            /**
-             * _ _ _
-             *
-             * _ _ ||
-             * _ | _ |
-             * | _ _ |
-             * _ || _
-             * | _ | _
-             * ||_ _
-             *
-             * _ ||||
-             * | _ |||
-             * || _ ||
-             * ||| _ |
-             * |||| _
-             *
-             * ||||||
-             */
             int n = 6;
             int result = 13;
 
@@ -138,13 +92,32 @@ public class TwoOnNTile {
      * n = 6 -> 13
      */
 
+
     public int solution ( int n ) {
-        return this.calculation(n,  0,0, 1);
+        // f(n) = (f(n - 1) % mod + f(n - 2) % mod) % mod;
+        int[] table = new int[n];
+        int mod = 1_000_000_007;
+        table[0] = 1;
+        table[1] = 2;
+
+        for( int i = 2; i < n; i ++ ) {
+            table[i] = ((table[i - 1] % mod) + (table[i - 2] % mod)) % mod;
+        }
+
+        return table[n - 1];
     }
 
-    private int calculation ( int totalTile, int countNow,  int p1, int p2 ) {
-        int div = 1_000_000_007;
-        if ( countNow >= totalTile ) return (p2 % div);
-        else return calculation(totalTile, countNow + 1, p2 % div, (p1 + p2) % div);
+    class Success {
+        public int solution ( int n ) {
+            return this.calculation(n,  0,0, 1);
+        }
+
+        private int calculation ( int totalTile, int countNow,  int p1, int p2 ) {
+            int div = 1_000_000_007;
+            if ( countNow >= totalTile ) return (p2 % div);
+            else return calculation(totalTile, countNow + 1, p2 % div, (p1 + p2) % div);
+        }
     }
+
+
 }
