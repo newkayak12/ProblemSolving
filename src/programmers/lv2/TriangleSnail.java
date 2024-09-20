@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
+
+//retry*2
 public class TriangleSnail {
     //https://school.programmers.co.kr/learn/courses/30/lessons/68645
 
@@ -130,7 +132,22 @@ public class TriangleSnail {
          * 5 17 19 20 12
          * 6  7  8  9 10 11
          */
-        return  null;
+
+
+        //정 못찾겠으면 그냥 해봐야
+
+        int[][] triangle = new int[n][n];
+        int y = -1;
+        int x = 0;
+        int number = 1;
+
+        for( int i = n; i > 0; i -= 3) {
+            for( int j = 0; j < i; j ++)  triangle[++y][x] = number++;
+            for( int j = 0; j < i - 1; j ++ ) triangle[y][++x] = number++;
+            for( int j = 0; j < i - 2; j ++ ) triangle[--y][--x] = number++;
+        }
+
+        return  Arrays.stream(triangle).flatMap(i -> Arrays.stream(i).boxed()).filter(i -> i!=0).mapToInt(i -> i).toArray();
     }
     class Success {
         public int[] solution(int n) {
@@ -233,36 +250,47 @@ public class TriangleSnail {
             Assertions.assertArrayEquals(result, solution(n));
         }
 
+        @Test
+        public void case4 () {
+            /**
+             * 1  20 19 18 17  16
+             * 2  21 32 31 30  15
+             * 3  22 33 36 29  14
+             * 4  23 34 35 28  13
+             * 5  24 25 26 27  12
+             * 6  7  8  9  10  11
+             */
+            int n = 6;
+            int[] result = {
+                    1, 20 ,19 ,18 ,17 ,16,
+                    2, 21 ,32 ,31 ,30 ,15,
+                    3, 22 ,33 ,36 ,29 ,14,
+                    4, 23 ,34 ,35 ,28 ,13,
+                    5, 24 ,25 ,26 ,27 ,12,
+                    6, 7  ,8  ,9  ,10 ,11
+            };
+
+
+            Assertions.assertArrayEquals(result, solution(n));
+        }
+
 
         public int[] solution( int n  ) {
 
             int[][] square = new int[n][n];
             int number = 1;
             int x = 0;
-            int y = 0;
+            int y = -1;
 
-/**
- * 1 8 7  > i = 1
- * 2 9 6  > i = 2 ( i
- * 3 4 5  > i = 3 ( if ( i == n ) -> col ++ )
- */
-
-//(0,0),(0,1),(0,2)
-//(1,2),(2,2)
-//(2,1),(2,0)
-//(1,0),(1,1)
-
-
-            for( int side = n; side > 0; side -= 4 ) {
-//                if(int j = )
+            for( int side = n; side > 0; side -= 2 ) {
+                for( int i = 0; i < side; i ++ )  square[++y][x] = number++;
+                for( int i = 0; i < side - 1; i ++ ) square[y][++x] = number++;
+                for( int i = 0; i < side - 1; i ++ ) square[--y][x] = number++;
+                for( int i = 0; i < side - 2; i ++ ) square[y][--x] = number++;
             }
 
 
-
-            for(int[] arr : square) {
-                System.out.println(Arrays.toString(arr));
-            }
-            return null;
+            return Arrays.stream(square).flatMapToInt(ints -> Arrays.stream(ints)).toArray();
         }
     }
 
