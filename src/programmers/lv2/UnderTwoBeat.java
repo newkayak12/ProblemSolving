@@ -126,10 +126,8 @@ public class UnderTwoBeat {
             else {
               long ref = number + 1;
               while (true) {
-                  System.out.println(ref +" // "+ number + " // " +Long.bitCount((ref ^ number)));
                   if( Long.bitCount((ref ^ number)) <= 2) {
-                      numbers[i] = ref;
-                      System.out.println(ref);
+                      answer[i] = ref;
                       break;
                   }
                   ref += 1;
@@ -137,7 +135,6 @@ public class UnderTwoBeat {
             }
         }
 
-        System.out.println(Arrays.toString(answer));
 
         return answer;
     }
