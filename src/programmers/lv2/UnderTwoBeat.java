@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
+
 public class UnderTwoBeat {
     //https://school.programmers.co.kr/learn/courses/30/lessons/77885
     /**
@@ -56,45 +57,8 @@ public class UnderTwoBeat {
 
         @Test
         public void case2 () {
-            // 1     1
-            // 2    10
-            // 3    11
-            // 4   100
-            // 5   101
-            // 6   110
-            // 7   111
-            // 8  1000
-            // 9  1001
-            // 10 1010
-            // 11 1001
-            // 12 1100
-            // 13 1011
-            // 14 1110
-            // 15 1111
-
-
-//            f(1) = 2
-//            f(2) = 3
-//            f(3) = 5
-//            f(4) = 5
-//            f(7) = 11
-//            f(8) = 9
-//            f(9) = 10
-//            f(10) = 11
-//            f(11) = 12
-//            f(12) = 13
-//            f(13) = 14
-
-            /**
-             * f(3) = 5
-             * f(7) = 11
-             * f(9) = 10
-             * f(11) = 14
-             * f(13) + 14
-             */
-
-            long[] numbers = new long[]{3, 6};
-            long[] result  = new long[]{5, 11};
+            long[] numbers = new long[]{13};
+            long[] result  = new long[]{14};
 
             Assertions.assertArrayEquals(result, solution(numbers));
         }
@@ -124,14 +88,44 @@ public class UnderTwoBeat {
             long number = numbers[i];
             if( number % 2 == 0) answer[i] = number + 1;
             else {
-              long ref = number + 1;
-              while (true) {
-                  if( Long.bitCount((ref ^ number)) <= 2) {
-                      answer[i] = ref;
-                      break;
-                  }
-                  ref += 1;
-              }
+                /**
+                 * 여기서 1씩 늘리면 타임아웃
+                 * 규칙? -> 결국 비트 연산이 필요
+                 *  1      1
+                 *  3     11
+                 *  5    101
+                 *  7    111 -> 1011 (1)
+                 *  9   1001 -> 1010 (1)
+                 *  11  1010 -> 1011 (1)
+                 *  13  1101 -> 1110 (1)
+                 *  15  1111 -> 10111 (1)
+                 *  17 10001 -> 10010 (1)
+                 *  19 10011 -> 10101
+                 *  21 10101 -> 10110
+                 *  23 10111 -> 11011
+                 *  25 11001 -> 11010
+                 *  27 11010 -> 11011
+                 *
+                 *  모든 비트가 1이면 앞 자리를 0으로 만들고 1을 붙임
+                 **/
+
+                String binary = Long.toBinaryString(number);
+                int bitLength = binary.length();
+                int bitCount = Long.bitCount(number);
+
+                if( bitCount == bitLength) {
+                    String bit = "1" + binary.replaceFirst("1", "0");
+                    answer[i] = Long.parseLong(bit, 2);
+                }
+                else  {
+                    int index = binary.lastIndexOf('0');
+                    char[] str = binary.toCharArray();
+                    str[index] = '1';
+                    str[index + 1] = '0';
+                    answer[i] = Long.parseLong(new String(str), 2);
+                }
+
+
             }
         }
 
