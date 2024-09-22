@@ -5,10 +5,8 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 
-
-public class UnderTwoBeat {
+public class UnderTwoBit {
     //https://school.programmers.co.kr/learn/courses/30/lessons/77885
     /**
      * <pre>
@@ -124,6 +122,16 @@ public class UnderTwoBeat {
                     str[index + 1] = '0';
                     answer[i] = Long.parseLong(new String(str), 2);
                 }
+
+//              1씩 증가, Timeout!
+//                long ref = number + 1;
+//                    while (true) {
+//                        if( Long.bitCount((ref ^ number)) <= 2) {
+//                            answer[i] = ref;
+//                            break;
+//                        }
+//                        ref += 1;
+//                    }
 
 
             }
