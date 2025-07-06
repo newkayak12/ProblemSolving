@@ -1,9 +1,7 @@
 package renewal.bottomup
 
-import io.kotest.assertions.assertSoftly
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import kotlin.math.max
 
 class UnboundedBackpack {
     /**
@@ -33,10 +31,8 @@ class UnboundedBackpack {
         val W = 7
         val expected = 10
 
-        assertSoftly {
             assertEquals(expected, unboundedTwoDimension(W, items))
             assertEquals(expected, unboundedOneDimension(W, items))
-        }
 
     }
 

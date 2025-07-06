@@ -1,10 +1,7 @@
 package renewal.bottomup
 
-import io.kotest.mpp.start
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import kotlin.math.max
-import kotlin.math.sign
 
 class InBudgetMaxValue {
     /**
